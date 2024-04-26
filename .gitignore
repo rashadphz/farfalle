@@ -161,3 +161,22 @@ cython_debug/
 
 .DS_Store
 
+# Next.js
+.next/
+out/
+node_modules/
+
+# React
+*.log
+*.cache
+coverage/
+build/
+
+# Local development
+.local
+.local.*
+
+# Verbose logging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
