@@ -8,6 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.110.2"
+pydantic = "^2.7.1"
+requests = "^2.31.0"
+httpx = "^0.27.0"
 
 
 [build-system]
