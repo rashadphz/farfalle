@@ -9,6 +9,7 @@ import {
 } from "@/types";
 import { SearchResults } from "./search-results";
 import RelatedQuestions from "./related-questions";
+import { Separator } from "./ui/separator";
 
 const Section = ({
   title,
@@ -47,6 +48,7 @@ const AssistantMessageContent = ({
       <Section title="Answer">
         <span className="text-md">{content}</span>
       </Section>
+      <Separator className="mb-8" />
       <Section title="Related ">
         {relatedQuestions && <RelatedQuestions questions={relatedQuestions} />}
       </Section>
