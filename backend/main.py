@@ -1,10 +1,15 @@
 import asyncio
 import json
+import logging
 from typing import AsyncGenerator, AsyncIterator
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
+from sse_starlette.sse import EventSourceResponse
+
+
 import time
 
 import httpx
@@ -32,6 +37,17 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(await request.body())
+    exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+    logging.error(f"{request}: {exc_str}")
+    content = {"status_code": 10422, "message": exc_str, "data": None}
+    return JSONResponse(
+        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
+
+
 fake_query = "Rashad Philizaire"
 fake_search_results = [
     SearchResult(
@@ -55,13 +71,13 @@ fake_related_queries = [
 ]
 
 
-@app.post("/search")
-async def search(request: ChatRequest) -> StreamingResponse:
+@app.post("/chat")
+async def chat(chat_request: ChatRequest, request: Request) -> StreamingResponse:
     async def generator():
-        async for obj in stream_qa_objects(request):
+        async for obj in stream_qa_objects(chat_request):
             yield json.dumps(jsonable_encoder(obj))
 
-    return StreamingResponse(generator(), media_type="application/json")
+    return EventSourceResponse(generator(), media_type="text/event-stream")
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
@@ -99,13 +115,14 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
 
 async def main():
-    url = "http://127.0.0.1:8000/search"
+    url = "http://127.0.0.1:8000/chat"
+    print(ChatRequest(query="Rashad Philizaire").model_dump())
 
     async with httpx.AsyncClient() as client:
         async with client.stream(
             "POST",
             url,
-            json=ChatRequest(query="Rashad Philizaire", history=[]).model_dump(),
+            json=ChatRequest(query="Rashad Philizaire").model_dump(),
         ) as response:
             async for chunk in response.aiter_text():
                 print(chunk)
