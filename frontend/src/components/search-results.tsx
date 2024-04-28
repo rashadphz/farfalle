@@ -4,6 +4,21 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchResult } from "@/types";
+import { Skeleton } from "./ui/skeleton";
+
+export const SearchResultsSkeleton = () => {
+  return (
+    <>
+      <div className="flex flex-wrap w-full">
+        {[...Array(4)].map((_, index) => (
+          <div className="w-1/2 md:w-1/4 p-1" key={`skeleton-${index}`}>
+            <Skeleton className="rounded-md shadow-none border-none h-[70px] bg-card " />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
 
 export function SearchResults({ results }: { results: SearchResult[] }) {
   const [showAll, setShowAll] = useState(false);
@@ -11,7 +26,7 @@ export function SearchResults({ results }: { results: SearchResult[] }) {
   const displayedResults = showAll ? results : results.slice(0, 3);
   const additionalCount = results.length > 3 ? results.length - 3 : 0;
   return (
-    <div className="flex flex-wrap ">
+    <div className="flex flex-wrap w-full ">
       {displayedResults.map(({ title, url }, index) => {
         const formattedUrl = new URL(url).hostname.split(".").slice(-2, -1)[0];
 

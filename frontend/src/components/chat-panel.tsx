@@ -7,7 +7,7 @@ import {
   MessageType,
   UserMessage,
 } from "@/types";
-import { SearchResults } from "./search-results";
+import { SearchResults, SearchResultsSkeleton } from "./search-results";
 import RelatedQuestions from "./related-questions";
 import { Separator } from "./ui/separator";
 import { useChat } from "@/hooks/chat";
@@ -41,10 +41,15 @@ const AssistantMessageContent = ({
   message: AssistantMessage;
 }) => {
   const { sources, content, relatedQuestions } = message;
+  console.log({ message });
   return (
     <div className="flex flex-col">
       <Section title="Sources">
-        {sources && <SearchResults results={sources} />}
+        {!sources || sources.length === 0 ? (
+          <SearchResultsSkeleton />
+        ) : (
+          <SearchResults results={sources} />
+        )}
       </Section>
       <Section title="Answer">
         <span className="text-md">{content}</span>
@@ -87,7 +92,7 @@ export const ChatPanel = () => {
   ]);
   if (messages.length > 0) {
     return (
-      <div>
+      <div className="w-full">
         <Messages messages={messages} streamingMessage={streamingMessage} />;
         <button
           onClick={() => handleSend({ query: "who is rashad philizaire" })}
