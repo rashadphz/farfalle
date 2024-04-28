@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ChatRequest } from '../models/ChatRequest';
+import type { ChatResponseEvent } from '../models/ChatResponseEvent';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -10,12 +11,12 @@ export class DefaultService {
     /**
      * Chat
      * @param requestBody
-     * @returns any Successful Response
+     * @returns ChatResponseEvent Successful Response
      * @throws ApiError
      */
     public static chatChatPost(
         requestBody: ChatRequest,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<Array<ChatResponseEvent>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/chat',
