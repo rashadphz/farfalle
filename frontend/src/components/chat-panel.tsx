@@ -57,7 +57,13 @@ const AssistantMessageContent = ({
   );
 };
 
-const Messages = ({ messages }: { messages: ChatMessage[] }) => {
+const Messages = ({
+  messages,
+  streamingMessage,
+}: {
+  messages: ChatMessage[];
+  streamingMessage: AssistantMessage | null;
+}) => {
   return (
     <div className="flex flex-col">
       {messages.map((message, index) =>
@@ -67,43 +73,25 @@ const Messages = ({ messages }: { messages: ChatMessage[] }) => {
           <AssistantMessageContent key={index} message={message} />
         )
       )}
+      {streamingMessage && (
+        <AssistantMessageContent message={streamingMessage} />
+      )}
     </div>
   );
 };
 
 export const ChatPanel = () => {
-  const { handleSend } = useChat();
+  const { handleSend, streamingMessage } = useChat();
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: MessageType.USER, content: "who is elon musk" },
-    {
-      role: MessageType.ASSISTANT,
-      content:
-        "Elon Musk is a South African-born American entrepreneur and investor who is the founder, CEO, and CTO of SpaceX, CEO and product architect of Tesla, Inc., founder of The Boring Company, and co-founder of Neuralink and OpenAI",
-      sources: [
-        {
-          title: "Elon Musk",
-          url: "https://en.wikipedia.org/wiki/Elon_Musk",
-          content: "Elon Musk is the CEO of Tesla",
-        },
-        {
-          title: "Who Is Elon Musk? - Investopedia",
-          url: "https://www.investopedia.com/who-is-elon-musk-5207306",
-          content:
-            "A comprehensive article detailing Elon Musk's career and achievements.",
-        },
-      ],
-      relatedQuestions: [
-        "What are some of Elon Musk's notable achievements?",
-        "What is Elon Musk's net worth?",
-        "What is Elon Musk's educational background?",
-      ],
-    },
+    { role: MessageType.USER, content: "who is rashad philizaire" },
   ]);
   if (messages.length > 0) {
     return (
       <div>
-        <Messages messages={messages} />;
-        <button onClick={() => handleSend({ query: "who is elon musk" })}>
+        <Messages messages={messages} streamingMessage={streamingMessage} />;
+        <button
+          onClick={() => handleSend({ query: "who is rashad philizaire" })}
+        >
           Send
         </button>
       </div>

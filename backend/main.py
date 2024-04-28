@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging
-from typing import AsyncGenerator, AsyncIterator
+from typing import Any, AsyncGenerator, AsyncIterator, Generator
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
@@ -60,6 +60,11 @@ fake_search_results = [
         content="Rashad Philizaire Turing Scholar @ UT Austin Washington DC-Baltimore Area Software Engineer Intern Stripe May 2023 - August 2023 • 4 months New York City Metropolitan Area Meta University Engineering Intern Meta June 2022 - August...",
         url="https://www.linkedin.com/in/rashadphz/",
     ),
+    SearchResult(
+        title="[PDF] Scholarship Recipients - Texas Exes",
+        content="",
+        url="https://www.texasexes.org/sites/default/files/2021-08/FY22_TxExScholarships_Recipients-Named.pdf",
+    ),
 ]
 
 fake_response = "Rashad Philizaire is a computer science student at the University of Texas at Austin, where he is a Turing Scholar. He has previously interned at Stripe, Meta, and Yext."
@@ -72,7 +77,9 @@ fake_related_queries = [
 
 
 @app.post("/chat")
-async def chat(chat_request: ChatRequest, request: Request) -> StreamingResponse:
+async def chat(
+    chat_request: ChatRequest, request: Request
+) -> Generator[ChatResponseEvent, None, None]:
     async def generator():
         async for obj in stream_qa_objects(chat_request):
             yield json.dumps(jsonable_encoder(obj))
@@ -99,7 +106,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
     for word in fake_response.split():
         yield ChatResponseEvent(
             event=StreamEvent.TEXT_CHUNK,
-            data=TextChunkStream(text=word),
+            data=TextChunkStream(text=word + " "),
         )
         await asyncio.sleep(0.1)
 
