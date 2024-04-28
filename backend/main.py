@@ -67,7 +67,7 @@ fake_search_results = [
     ),
 ]
 
-fake_response = "Rashad Philizaire is a computer science student at the University of Texas at Austin, where he is a Turing Scholar. He has previously interned at Stripe, Meta, and Yext."
+fake_response = "Rashad Philizaire is a computer science student at the University of Texas at Austin, where he is a Turing Scholar. He has previously interned at Stripe, Meta, and Yext. \n\nRashad is interested in backend development, infrastructure, search & retrieval, and machine learning. He has worked on projects such as a community platform for students seeking professional opportunities using Django Rest Framework 3  and a pose comparison video streaming application using ml5js PoseNet."
 
 fake_related_queries = [
     "what are rashad philizaire's skills and interests",
@@ -108,7 +108,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             event=StreamEvent.TEXT_CHUNK,
             data=TextChunkStream(text=word + " "),
         )
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.05)
 
     yield ChatResponseEvent(
         event=StreamEvent.RELATED_QUERIES,

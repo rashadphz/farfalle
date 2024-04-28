@@ -11,6 +11,13 @@ import { SearchResults, SearchResultsSkeleton } from "./search-results";
 import RelatedQuestions from "./related-questions";
 import { Separator } from "./ui/separator";
 import { useChat } from "@/hooks/chat";
+import _ from "lodash";
+
+function chunkString(str: string): string[] {
+  const words = str.split(" ");
+  const chunks = _.chunk(words, 2).map((chunk) => chunk.join(" ") + " ");
+  return chunks;
+}
 
 const Section = ({
   title,
@@ -52,7 +59,11 @@ const AssistantMessageContent = ({
         )}
       </Section>
       <Section title="Answer">
-        <span className="text-md">{content}</span>
+        {chunkString(content).map((chunk, index) => (
+          <span key={index} className="animate-in fade-in-25 duration-700">
+            {chunk}
+          </span>
+        ))}
       </Section>
       <Separator className="mb-8" />
       <Section title="Related ">
