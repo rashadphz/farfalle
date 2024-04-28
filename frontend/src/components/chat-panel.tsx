@@ -10,6 +10,7 @@ import {
 import { SearchResults } from "./search-results";
 import RelatedQuestions from "./related-questions";
 import { Separator } from "./ui/separator";
+import { useChat } from "@/hooks/chat";
 
 const Section = ({
   title,
@@ -71,6 +72,7 @@ const Messages = ({ messages }: { messages: ChatMessage[] }) => {
 };
 
 export const ChatPanel = () => {
+  const { handleSend } = useChat();
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: MessageType.USER, content: "who is elon musk" },
     {
@@ -98,7 +100,14 @@ export const ChatPanel = () => {
     },
   ]);
   if (messages.length > 0) {
-    return <Messages messages={messages} />;
+    return (
+      <div>
+        <Messages messages={messages} />;
+        <button onClick={() => handleSend({ query: "who is elon musk" })}>
+          Send
+        </button>
+      </div>
+    );
   }
 
   return (
