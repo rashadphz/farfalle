@@ -20,6 +20,10 @@ class ChatRequest(BaseModel):
     history: List[Message] = Field(default_factory=list)
 
 
+class RelatedQueries(BaseModel):
+    related_queries: List[str] = Field(..., min_length=3, max_length=3)
+
+
 class SearchResult(BaseModel):
     title: str
     url: str

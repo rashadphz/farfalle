@@ -11,9 +11,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from llama_index.llms.openai import OpenAI
-from prompts import CHAT_PROMPT
+from prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT
 from search import search_tavily
 from sse_starlette.sse import EventSourceResponse
+from llama_index.llms.groq import Groq
+from llama_index.core.program import LLMTextCompletionProgram
+
 
 load_dotenv()
 
@@ -21,6 +24,7 @@ load_dotenv()
 from schemas import (
     ChatRequest,
     ChatResponseEvent,
+    RelatedQueries,
     RelatedQueriesStream,
     SearchQueryStream,
     SearchResult,
@@ -32,6 +36,8 @@ from schemas import (
 
 GPT4_MODEL = "gpt-4-turbo"
 GPT3_MODEL = "gpt-3.5-turbo"
+LLAMA_8B_MODEL = "llama3-8b-8192"
+LLAMA_70B_MODEL = "llama3-70b-8192"
 
 app = FastAPI()
 app.add_middleware(
@@ -54,34 +60,6 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-fake_query = "Rashad Philizaire"
-fake_search_results = [
-    SearchResult(
-        title="rashadphz",
-        content="Hi, I'm Rashad. I'm an honors CS student at UT Austin. I'm interested in backend development, infra and search & retrieval.",
-        url="https://www.rashadphz.com/",
-    ),
-    SearchResult(
-        title="Rashad Philizaire - The University of Texas at Austin - LinkedIn",
-        content="Rashad Philizaire Turing Scholar @ UT Austin Washington DC-Baltimore Area Software Engineer Intern Stripe May 2023 - August 2023 • 4 months New York City Metropolitan Area Meta University Engineering Intern Meta June 2022 - August...",
-        url="https://www.linkedin.com/in/rashadphz/",
-    ),
-    SearchResult(
-        title="[PDF] Scholarship Recipients - Texas Exes",
-        content="",
-        url="https://www.texasexes.org/sites/default/files/2021-08/FY22_TxExScholarships_Recipients-Named.pdf",
-    ),
-]
-
-fake_response = "Rashad Philizaire is a computer science student at the University of Texas at Austin, where he is a Turing Scholar. He has previously interned at Stripe, Meta, and Yext. \n\nRashad is interested in backend development, infrastructure, search & retrieval, and machine learning. He has worked on projects such as a community platform for students seeking professional opportunities using Django Rest Framework 3  and a pose comparison video streaming application using ml5js PoseNet."
-
-fake_related_queries = [
-    "what are rashad philizaire's skills and interests",
-    "what companies has rashad philizaire worked for",
-    "what is rashad philizaire's educational background",
-]
-
-
 @app.post("/chat")
 async def chat(
     chat_request: ChatRequest, request: Request
@@ -96,7 +74,13 @@ async def chat(
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     search_results = await search_tavily(request.query)
-    llm = OpenAI(model=GPT3_MODEL)
+
+    related_queries_task = asyncio.create_task(
+        generate_related_queries(request.query, search_results)
+    )
+
+    # llm = OpenAI(model=GPT3_MODEL)
+    llm = Groq(model=LLAMA_8B_MODEL)
 
     yield ChatResponseEvent(
         event=StreamEvent.SEARCH_RESULTS,
@@ -110,7 +94,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
     )
 
     fmt_qa_prompt = CHAT_PROMPT.format(
-        use_citations=USE_CITATIONS,
         my_context=context_str,
         my_query=request.query,
     )
@@ -121,15 +104,32 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             data=TextChunkStream(text=completion.delta or ""),
         )
 
+    related_queries = await related_queries_task
     yield ChatResponseEvent(
         event=StreamEvent.RELATED_QUERIES,
-        data=RelatedQueriesStream(related_queries=fake_related_queries),
+        data=RelatedQueriesStream(related_queries=related_queries),
     )
 
     yield ChatResponseEvent(
         event=StreamEvent.STREAM_END,
         data=StreamEndStream(),
     )
+
+
+async def generate_related_queries(
+    query: str, search_results: list[SearchResult]
+) -> list[str]:
+    llm = OpenAI(model=GPT3_MODEL)
+    context = "\n\n".join([f"{str(result)}" for result in search_results])
+
+    program = LLMTextCompletionProgram.from_defaults(
+        llm=llm,
+        output_cls=RelatedQueries,
+        prompt_template_str=RELATED_QUESTION_PROMPT,
+    )
+    output: RelatedQueries = await program.acall(query=query, context=context)
+    print(output)
+    return output.related_queries
 
 
 async def main():

@@ -4,11 +4,18 @@ Combine search results together into a coherent answer. Do not repeat text. Cite
 
 Only cite the most relevant results that answer the question accurately. If different results refer to different entities with the same name, write separate answers for each entity.
 
-Reply using markdown formatting. Make the response easy to read and split the answer into multiple paragraphs if necessary.
+Make the response easy to read and split the answer into multiple paragraphs if necessary.
 
 ---------------------
 {my_context}
 ---------------------
 Query: {my_query}
 Answer: \
+"""
+
+RELATED_QUESTION_PROMPT = """\
+Given a question and search results, generate a list of 3 related questions to the given question. Your goal is to generate questions that explore a subject matter more deeply, building on the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results. There must be EXACTLY 3 questions.
+
+Original Question: {query}
+Search Results: {context}
 """
