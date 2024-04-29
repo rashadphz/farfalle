@@ -10,6 +10,7 @@ function chunkString(str: string): string[] {
 
 export interface MessageProps {
   message: string;
+  isStreaming?: boolean;
 }
 
 // Fix for the animation delay
@@ -17,30 +18,27 @@ const MemoizedParagraph = memo(
   ({ children }: React.HTMLProps<HTMLParagraphElement>) => (
     <p>
       {chunkString(children?.toString() || "").map((chunk, index) => (
-        <span
-          key={index}
-          className="animate-in fade-in-25 duration-700"
-        >
+        <span key={index} className="animate-in fade-in-25 duration-700">
           {chunk}
         </span>
       ))}
     </p>
-  ),
-  (prevProps, nextProps) => {
-    return prevProps.children === nextProps.children;
-  }
+  )
 );
 
 MemoizedParagraph.displayName = "MemoizedParagraph";
 
-export const MessageComponent: FC<MessageProps> = ({ message }) => {
+export const MessageComponent: FC<MessageProps> = ({
+  message,
+  isStreaming = false,
+}) => {
   return (
     <MemoizedReactMarkdown
       components={{
         // @ts-ignore
-        p: MemoizedParagraph,
+        p: isStreaming ? MemoizedParagraph : "p",
       }}
-      className="prose-base prose-neutral"
+      className="prose dark:prose-invert inline leading-relaxed break-words "
     >
       {message}
     </MemoizedReactMarkdown>

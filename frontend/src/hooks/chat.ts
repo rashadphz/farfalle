@@ -15,6 +15,7 @@ import {
 } from "@microsoft/fetch-event-source";
 import { useState } from "react";
 import { AssistantMessage, MessageType } from "@/types";
+import { useMessageStore } from "@/stores";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -36,15 +37,53 @@ const streamChat = async ({
 };
 
 export const useChat = () => {
+  const { messages, addMessage } = useMessageStore();
+
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);
+
+  const handleEvent = (
+    eventItem: ChatResponseEvent,
+    state: {
+      response: string;
+      sources: SearchResult[];
+      relatedQuestions: string[];
+    }
+  ) => {
+    switch (eventItem.event) {
+      case StreamEvent.SEARCH_RESULTS:
+        state.sources = (eventItem.data as SearchResultStream).results ?? [];
+        break;
+      case StreamEvent.TEXT_CHUNK:
+        state.response += (eventItem.data as TextChunkStream).text ?? "";
+        break;
+      case StreamEvent.RELATED_QUERIES:
+        state.relatedQuestions =
+          (eventItem.data as RelatedQueriesStream).related_queries ?? [];
+        break;
+      case StreamEvent.STREAM_END:
+        addMessage({
+          role: MessageType.ASSISTANT,
+          content: state.response,
+          relatedQuestions: state.relatedQuestions,
+          sources: state.sources,
+        });
+        setStreamingMessage(null);
+        return;
+    }
+    setStreamingMessage({
+      role: MessageType.ASSISTANT,
+      content: state.response,
+      relatedQuestions: state.relatedQuestions,
+      sources: state.sources,
+    });
+  };
 
   const { mutateAsync: chat } = useMutation<void, Error, ChatRequest>({
     retry: false,
     mutationFn: async (request) => {
-      let response = "";
-      let sources: SearchResult[] = [];
-      let relatedQuestions: string[] = [];
+      const state = { response: "", sources: [], relatedQuestions: [] };
+      addMessage({ role: MessageType.USER, content: request.query });
 
       setStreamingMessage({
         role: MessageType.ASSISTANT,
@@ -57,28 +96,7 @@ export const useChat = () => {
         request,
         onMessage: (event) => {
           const eventItem: ChatResponseEvent = JSON.parse(event.data);
-          switch (eventItem.event) {
-            case StreamEvent.SEARCH_RESULTS: {
-              const data = eventItem.data as SearchResultStream;
-              sources = data.results ?? [];
-            }
-            case StreamEvent.TEXT_CHUNK: {
-              const data = eventItem.data as TextChunkStream;
-              response += data.text ?? "";
-              break;
-            }
-            case StreamEvent.RELATED_QUERIES: {
-              const data = eventItem.data as RelatedQueriesStream;
-              relatedQuestions = data.related_queries ?? [];
-            }
-          }
-
-          setStreamingMessage({
-            role: MessageType.ASSISTANT,
-            content: response,
-            relatedQuestions,
-            sources,
-          });
+          handleEvent(eventItem, state);
         },
       });
     },
