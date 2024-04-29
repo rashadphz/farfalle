@@ -19,6 +19,7 @@
     "@tanstack/react-query": "^5.32.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^11.1.7",
     "lodash": "^4.17.21",
     "lucide-react": "^0.376.0",
     "next": "14.2.3",
