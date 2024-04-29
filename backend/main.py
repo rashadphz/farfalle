@@ -27,7 +27,6 @@ from schemas import (
     ChatResponseEvent,
     RelatedQueries,
     RelatedQueriesStream,
-    SearchQueryStream,
     SearchResult,
     SearchResultStream,
     StreamEndStream,
@@ -75,6 +74,8 @@ async def chat(
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     # TODO: idea, get chunks from search results (like make a request) and just put them through a re-ranker
+    # Might be slow though
+
     search_results = await search_tavily(request.query)
 
     related_queries_task = asyncio.create_task(
@@ -138,7 +139,3 @@ async def generate_related_queries(
     )
 
     return related.related_queries
-
-
-if __name__ == "__main__":
-    ...

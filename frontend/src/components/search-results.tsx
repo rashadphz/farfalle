@@ -20,11 +20,26 @@ export const SearchResultsSkeleton = () => {
   );
 };
 
+const Logo = ({ url }: { url: string }) => {
+  return (
+    <div className="rounded-full overflow-hidden relative">
+      <img
+        className="block relative"
+        src={`https://www.google.com/s2/favicons?sz=128&domain=${url}`}
+        alt="favicon"
+        width={16}
+        height={16}
+      />
+    </div>
+  );
+};
+
 export function SearchResults({ results }: { results: SearchResult[] }) {
   const [showAll, setShowAll] = useState(false);
 
   const displayedResults = showAll ? results : results.slice(0, 3);
   const additionalCount = results.length > 3 ? results.length - 3 : 0;
+  const additionalResults = results.slice(3, 3 + additionalCount);
   return (
     <div className="flex flex-wrap w-full ">
       {displayedResults.map(({ title, url }, index) => {
@@ -39,13 +54,7 @@ export function SearchResults({ results }: { results: SearchResult[] }) {
                 </p>
                 <div className="flex items-center space-x-2">
                   <div className="rounded-full overflow-hidden relative">
-                    <img
-                      className="block relative"
-                      src={`https://www.google.com/s2/favicons?sz=128&domain=${url}`}
-                      alt="favicon"
-                      width={16}
-                      height={16}
-                    />
+                    <Logo url={url} />
                   </div>
                   <div className="text-xs text-muted-foreground truncate font-medium">
                     {formattedUrl}
@@ -58,15 +67,19 @@ export function SearchResults({ results }: { results: SearchResult[] }) {
       })}
       {!showAll && additionalCount > 0 && (
         <div className="w-1/2 md:w-1/4  p-1">
-          <Card className="flex-1 rounded-md flex h-full items-center justify-center shadow-none border-none">
-            <CardContent className="p-2">
-              <Button
-                variant="link"
-                className="text-muted-foreground"
+          <Card className="flex-1 rounded-md flex-col shadow-none border-none h-[70px]">
+            <CardContent className="p-2 flex flex-col justify-between h-full">
+              <div className="flex items-center space-x-2">
+                {additionalResults.map(({ url }, index) => {
+                  return <Logo url={url} key={`logo-${index}`} />;
+                })}
+              </div>
+              <div
+                className="text-xs text-muted-foreground truncate font-medium"
                 onClick={() => setShowAll(true)}
               >
                 View {additionalCount} more
-              </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
