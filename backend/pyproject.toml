@@ -13,6 +13,9 @@ requests = "^2.31.0"
 httpx = "^0.27.0"
 starlette = "^0.37.2"
 sse-starlette = "^2.1.0"
+tavily-python = "^0.3.3"
+load-dotenv = "^0.1.0"
+llama-index = "^0.10.33"
 
 
 [build-system]

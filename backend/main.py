@@ -2,17 +2,21 @@ import asyncio
 import json
 import logging
 from typing import Any, AsyncGenerator, AsyncIterator, Generator
+
+import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
+from llama_index.llms.openai import OpenAI
+from prompts import CHAT_PROMPT
+from search import search_tavily
 from sse_starlette.sse import EventSourceResponse
 
+load_dotenv()
 
-import time
-
-import httpx
 
 from schemas import (
     ChatRequest,
@@ -21,11 +25,13 @@ from schemas import (
     SearchQueryStream,
     SearchResult,
     SearchResultStream,
+    StreamEndStream,
     StreamEvent,
     TextChunkStream,
-    StreamEndStream,
 )
 
+GPT4_MODEL = "gpt-4-turbo"
+GPT3_MODEL = "gpt-3.5-turbo"
 
 app = FastAPI()
 app.add_middleware(
@@ -83,32 +89,37 @@ async def chat(
     async def generator():
         async for obj in stream_qa_objects(chat_request):
             yield json.dumps(jsonable_encoder(obj))
+            await asyncio.sleep(0)
 
     return EventSourceResponse(generator(), media_type="text/event-stream")
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
-    # Temporary streaming response
-    yield ChatResponseEvent(
-        event=StreamEvent.SEARCH_QUERY,
-        data=SearchQueryStream(query=fake_query),
-    )
-
-    await asyncio.sleep(1)
+    search_results = await search_tavily(request.query)
+    llm = OpenAI(model=GPT3_MODEL)
 
     yield ChatResponseEvent(
         event=StreamEvent.SEARCH_RESULTS,
         data=SearchResultStream(
-            results=fake_search_results,
+            results=search_results,
         ),
     )
 
-    for word in fake_response.split():
+    context_str = "\n\n".join(
+        [f"Citation {i+1}. {str(result)}" for i, result in enumerate(search_results)]
+    )
+
+    fmt_qa_prompt = CHAT_PROMPT.format(
+        use_citations=USE_CITATIONS,
+        my_context=context_str,
+        my_query=request.query,
+    )
+
+    for completion in llm.stream_complete(fmt_qa_prompt):
         yield ChatResponseEvent(
             event=StreamEvent.TEXT_CHUNK,
-            data=TextChunkStream(text=word + " "),
+            data=TextChunkStream(text=completion.delta or ""),
         )
-        await asyncio.sleep(0.05)
 
     yield ChatResponseEvent(
         event=StreamEvent.RELATED_QUERIES,

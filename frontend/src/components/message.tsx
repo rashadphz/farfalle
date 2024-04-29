@@ -17,7 +17,10 @@ const MemoizedParagraph = memo(
   ({ children }: React.HTMLProps<HTMLParagraphElement>) => (
     <p>
       {chunkString(children?.toString() || "").map((chunk, index) => (
-        <span key={index} className="animate-in fade-in-25 duration-700">
+        <span
+          key={index}
+          className="animate-in fade-in-25 duration-700"
+        >
           {chunk}
         </span>
       ))}

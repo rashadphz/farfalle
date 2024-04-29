@@ -25,6 +25,9 @@ class SearchResult(BaseModel):
     url: str
     content: str
 
+    def __str__(self):
+        return f"Title: {self.title}\nURL: {self.url}\Summary: {self.content}"
+
 
 class StreamEvent(str, Enum):
     SEARCH_QUERY = "search-query"

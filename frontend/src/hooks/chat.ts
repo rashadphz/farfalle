@@ -45,6 +45,13 @@ export const useChat = () => {
       let sources: SearchResult[] = [];
       let relatedQuestions: string[] = [];
 
+      setStreamingMessage({
+        role: MessageType.ASSISTANT,
+        content: "",
+        relatedQuestions: [],
+        sources: [],
+      });
+
       await streamChat({
         request,
         onMessage: (event) => {
