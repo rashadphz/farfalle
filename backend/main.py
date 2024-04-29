@@ -81,8 +81,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         generate_related_queries(request.query, search_results)
     )
 
-    # llm = OpenAI(model=GPT3_MODEL)
-    llm = Groq(model=LLAMA_8B_MODEL)
+    llm = OpenAI(model=GPT3_MODEL)
+    # llm = Groq(model=LLAMA_8B_MODEL)
 
     yield ChatResponseEvent(
         event=StreamEvent.SEARCH_RESULTS,

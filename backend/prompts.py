@@ -4,7 +4,7 @@ Combine search results together into a coherent answer. Do not repeat text. Cite
 
 Only cite the most relevant results that answer the question accurately. If different results refer to different entities with the same name, write separate answers for each entity.
 
-Make the response easy to read and split the answer into multiple paragraphs if necessary.
+Make the response easy to read and split the answer into multiple paragraphs if necessary. Reply in Markdown format and use bullets if necessary.
 
 ---------------------
 {my_context}
