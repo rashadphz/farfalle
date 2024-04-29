@@ -134,7 +134,7 @@ export const ChatPanel = () => {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { handleSend, streamingMessage } = useChat();
-  const { messages, addMessage } = useMessageStore();
+  const { messages } = useMessageStore();
 
   useEffect(() => {
     inputRef.current?.focus();

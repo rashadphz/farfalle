@@ -37,7 +37,7 @@ const streamChat = async ({
 };
 
 export const useChat = () => {
-  const { messages, addMessage } = useMessageStore();
+  const { addMessage } = useMessageStore();
 
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);

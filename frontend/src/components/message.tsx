@@ -2,6 +2,7 @@ import React, { FC, memo, useMemo } from "react";
 import { MemoizedReactMarkdown } from "./markdown";
 import _ from "lodash";
 import { cn } from "@/lib/utils";
+import { SearchResult } from "../../generated";
 
 function chunkString(str: string): string[] {
   const words = str.split(" ");
@@ -14,12 +15,12 @@ export interface MessageProps {
   isStreaming?: boolean;
 }
 
-const Citation = memo(({ children }: React.HTMLProps<HTMLParagraphElement>) => {
+const Citation = memo(({ number }: { number: number }) => {
   return (
-    <a className="ml-1">
+    <a className="ml-1" target="_blank">
       <span className="relative -top-[0.2rem] inline-flex">
         <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] ">
-          {children}
+          {number}
         </span>
       </span>
     </a>
@@ -44,7 +45,7 @@ const TextWithCitations = ({
   const text = textWithCitations?.map((text, index) => {
     if (text.match(citationMatch)) {
       const number = text.slice(1, -1);
-      return <Citation key={number}>{number}</Citation>;
+      return <Citation key={parseInt(number)} number={parseInt(number)} />;
     }
     return (
       <span

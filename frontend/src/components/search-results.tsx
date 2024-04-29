@@ -47,26 +47,40 @@ export function SearchResults({ results }: { results: SearchResult[] }) {
 
         return (
           <div key={`source-${index}`} className="w-1/2 md:w-1/4 p-1">
-            <Card className="flex-1 rounded-md flex-col shadow-none border-none h-[70px]">
-              <CardContent className="p-2 flex flex-col justify-between h-full">
-                <p className="text-xs line-clamp-2 font-medium text-foreground/80">
-                  {title}
-                </p>
-                <div className="flex items-center space-x-2">
-                  <div className="rounded-full overflow-hidden relative">
-                    <Logo url={url} />
+            <a className="" href={url} target="_blank">
+              <Card className="flex-1 rounded-md flex-col shadow-none border-none h-[70px]">
+                <CardContent className="p-2 flex flex-col justify-between h-full">
+                  <p className="text-xs line-clamp-2 font-medium text-foreground/80">
+                    {title}
+                  </p>
+                  <div className="flex space-x-1">
+                    <div className="flex items-center space-x-2">
+                      <div className="rounded-full overflow-hidden relative">
+                        <Logo url={url} />
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate font-medium">
+                        {formattedUrl}
+                      </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground font-medium">
+                      ·
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate font-medium">
+                      {index + 1}
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground truncate font-medium">
-                    {formattedUrl}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </a>
           </div>
         );
       })}
       {!showAll && additionalCount > 0 && (
-        <div className="w-1/2 md:w-1/4  p-1">
+        <div
+          className="cursor-pointer
+        w-1/2 md:w-1/4  p-1"
+          onClick={() => setShowAll(true)}
+        >
           <Card className="flex-1 rounded-md flex-col shadow-none border-none h-[70px]">
             <CardContent className="p-2 flex flex-col justify-between h-full">
               <div className="flex items-center space-x-2">
@@ -74,10 +88,7 @@ export function SearchResults({ results }: { results: SearchResult[] }) {
                   return <Logo url={url} key={`logo-${index}`} />;
                 })}
               </div>
-              <div
-                className="text-xs text-muted-foreground truncate font-medium"
-                onClick={() => setShowAll(true)}
-              >
+              <div className="text-xs text-muted-foreground truncate font-medium">
                 View {additionalCount} more
               </div>
             </CardContent>
