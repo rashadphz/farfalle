@@ -40,6 +40,7 @@ export const useChat = () => {
     useState<AssistantMessage | null>(null);
 
   const { mutateAsync: chat } = useMutation<void, Error, ChatRequest>({
+    retry: false,
     mutationFn: async (request) => {
       let response = "";
       let sources: SearchResult[] = [];

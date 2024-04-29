@@ -15,7 +15,8 @@ from prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT
 from search import search_tavily
 from sse_starlette.sse import EventSourceResponse
 from llama_index.llms.groq import Groq
-from llama_index.core.program import LLMTextCompletionProgram
+from llama_index.core.program import FunctionCallingProgram
+import instructor
 
 
 load_dotenv()
@@ -73,6 +74,7 @@ async def chat(
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
+    # TODO: idea, get chunks from search results (like make a request) and just put them through a re-ranker
     search_results = await search_tavily(request.query)
 
     related_queries_task = asyncio.create_task(
@@ -119,32 +121,24 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 async def generate_related_queries(
     query: str, search_results: list[SearchResult]
 ) -> list[str]:
-    llm = OpenAI(model=GPT3_MODEL)
+    from openai import OpenAI
+
     context = "\n\n".join([f"{str(result)}" for result in search_results])
+    client = instructor.from_openai(OpenAI())
 
-    program = LLMTextCompletionProgram.from_defaults(
-        llm=llm,
-        output_cls=RelatedQueries,
-        prompt_template_str=RELATED_QUESTION_PROMPT,
+    related = client.chat.completions.create(
+        model=GPT3_MODEL,
+        response_model=RelatedQueries,
+        messages=[
+            {
+                "role": "user",
+                "content": RELATED_QUESTION_PROMPT.format(query=query, context=context),
+            },
+        ],
     )
-    output: RelatedQueries = await program.acall(query=query, context=context)
-    print(output)
-    return output.related_queries
 
-
-async def main():
-    url = "http://127.0.0.1:8000/chat"
-    print(ChatRequest(query="Rashad Philizaire").model_dump())
-
-    async with httpx.AsyncClient() as client:
-        async with client.stream(
-            "POST",
-            url,
-            json=ChatRequest(query="Rashad Philizaire").model_dump(),
-        ) as response:
-            async for chunk in response.aiter_text():
-                print(chunk)
+    return related.related_queries
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    ...

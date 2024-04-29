@@ -96,9 +96,7 @@ export const ChatPanel = () => {
     return (
       <div className="w-full">
         <Messages messages={messages} streamingMessage={streamingMessage} />;
-        <button
-          onClick={() => handleSend({ query: "who is rashad philizaire" })}
-        >
+        <button onClick={() => handleSend({ query: "who is elon musk" })}>
           Send
         </button>
       </div>

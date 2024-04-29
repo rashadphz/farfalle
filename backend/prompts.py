@@ -14,7 +14,7 @@ Answer: \
 """
 
 RELATED_QUESTION_PROMPT = """\
-Given a question and search results, generate a list of 3 related questions to the given question. Your goal is to generate questions that explore a subject matter more deeply, building on the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results. There must be EXACTLY 3 questions.
+Given a question and search results, generate a list of 3 related questions to the given question. Your goal is to generate questions that explore a subject matter more deeply, building on the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results. There must be EXACTLY 3 questions. Keep the questions short and concise.
 
 Original Question: {query}
 Search Results: {context}
