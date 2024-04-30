@@ -2,7 +2,6 @@ import React, { FC, memo, useMemo } from "react";
 import { MemoizedReactMarkdown } from "./markdown";
 import _ from "lodash";
 import { cn } from "@/lib/utils";
-import { SearchResult } from "../../generated";
 
 function chunkString(str: string): string[] {
   const words = str.split(" ");
@@ -36,29 +35,51 @@ const TextWithCitations = ({
   isStreaming: boolean;
   containerElement: React.ElementType;
 }) => {
+  console.log({ children });
   const citationMatch = /(\[\d+\])/g;
-  const chunks = chunkString(children?.toString() || "");
-  const textWithCitations = isStreaming
-    ? chunks.flatMap((chunk) => chunk.split(citationMatch))
-    : children?.toString().split(citationMatch);
 
-  const text = textWithCitations?.map((text, index) => {
-    if (text.match(citationMatch)) {
-      const number = text.slice(1, -1);
-      return <Citation key={parseInt(number)} number={parseInt(number)} />;
+  const renderText = (node: React.ReactNode): React.ReactNode => {
+    if (typeof node === "string") {
+      const chunks = isStreaming ? chunkString(node) : [node];
+      return chunks.flatMap((chunk, index) => {
+        const parts = chunk.split(citationMatch);
+        return parts.map((part, partIndex) => {
+          if (part.match(citationMatch)) {
+            const number = part.slice(1, -1);
+            return (
+              <Citation
+                key={`${index}-${partIndex}`}
+                number={parseInt(number)}
+              />
+            );
+          }
+          return (
+            <span
+              key={`${index}-${partIndex}-streaming`}
+              className={cn(
+                isStreaming ? "animate-in fade-in-25 duration-700" : ""
+              )}
+            >
+              {part}
+            </span>
+          );
+        });
+      });
+    } else if (React.isValidElement(node)) {
+      return React.cloneElement(
+        node,
+        node.props,
+        renderText(node.props.children)
+      );
+    } else if (Array.isArray(node)) {
+      return node.map((child, index) => (
+        <React.Fragment key={index}>{renderText(child)}</React.Fragment>
+      ));
     }
-    return (
-      <span
-        key={`${index}-streaming`}
-        className={cn(isStreaming ? "animate-in fade-in-25 duration-700" : "")}
-      >
-        {text}
-      </span>
-    );
-  });
+    return null;
+  };
 
-  console.log({ textWithCitations: children });
-
+  const text = renderText(children);
   return React.createElement(containerElement, {}, text);
 };
 
@@ -117,6 +138,7 @@ export const MessageComponent: FC<MessageProps> = ({
         p: isStreaming ? StreamingParagraph : Paragraph,
         // @ts-ignore
         li: isStreaming ? StreamingListItem : ListItem,
+        // citation: Citation,
       }}
       className="prose dark:prose-invert inline leading-relaxed break-words "
     >
