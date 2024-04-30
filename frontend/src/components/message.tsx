@@ -18,7 +18,7 @@ const Citation = memo(({ number }: { number: number }) => {
   return (
     <a className="ml-1" target="_blank">
       <span className="relative -top-[0.2rem] inline-flex">
-        <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] ">
+        <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] text-muted-foreground">
           {number}
         </span>
       </span>

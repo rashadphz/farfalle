@@ -136,32 +136,48 @@ export const ChatPanel = () => {
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
 
+  const [width, setWidth] = useState(0);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+    const updatePosition = () => {
+      if (messagesRef.current) {
+        setWidth(messagesRef.current.scrollWidth);
+      }
+    };
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [messages]);
+
+  const sendMessage = (message: string) => {
+    handleSend({ query: message });
+    setInput("");
+  };
 
   if (messages.length > 0) {
     return (
-      <div className="w-full">
+      <div ref={messagesRef} className="w-full relative">
         <Messages messages={messages} streamingMessage={streamingMessage} />
+        <div
+          className="bottom-16 fixed px-4 max-w-screen-md justify-center items-center md:px-8"
+          style={{ width: `${width}px` }}
+        >
+          <AskInput sendMessage={sendMessage} />
+        </div>
       </div>
     );
   }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleSend({ query: input });
-    setInput("");
-  };
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <div className="flex items-center justify-center mb-8">
         <span className="text-3xl">?</span>
       </div>
-      <form className="w-full max-w-[80vw]" onSubmit={handleSubmit}>
-        <AskInput input={input} setInput={setInput} inputRef={inputRef} />
-      </form>
+      <AskInput sendMessage={sendMessage} />
     </div>
   );
 };

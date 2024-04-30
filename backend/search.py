@@ -3,19 +3,22 @@ from dotenv import load_dotenv
 from tavily import TavilyClient
 
 from schemas import SearchResult
+import cohere
 
 
 load_dotenv()
 tavily = TavilyClient(api_key=os.getenv("TAV_API_KEY"))
+
+# co = cohere.Client(os.environ["COHERE_KEY"])
 
 
 async def search_tavily(query: str) -> list[SearchResult]:
     response = tavily.search(
         query=query,
         search_depth="basic",
-        max_results=5,
+        max_results=7,
     )
-    return [
+    results = [
         SearchResult(
             title=result["title"],
             url=result["url"],
@@ -23,3 +26,4 @@ async def search_tavily(query: str) -> list[SearchResult]:
         )
         for result in response["results"]
     ]
+    return results

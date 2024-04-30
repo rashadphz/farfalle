@@ -1,4 +1,4 @@
-import { ChatMessage, SearchResult } from "@/types";
+import { ChatMessage, MessageType, SearchResult } from "@/types";
 import { create } from "zustand";
 
 type MessageStore = {
@@ -10,7 +10,16 @@ type StoreState = MessageStore;
 
 const useStore = create<StoreState>((set) => ({
   searchResults: [],
-  messages: [],
+  messages: [
+    // {
+    //   role: MessageType.USER,
+    //   content: "Hello!",
+    // },
+    // {
+    //   role: MessageType.ASSISTANT,
+    //   content: "Hello!",
+    // },
+  ],
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
 }));
