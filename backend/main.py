@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging
-from typing import Any, AsyncGenerator, AsyncIterator, Generator
+from typing import Any, AsyncGenerator, AsyncIterator, Generator, List
 
 import httpx
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from llama_index.llms.openai import OpenAI
-from prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT
+from prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
 from search import search_tavily
 from sse_starlette.sse import EventSourceResponse
 from llama_index.llms.groq import Groq
@@ -25,6 +25,7 @@ load_dotenv()
 from schemas import (
     ChatRequest,
     ChatResponseEvent,
+    Message,
     RelatedQueries,
     RelatedQueriesStream,
     SearchResult,
@@ -72,18 +73,30 @@ async def chat(
     return EventSourceResponse(generator(), media_type="text/event-stream")
 
 
+def rephrase_query_with_history(
+    question: str, history: List[Message], llm: OpenAI
+) -> str:
+    if history:
+        history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
+        return llm.complete(
+            HISTORY_QUERY_REPHRASE.format(chat_history=history_str, question=question)
+        ).text
+    return question
+
+
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     # TODO: idea, get chunks from search results (like make a request) and just put them through a re-ranker
     # Might be slow though
 
-    search_results = await search_tavily(request.query)
+    # llm = OpenAI(model=GPT4_MODEL)
+    llm = Groq(model=LLAMA_70B_MODEL)
+    query = rephrase_query_with_history(request.query, request.history, llm)
+
+    search_results = await search_tavily(query)
 
     related_queries_task = asyncio.create_task(
-        generate_related_queries(request.query, search_results)
+        generate_related_queries(query, search_results)
     )
-
-    # llm = OpenAI(model=GPT3_MODEL)
-    llm = Groq(model=LLAMA_70B_MODEL)
 
     yield ChatResponseEvent(
         event=StreamEvent.SEARCH_RESULTS,
@@ -98,7 +111,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
     fmt_qa_prompt = CHAT_PROMPT.format(
         my_context=context_str,
-        my_query=request.query,
+        my_query=query,
     )
 
     for completion in llm.stream_complete(fmt_qa_prompt):

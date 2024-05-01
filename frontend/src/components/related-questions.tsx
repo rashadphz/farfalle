@@ -2,8 +2,10 @@ import { PlusIcon } from "lucide-react";
 
 export default function RelatedQuestions({
   questions,
+  onSelect,
 }: {
   questions: string[];
+  onSelect: (question: string) => void;
 }) {
   return (
     <div className="divide-y border-t mt-2">
@@ -11,6 +13,7 @@ export default function RelatedQuestions({
         <div
           key={`question-${index}`}
           className="flex cursor-pointer items-center py-2 font-medium justify-between "
+          onClick={() => onSelect(question)}
         >
           <span>{question.toLowerCase()}</span>
           <PlusIcon className="text-accent-foreground mr-2" size={20} />

@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import {
   ChatRequest,
   ChatResponseEvent,
+  Message,
+  MessageRole,
   RelatedQueriesStream,
   SearchResult,
   SearchResultStream,
@@ -14,7 +16,7 @@ import {
   FetchEventSourceInit,
 } from "@microsoft/fetch-event-source";
 import { useState } from "react";
-import { AssistantMessage, MessageType } from "@/types";
+import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { useMessageStore } from "@/stores";
 
 const BASE_URL = "http://127.0.0.1:8000";
@@ -36,8 +38,19 @@ const streamChat = async ({
   });
 };
 
+const convertToChatRequest = (query: string, history: ChatMessage[]) => {
+  const newHistory: Message[] = history.map((message) => ({
+    role:
+      message.role === MessageType.USER
+        ? MessageRole.USER
+        : MessageRole.ASSISTANT,
+    content: message.content,
+  }));
+  return { query, history: newHistory };
+};
+
 export const useChat = () => {
-  const { addMessage } = useMessageStore();
+  const { addMessage, messages } = useMessageStore();
 
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);
@@ -102,8 +115,8 @@ export const useChat = () => {
     },
   });
 
-  const handleSend = async (request: ChatRequest) => {
-    await chat(request);
+  const handleSend = async (query: string) => {
+    await chat(convertToChatRequest(query, messages));
   };
 
   return { handleSend, streamingMessage };

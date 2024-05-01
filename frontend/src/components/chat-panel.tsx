@@ -78,9 +78,11 @@ const UserMessageContent = ({ message }: { message: UserMessage }) => {
 const AssistantMessageContent = ({
   message,
   isStreaming = false,
+  onRelatedQuestionSelect,
 }: {
   message: AssistantMessage;
   isStreaming?: boolean;
+  onRelatedQuestionSelect: (question: string) => void;
 }) => {
   const { sources, content, relatedQuestions } = message;
   return (
@@ -97,7 +99,10 @@ const AssistantMessageContent = ({
       </Section>
       {relatedQuestions && relatedQuestions.length > 0 && (
         <Section title="Related" animate={isStreaming}>
-          <RelatedQuestions questions={relatedQuestions} />
+          <RelatedQuestions
+            questions={relatedQuestions}
+            onSelect={onRelatedQuestionSelect}
+          />
         </Section>
       )}
     </div>
@@ -107,23 +112,33 @@ const AssistantMessageContent = ({
 const Messages = ({
   messages,
   streamingMessage,
+  onRelatedQuestionSelect,
 }: {
   messages: ChatMessage[];
   streamingMessage: AssistantMessage | null;
+  onRelatedQuestionSelect: (question: string) => void;
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-28">
       {messages.map((message, index) =>
         message.role === MessageType.USER ? (
           <UserMessageContent key={index} message={message} />
         ) : (
-          <AssistantMessageContent key={index} message={message} />
+          <>
+            <AssistantMessageContent
+              key={index}
+              message={message}
+              onRelatedQuestionSelect={onRelatedQuestionSelect}
+            />
+            {index !== messages.length - 1 && <Separator />}
+          </>
         )
       )}
       {streamingMessage && (
         <AssistantMessageContent
           message={streamingMessage}
           isStreaming={true}
+          onRelatedQuestionSelect={onRelatedQuestionSelect}
         />
       )}
     </div>
@@ -131,7 +146,6 @@ const Messages = ({
 };
 
 export const ChatPanel = () => {
-  const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
@@ -153,20 +167,19 @@ export const ChatPanel = () => {
     };
   }, [messages]);
 
-  const sendMessage = (message: string) => {
-    handleSend({ query: message });
-    setInput("");
-  };
-
   if (messages.length > 0) {
     return (
       <div ref={messagesRef} className="w-full relative">
-        <Messages messages={messages} streamingMessage={streamingMessage} />
+        <Messages
+          messages={messages}
+          streamingMessage={streamingMessage}
+          onRelatedQuestionSelect={handleSend}
+        />
         <div
           className="bottom-16 fixed px-4 max-w-screen-md justify-center items-center md:px-8"
           style={{ width: `${width}px` }}
         >
-          <AskInput sendMessage={sendMessage} />
+          <AskInput sendMessage={handleSend} />
         </div>
       </div>
     );
@@ -177,7 +190,7 @@ export const ChatPanel = () => {
       <div className="flex items-center justify-center mb-8">
         <span className="text-3xl">?</span>
       </div>
-      <AskInput sendMessage={sendMessage} />
+      <AskInput sendMessage={handleSend} />
     </div>
   );
 };

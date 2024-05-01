@@ -10,16 +10,7 @@ type StoreState = MessageStore;
 
 const useStore = create<StoreState>((set) => ({
   searchResults: [],
-  messages: [
-    // {
-    //   role: MessageType.USER,
-    //   content: "Hello!",
-    // },
-    // {
-    //   role: MessageType.ASSISTANT,
-    //   content: "Hello!",
-    // },
-  ],
+  messages: [],
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
 }));
