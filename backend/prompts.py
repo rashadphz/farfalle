@@ -26,7 +26,7 @@ Original Question: {query}
 Search Results: {context}
 """
 
-HISTORY_QUERY_REPHRASE = f"""
+HISTORY_QUERY_REPHRASE = """
 Given the following conversation and a follow up input, rephrase the follow up into a SHORT, \
 standalone query (which captures any relevant context from previous messages).
 IMPORTANT: EDIT THE QUERY TO BE CONCISE. Respond with a short, compressed phrase. \
@@ -34,8 +34,8 @@ If there is a clear change in topic, disregard the previous messages.
 Strip out any information that is not relevant for the retrieval task.
 
 Chat History:
-{{chat_history}}
+{chat_history}
 
-Follow Up Input: {{question}}
+Follow Up Input: {question}
 Standalone question (Respond with only the short combined query):
 """.strip()

@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from tavily import TavilyClient
 
 from schemas import SearchResult
-import cohere
 
 
 load_dotenv()
