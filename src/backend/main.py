@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from typing import Generator
 
 from dotenv import load_dotenv
@@ -17,11 +18,13 @@ from backend.schemas import (
 
 load_dotenv()
 
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8000", FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
