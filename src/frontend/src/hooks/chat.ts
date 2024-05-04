@@ -19,7 +19,7 @@ import { useState } from "react";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { useMessageStore } from "@/stores";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const streamChat = async ({
   request,
