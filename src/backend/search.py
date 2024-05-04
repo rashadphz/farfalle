@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from tavily import TavilyClient
 
-from schemas import SearchResult
+from backend.schemas import SearchResult
 
 
 load_dotenv()

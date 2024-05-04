@@ -2,12 +2,12 @@ import asyncio
 from typing import AsyncIterator, List
 
 from llama_index.llms.openai import OpenAI
-from prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
-from search import search_tavily
+from backend.prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
+from backend.search import search_tavily
 from llama_index.llms.groq import Groq
 import instructor
 
-from schemas import (
+from backend.schemas import (
     ChatRequest,
     ChatResponseEvent,
     Message,

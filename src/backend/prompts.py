@@ -1,22 +1,24 @@
 CHAT_PROMPT = """\
-Generate a comprehensive and informative answer (but no more than 120 words) for a given question solely based on the provided web Search Results (URL, Page Title, Summary). You must only use information from the provided search results. Use an unbiased and journalistic tone.
+Generate a comprehensive and informative answer (but concise) for a given question solely based on the provided web Search Results (URL, Page Title, Summary). You must only use information from the provided search results. Use an unbiased and journalistic tone.
 
 You must cite the answer using [number] notation. You must cite sentences with their relevant citation number. Cite every part of the answer.
 Place citations at the end of the sentence. You can do multiple citations in a row with the format [number1][number2].
 
 Only cite the most relevant results that answer the question accurately. If different results refer to different entities with the same name, write separate answers for each entity.
 
-ONLY cite inline. NO reference section, NO URLs.
-NO repeating the question.
+ONLY cite inline.
+DO NOT include a reference section, DO NOT include URLs.
+DO NOT repeat the question.
 
-The response should be in Markdown format.
+
+The response should be in Markdown format. Include bullets for readability if necessary.
 
 <context>
 {my_context}
 </context>
 ---------------------
 Question: {my_query}
-Answer: \
+Answer (without repeating the question): \
 """
 
 RELATED_QUESTION_PROMPT = """\

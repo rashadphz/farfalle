@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from chat import stream_qa_objects
+from backend.chat import stream_qa_objects
 from sse_starlette.sse import EventSourceResponse
 
 
-from schemas import (
+from backend.schemas import (
     ChatRequest,
     ChatResponseEvent,
 )
@@ -26,6 +26,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello!"}
 
 
 @app.post("/chat")
