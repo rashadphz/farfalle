@@ -6,9 +6,8 @@ from backend.schemas import SearchResult
 
 
 load_dotenv()
-tavily = TavilyClient(api_key=os.getenv("TAV_API_KEY"))
 
-# co = cohere.Client(os.environ["COHERE_KEY"])
+tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 
 async def search_tavily(query: str) -> list[SearchResult]:
