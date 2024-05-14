@@ -17,6 +17,11 @@ from backend.schemas import (
     ChatResponseEvent,
 )
 
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_ipaddr
+from slowapi.errors import RateLimitExceeded
+
+
 load_dotenv()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL") or "http://localhost:3000"
@@ -31,9 +36,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Logging
 if os.getenv("LOGFIRE_TOKEN"):
     logfire.configure()
     logfire.instrument_fastapi(app)
+
+# Rate Limiting
+rate_limit_enabled = os.getenv("RATE_LIMIT_ENABLED", False)
+redis_url = os.getenv("REDIS_URL")
+enabled = rate_limit_enabled and redis_url
+
+limiter = Limiter(key_func=get_ipaddr, enabled=enabled, storage_uri=redis_url)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.get("/")
@@ -42,6 +57,7 @@ async def root():
 
 
 @app.post("/chat")
+@limiter.limit("5/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
