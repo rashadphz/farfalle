@@ -102,12 +102,12 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 async def generate_related_queries(
     query: str, search_results: list[SearchResult]
 ) -> list[str]:
-    from openai import OpenAI
+    from openai import AsyncOpenAI
 
     context = "\n\n".join([f"{str(result)}" for result in search_results])
-    client = instructor.from_openai(OpenAI())
+    client = instructor.from_openai(AsyncOpenAI())
 
-    related = client.chat.completions.create(
+    related = await client.chat.completions.create(
         model=GPT3_MODEL,
         response_model=RelatedQueries,
         messages=[
