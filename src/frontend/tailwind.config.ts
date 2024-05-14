@@ -18,6 +18,14 @@ const config = {
       },
     },
     extend: {
+      typography: (theme: any) => ({
+        custom: {
+          css: {
+            "--tw-prose-body": theme("colors.primary.foreground"),
+            "--tw-prose-invert-body": theme("colors.primary.DEFAULT"),
+          },
+        },
+      }),
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const HoverCard = React.forwardRef<
   React.ElementRef<typeof HoverCardPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Root>
->(({ ...props }) => (
+>(({ ...props }, ref) => (
   <HoverCardPrimitive.Root openDelay={200} closeDelay={100} {...props} />
 ));
 

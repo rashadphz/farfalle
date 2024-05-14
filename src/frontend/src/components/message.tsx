@@ -5,6 +5,7 @@ import rehypeRaw from "rehype-raw";
 import _ from "lodash";
 import { cn } from "@/lib/utils";
 import { AssistantMessage } from "@/types";
+import { Skeleton } from "./ui/skeleton";
 
 function chunkString(str: string): string[] {
   const words = str.split(" ");
@@ -147,10 +148,24 @@ export const MessageComponent: FC<MessageProps> = ({
         // @ts-ignore
         li: isStreaming ? StreamingListItem : ListItem,
       }}
-      className="prose dark:prose-invert inline leading-relaxed break-words "
+      className="prose prose-custom dark:prose-invert inline leading-relaxed break-words "
       rehypePlugins={[rehypeRaw]}
     >
       {parsedMessage}
     </MemoizedReactMarkdown>
+  );
+};
+
+export const MessageComponentSkeleton = () => {
+  return (
+    <>
+      <Skeleton className="w-full py-4 bg-card">
+        <div className="flex flex-col gap-4">
+          <Skeleton className="mx-5 h-2 bg-primary/30" />
+          <Skeleton className="mx-5 h-2 bg-primary/30 mr-20" />
+          <Skeleton className="mx-5 h-2 bg-primary/30 mr-40" />
+        </div>
+      </Skeleton>
+    </>
   );
 };

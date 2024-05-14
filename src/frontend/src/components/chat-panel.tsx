@@ -11,7 +11,7 @@ import { SearchResults, SearchResultsSkeleton } from "./search-results";
 import RelatedQuestions from "./related-questions";
 import { Separator } from "./ui/separator";
 import { useChat } from "@/hooks/chat";
-import { MessageComponent } from "./message";
+import { MessageComponent, MessageComponentSkeleton } from "./message";
 import { useMessageStore } from "@/stores";
 import { cn } from "@/lib/utils";
 import {
@@ -95,7 +95,11 @@ const AssistantMessageContent = ({
         )}
       </Section>
       <Section title="Answer" animate={isStreaming} streaming={isStreaming}>
-        <MessageComponent message={message} isStreaming={isStreaming} />
+        {content ? (
+          <MessageComponent message={message} isStreaming={isStreaming} />
+        ) : (
+          <MessageComponentSkeleton />
+        )}
       </Section>
       {relatedQuestions && relatedQuestions.length > 0 && (
         <Section title="Related" animate={isStreaming}>
@@ -152,6 +156,7 @@ export const ChatPanel = () => {
 
   const [width, setWidth] = useState(0);
   const messagesRef = useRef<HTMLDivElement | null>(null);
+  const messageBottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -167,6 +172,10 @@ export const ChatPanel = () => {
     };
   }, [messages]);
 
+  useEffect(() => {
+    messageBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   if (messages.length > 0) {
     return (
       <div ref={messagesRef} className="w-full relative">
@@ -175,8 +184,9 @@ export const ChatPanel = () => {
           streamingMessage={streamingMessage}
           onRelatedQuestionSelect={handleSend}
         />
+        <div ref={messageBottomRef} className="h-0" />
         <div
-          className="bottom-16 fixed px-4 max-w-screen-md justify-center items-center md:px-8"
+          className="bottom-16 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
           style={{ width: `${width}px` }}
         >
           <AskInput isFollowingUp sendMessage={handleSend} />
