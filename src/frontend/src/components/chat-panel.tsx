@@ -1,4 +1,6 @@
 "use client";
+
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AskInput } from "./ask-input";
 import {
@@ -84,7 +86,7 @@ const AssistantMessageContent = ({
   isStreaming?: boolean;
   onRelatedQuestionSelect: (question: string) => void;
 }) => {
-  const { sources, content, relatedQuestions } = message;
+  const { sources, content, relatedQuestions, images } = message;
   return (
     <div className="flex flex-col">
       <Section title="Sources" animate={isStreaming}>
@@ -99,6 +101,27 @@ const AssistantMessageContent = ({
           <MessageComponent message={message} isStreaming={isStreaming} />
         ) : (
           <MessageComponentSkeleton />
+        )}
+        {images && images.length > 0 && (
+          <div className="my-4 grid grid-cols-1 gap-2 lg:grid-cols-2">
+            {images.map((image) => (
+              <a
+                key={image}
+                href={image}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="aspect-video w-full h-full overflow-hidden hover:scale-[1.03] duration-150 rounded-lg transition-all shadow-md"
+              >
+                <Image
+                  src={image}
+                  alt="Search result"
+                  className="w-full object-cover object-top h-full max-h-[80vh]"
+                  width={500}
+                  height={0}
+                />
+              </a>
+            ))}
+          </div>
         )}
       </Section>
       {relatedQuestions && relatedQuestions.length > 0 && (

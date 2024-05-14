@@ -186,6 +186,13 @@ export const $SearchResultStream = {
             },
             type: 'array',
             title: 'Results'
+        },
+        images: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Images'
         }
     },
     type: 'object',

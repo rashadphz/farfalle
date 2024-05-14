@@ -22,6 +22,7 @@ export type AssistantMessage = BaseMessage & {
   role: MessageType.ASSISTANT;
   sources?: SearchResult[];
   relatedQuestions?: string[];
+  images?: string[];
 };
 
 export type ChatMessage = UserMessage | AssistantMessage;

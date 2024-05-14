@@ -48,6 +48,7 @@ export type SearchResult = {
 export type SearchResultStream = {
     event_type?: StreamEvent;
     results?: Array<SearchResult>;
+    images?: Array<(string)>;
 };
 
 export type StreamEndStream = {
