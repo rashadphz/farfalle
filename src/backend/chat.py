@@ -31,9 +31,10 @@ def rephrase_query_with_history(
 ) -> str:
     if history:
         history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
-        return llm.complete(
+        question = llm.complete(
             HISTORY_QUERY_REPHRASE.format(chat_history=history_str, question=question)
         ).text
+        question = question.replace('"', "")
     return question
 
 
