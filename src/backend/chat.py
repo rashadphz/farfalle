@@ -2,9 +2,11 @@ import asyncio
 from typing import AsyncIterator, List
 
 from llama_index.llms.openai import OpenAI
+
 from backend.prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
 from backend.search import search_tavily
 from llama_index.llms.groq import Groq
+
 import instructor
 
 from backend.schemas import (
@@ -21,7 +23,7 @@ from backend.schemas import (
     TextChunkStream,
 )
 
-GPT4_MODEL = "gpt-4-turbo"
+GPT4_MODEL = "gpt-4o"
 GPT3_MODEL = "gpt-3.5-turbo"
 LLAMA_8B_MODEL = "llama3-8b-8192"
 LLAMA_70B_MODEL = "llama3-70b-8192"
@@ -40,11 +42,10 @@ def rephrase_query_with_history(
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
-    # TODO: idea, get chunks from search results (like make a request) and just put them through a re-ranker
-    # Might be slow though
 
-    # llm = OpenAI(model=GPT4_MODEL)
-    llm = Groq(model=LLAMA_70B_MODEL)
+    llm = OpenAI(model=GPT4_MODEL)
+    # llm = Groq(model=LLAMA_70B_MODEL)
+
     query = rephrase_query_with_history(request.query, request.history, llm)
 
     search_results = await search_tavily(query)
