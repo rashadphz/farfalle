@@ -83,6 +83,8 @@ export const useChat = () => {
         });
         setStreamingMessage(null);
         return;
+      case StreamEvent.FINAL_RESPONSE:
+        return;
     }
     setStreamingMessage({
       role: MessageType.ASSISTANT,
