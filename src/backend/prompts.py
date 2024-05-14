@@ -11,7 +11,7 @@ DO NOT include a reference section, DO NOT include URLs.
 DO NOT repeat the question.
 
 
-The response should be in Markdown format. Include bullets for readability if necessary.
+You can use markdown formatting. You should include bullets to list the information in your answer.
 
 <context>
 {my_context}
@@ -22,7 +22,10 @@ Answer (without repeating the question): \
 """
 
 RELATED_QUESTION_PROMPT = """\
-You are an expert at predicting what questions a user might ask based on the information in a search result. Given a question and search results, generate a list of 3 related questions to the given question. Build upon the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results. There must be EXACTLY 3 questions. Keep the questions short and concise.
+You are an expert at predicting what questions a user might ask next based on their original question and the information in a search result.
+Given a question and search results, generate a list of 3 related questions to the given question. Build upon the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results.
+
+There must be EXACTLY 3 questions. Keep the questions SHORT, CONCISE, and SIMPLE.
 
 Original Question: {query}
 Search Results: {context}

@@ -114,4 +114,4 @@ async def generate_related_queries(
         ],
     )
 
-    return related.related_queries
+    return [query.lower().replace("?", "") for query in related.related_queries]

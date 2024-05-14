@@ -3,6 +3,15 @@ import Providers from "@/providers";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { GeistSans } from "geist/font/sans";
+import { JetBrains_Mono as Mono } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const mono = Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +28,9 @@ export default function RootLayout({
   return (
     <>
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+        <body
+          className={cn("antialiased", GeistSans.className, mono.className)}
+        >
           <Providers>
             <ThemeProvider
               attribute="class"
