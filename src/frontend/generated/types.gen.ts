@@ -7,7 +7,12 @@ export type ChatRequest = {
 
 export type ChatResponseEvent = {
     event: StreamEvent;
-    data: SearchQueryStream | SearchResultStream | TextChunkStream | RelatedQueriesStream | StreamEndStream;
+    data: SearchQueryStream | SearchResultStream | TextChunkStream | RelatedQueriesStream | StreamEndStream | FinalResponseStream;
+};
+
+export type FinalResponseStream = {
+    event_type?: StreamEvent;
+    message: string;
 };
 
 export type HTTPValidationError = {
@@ -54,7 +59,8 @@ export enum StreamEvent {
     SEARCH_RESULTS = 'search-results',
     TEXT_CHUNK = 'text-chunk',
     RELATED_QUERIES = 'related-queries',
-    STREAM_END = 'stream-end'
+    STREAM_END = 'stream-end',
+    FINAL_RESPONSE = 'final-response'
 }
 
 export type TextChunkStream = {

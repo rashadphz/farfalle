@@ -40,6 +40,9 @@ export const $ChatResponseEvent = {
                 },
                 {
                     '$ref': '#/components/schemas/StreamEndStream'
+                },
+                {
+                    '$ref': '#/components/schemas/FinalResponseStream'
                 }
             ],
             title: 'Data'
@@ -48,6 +51,26 @@ export const $ChatResponseEvent = {
     type: 'object',
     required: ['event', 'data'],
     title: 'ChatResponseEvent'
+} as const;
+
+export const $FinalResponseStream = {
+    properties: {
+        event_type: {
+            allOf: [
+                {
+                    '$ref': '#/components/schemas/StreamEvent'
+                }
+            ],
+            default: 'final-response'
+        },
+        message: {
+            type: 'string',
+            title: 'Message'
+        }
+    },
+    type: 'object',
+    required: ['message'],
+    title: 'FinalResponseStream'
 } as const;
 
 export const $HTTPValidationError = {
@@ -186,7 +209,7 @@ export const $StreamEndStream = {
 
 export const $StreamEvent = {
     type: 'string',
-    enum: ['search-query', 'search-results', 'text-chunk', 'related-queries', 'stream-end'],
+    enum: ['search-query', 'search-results', 'text-chunk', 'related-queries', 'stream-end', 'final-response'],
     title: 'StreamEvent'
 } as const;
 

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "openapi --input http://localhost:8000/openapi.json --output ./generated"
+    "generate": "npx @hey-api/openapi-ts --input http://localhost:8000/openapi.json --output ./generated"
   },
   "dependencies": {
     "@hey-api/openapi-ts": "^0.43.0",
