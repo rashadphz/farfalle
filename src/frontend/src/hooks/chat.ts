@@ -35,6 +35,9 @@ const streamChat = async ({
     },
     body: JSON.stringify({ ...request }),
     onmessage: onMessage,
+    onerror: (error) => {
+      console.error(error);
+    },
   });
 };
 
@@ -61,11 +64,14 @@ export const useChat = () => {
       response: string;
       sources: SearchResult[];
       relatedQuestions: string[];
+      images: string[];
     }
   ) => {
     switch (eventItem.event) {
       case StreamEvent.SEARCH_RESULTS:
-        state.sources = (eventItem.data as SearchResultStream).results ?? [];
+        const data = eventItem.data as SearchResultStream;
+        state.sources = data.results ?? [];
+        state.images = data.images ?? [];
         break;
       case StreamEvent.TEXT_CHUNK:
         state.response += (eventItem.data as TextChunkStream).text ?? "";
@@ -80,6 +86,7 @@ export const useChat = () => {
           content: state.response,
           relatedQuestions: state.relatedQuestions,
           sources: state.sources,
+          images: state.images,
         });
         setStreamingMessage(null);
         return;
@@ -91,13 +98,19 @@ export const useChat = () => {
       content: state.response,
       relatedQuestions: state.relatedQuestions,
       sources: state.sources,
+      images: state.images,
     });
   };
 
   const { mutateAsync: chat } = useMutation<void, Error, ChatRequest>({
     retry: false,
     mutationFn: async (request) => {
-      const state = { response: "", sources: [], relatedQuestions: [] };
+      const state = {
+        response: "",
+        sources: [],
+        relatedQuestions: [],
+        images: [],
+      };
       addMessage({ role: MessageType.USER, content: request.query });
 
       setStreamingMessage({
