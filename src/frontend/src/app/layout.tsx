@@ -6,6 +6,7 @@ import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import { JetBrains_Mono as Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/react";
 
 const mono = Mono({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               {children}
+              <Analytics />
             </ThemeProvider>
           </Providers>
         </body>
