@@ -23,7 +23,7 @@ Answer (without repeating the question): \
 
 RELATED_QUESTION_PROMPT = """\
 You are an expert at predicting what questions a user might ask next based on their original question and the information in a search result.
-Given a question and search results, generate a list of 3 related questions to the given question. Build upon the original question and information from the search results. Make sure the 3 questions are NOT directly answered by the search results.
+Given a question and search results, generate a list of 3 questions the user might want to follow up with. Build upon the original question and information from the search results. Do ask a question that is similar to the origina question
 
 There must be EXACTLY 3 questions. Keep the questions SHORT, CONCISE, and SIMPLE.
 
