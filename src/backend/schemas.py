@@ -37,6 +37,11 @@ class SearchResult(BaseModel):
         return f"Title: {self.title}\nURL: {self.url}\Summary: {self.content}"
 
 
+class SearchResponse(BaseModel):
+    results: List[SearchResult] = Field(default_factory=list)
+    images: List[str] = Field(default_factory=list)
+
+
 class StreamEvent(str, Enum):
     SEARCH_QUERY = "search-query"
     SEARCH_RESULTS = "search-results"
@@ -58,6 +63,7 @@ class SearchQueryStream(ChatObject, plugin_settings=record_all):
 class SearchResultStream(ChatObject, plugin_settings=record_all):
     event_type: StreamEvent = StreamEvent.SEARCH_RESULTS
     results: List[SearchResult] = Field(default_factory=list)
+    images: List[str] = Field(default_factory=list)
 
 
 class TextChunkStream(ChatObject):

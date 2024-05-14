@@ -48,7 +48,10 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
     query = rephrase_query_with_history(request.query, request.history, llm)
 
-    search_results = await search_tavily(query)
+    search_response = await search_tavily(query)
+
+    search_results = search_response.results
+    images = search_response.images
 
     related_queries_task = asyncio.create_task(
         generate_related_queries(query, search_results)
@@ -58,6 +61,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         event=StreamEvent.SEARCH_RESULTS,
         data=SearchResultStream(
             results=search_results,
+            images=images,
         ),
     )
 
