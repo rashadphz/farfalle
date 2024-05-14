@@ -20,8 +20,8 @@ export interface MessageProps {
 const CitationText = ({ number, href }: { number: number; href: string }) => {
   return `
   <button className="select-none no-underline">
-  <a className="ml-1" href="${href}" target="_blank">
-        <span className="relative -top-[0.2rem] inline-flex">
+  <a className="" href="${href}" target="_blank">
+        <span className="relative -top-[0rem] inline-flex">
           <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] text-muted-foreground">
             ${number}
           </span>

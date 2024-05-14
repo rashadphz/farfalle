@@ -179,7 +179,7 @@ export const ChatPanel = () => {
           className="bottom-16 fixed px-4 max-w-screen-md justify-center items-center md:px-8"
           style={{ width: `${width}px` }}
         >
-          <AskInput sendMessage={handleSend} />
+          <AskInput isFollowingUp sendMessage={handleSend} />
         </div>
       </div>
     );
@@ -188,7 +188,7 @@ export const ChatPanel = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <div className="flex items-center justify-center mb-8">
-        <span className="text-3xl">?</span>
+        <span className="text-3xl">Ask anything</span>
       </div>
       <AskInput sendMessage={handleSend} />
     </div>
