@@ -10,6 +10,7 @@ import instructor
 from backend.schemas import (
     ChatRequest,
     ChatResponseEvent,
+    FinalResponseStream,
     Message,
     RelatedQueries,
     RelatedQueriesStream,
@@ -68,7 +69,9 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         my_query=query,
     )
 
+    full_response = ""
     for completion in llm.stream_complete(fmt_qa_prompt):
+        full_response += completion.delta or ""
         yield ChatResponseEvent(
             event=StreamEvent.TEXT_CHUNK,
             data=TextChunkStream(text=completion.delta or ""),
@@ -83,6 +86,11 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
     yield ChatResponseEvent(
         event=StreamEvent.STREAM_END,
         data=StreamEndStream(),
+    )
+
+    yield ChatResponseEvent(
+        event=StreamEvent.FINAL_RESPONSE,
+        data=FinalResponseStream(message=full_response),
     )
 
 

@@ -3,6 +3,10 @@
 from typing import Union, List
 from pydantic import BaseModel, Field
 from enum import Enum
+from logfire.integrations.pydantic import PluginSettings
+
+
+record_all = PluginSettings(logfire={"record": "all"})
 
 
 class MessageRole(str, Enum):
@@ -39,18 +43,19 @@ class StreamEvent(str, Enum):
     TEXT_CHUNK = "text-chunk"
     RELATED_QUERIES = "related-queries"
     STREAM_END = "stream-end"
+    FINAL_RESPONSE = "final-response"
 
 
 class ChatObject(BaseModel):
     event_type: StreamEvent
 
 
-class SearchQueryStream(ChatObject):
+class SearchQueryStream(ChatObject, plugin_settings=record_all):
     event_type: StreamEvent = StreamEvent.SEARCH_QUERY
     query: str
 
 
-class SearchResultStream(ChatObject):
+class SearchResultStream(ChatObject, plugin_settings=record_all):
     event_type: StreamEvent = StreamEvent.SEARCH_RESULTS
     results: List[SearchResult] = Field(default_factory=list)
 
@@ -60,13 +65,18 @@ class TextChunkStream(ChatObject):
     text: str
 
 
-class RelatedQueriesStream(ChatObject):
+class RelatedQueriesStream(ChatObject, plugin_settings=record_all):
     event_type: StreamEvent = StreamEvent.RELATED_QUERIES
     related_queries: List[str] = Field(default_factory=list)
 
 
-class StreamEndStream(ChatObject):
+class StreamEndStream(ChatObject, plugin_settings=record_all):
     event_type: StreamEvent = StreamEvent.STREAM_END
+
+
+class FinalResponseStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.FINAL_RESPONSE
+    message: str
 
 
 class ChatResponseEvent(BaseModel):
@@ -77,4 +87,5 @@ class ChatResponseEvent(BaseModel):
         TextChunkStream,
         RelatedQueriesStream,
         StreamEndStream,
+        FinalResponseStream,
     ]

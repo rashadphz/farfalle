@@ -9,6 +9,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from backend.chat import stream_qa_objects
 from sse_starlette.sse import EventSourceResponse
+import logfire
 
 
 from backend.schemas import (
@@ -29,6 +30,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if os.getenv("LOGFIRE_TOKEN"):
+    logfire.configure()
+    logfire.instrument_fastapi(app)
 
 
 @app.get("/")
