@@ -95,7 +95,7 @@ const AssistantMessageContent = ({
         )}
       </Section>
       <Section title="Answer" animate={isStreaming} streaming={isStreaming}>
-        <MessageComponent message={content} isStreaming={isStreaming} />
+        <MessageComponent message={message} isStreaming={isStreaming} />
       </Section>
       {relatedQuestions && relatedQuestions.length > 0 && (
         <Section title="Related" animate={isStreaming}>

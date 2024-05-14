@@ -1,7 +1,10 @@
-import React, { FC, memo, useMemo } from "react";
+import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { MemoizedReactMarkdown } from "./markdown";
+import rehypeRaw from "rehype-raw";
+
 import _ from "lodash";
 import { cn } from "@/lib/utils";
+import { AssistantMessage } from "@/types";
 
 function chunkString(str: string): string[] {
   const words = str.split(" ");
@@ -10,23 +13,24 @@ function chunkString(str: string): string[] {
 }
 
 export interface MessageProps {
-  message: string;
+  message: AssistantMessage;
   isStreaming?: boolean;
 }
 
-const Citation = memo(({ number }: { number: number }) => {
-  return (
-    <a className="ml-1" target="_blank">
-      <span className="relative -top-[0.2rem] inline-flex">
-        <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] text-muted-foreground">
-          {number}
+const CitationText = ({ number, href }: { number: number; href: string }) => {
+  return `
+  <button className="select-none no-underline">
+  <a className="ml-1" href="${href}" target="_blank">
+        <span className="relative -top-[0.2rem] inline-flex">
+          <span className="h-[1rem] min-w-[1rem] items-center justify-center rounded-full  text-center px-1 text-xs font-mono bg-muted text-[0.60rem] text-muted-foreground">
+            ${number}
+          </span>
         </span>
-      </span>
-    </a>
-  );
-});
+      </a>
+    </button>`;
+};
 
-const TextWithCitations = ({
+const Text = ({
   children,
   isStreaming,
   containerElement = "p",
@@ -36,34 +40,21 @@ const TextWithCitations = ({
   containerElement: React.ElementType;
 }) => {
   console.log({ children });
-  const citationMatch = /(\[\d+\])/g;
 
   const renderText = (node: React.ReactNode): React.ReactNode => {
     if (typeof node === "string") {
       const chunks = isStreaming ? chunkString(node) : [node];
       return chunks.flatMap((chunk, index) => {
-        const parts = chunk.split(citationMatch);
-        return parts.map((part, partIndex) => {
-          if (part.match(citationMatch)) {
-            const number = part.slice(1, -1);
-            return (
-              <Citation
-                key={`${index}-${partIndex}`}
-                number={parseInt(number)}
-              />
-            );
-          }
-          return (
-            <span
-              key={`${index}-${partIndex}-streaming`}
-              className={cn(
-                isStreaming ? "animate-in fade-in-25 duration-700" : ""
-              )}
-            >
-              {part}
-            </span>
-          );
-        });
+        return (
+          <span
+            key={`${index}-streaming`}
+            className={cn(
+              isStreaming ? "animate-in fade-in-25 duration-700" : ""
+            )}
+          >
+            {chunk}
+          </span>
+        );
       });
     } else if (React.isValidElement(node)) {
       return React.cloneElement(
@@ -86,43 +77,42 @@ const TextWithCitations = ({
 const StreamingParagraph = memo(
   ({ children }: React.HTMLProps<HTMLParagraphElement>) => {
     return (
-      <TextWithCitations isStreaming={true} containerElement="p">
+      <Text isStreaming={true} containerElement="p">
         {children}
-      </TextWithCitations>
+      </Text>
     );
   }
 );
 const Paragraph = memo(
   ({ children }: React.HTMLProps<HTMLParagraphElement>) => {
     return (
-      <TextWithCitations isStreaming={false} containerElement="p">
+      <Text isStreaming={false} containerElement="p">
         {children}
-      </TextWithCitations>
+      </Text>
     );
   }
 );
 
 const ListItem = memo(({ children }: React.HTMLProps<HTMLLIElement>) => {
   return (
-    <TextWithCitations isStreaming={false} containerElement="li">
+    <Text isStreaming={false} containerElement="li">
       {children}
-    </TextWithCitations>
+    </Text>
   );
 });
 
 const StreamingListItem = memo(
   ({ children }: React.HTMLProps<HTMLLIElement>) => {
     return (
-      <TextWithCitations isStreaming={true} containerElement="li">
+      <Text isStreaming={true} containerElement="li">
         {children}
-      </TextWithCitations>
+      </Text>
     );
   }
 );
 
 StreamingParagraph.displayName = "StreamingParagraph";
 Paragraph.displayName = "Paragraph";
-Citation.displayName = "Citation";
 ListItem.displayName = "ListItem";
 StreamingListItem.displayName = "StreamingListItem";
 
@@ -130,6 +120,24 @@ export const MessageComponent: FC<MessageProps> = ({
   message,
   isStreaming = false,
 }) => {
+  const { content, sources } = message;
+  const [parsedMessage, setParsedMessage] = useState<string>(content);
+
+  useEffect(() => {
+    const citationRegex = /(\[\d+\])/g;
+    const newMessage = content.replace(citationRegex, (match) => {
+      const number = match.slice(1, -1);
+      const source = sources?.find(
+        (source, idx) => idx + 1 === parseInt(number)
+      );
+      return CitationText({
+        number: parseInt(number),
+        href: source?.url ?? "",
+      });
+    });
+    setParsedMessage(newMessage);
+  }, [content, sources]);
+
   return (
     <MemoizedReactMarkdown
       components={{
@@ -138,11 +146,11 @@ export const MessageComponent: FC<MessageProps> = ({
         p: isStreaming ? StreamingParagraph : Paragraph,
         // @ts-ignore
         li: isStreaming ? StreamingListItem : ListItem,
-        // citation: Citation,
       }}
       className="prose dark:prose-invert inline leading-relaxed break-words "
+      rehypePlugins={[rehypeRaw]}
     >
-      {message}
+      {parsedMessage}
     </MemoizedReactMarkdown>
   );
 };
