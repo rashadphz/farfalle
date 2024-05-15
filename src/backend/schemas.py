@@ -1,12 +1,17 @@
 # Some of the code here is based on github.com/cohere-ai/cohere-toolkit/
 
-from typing import Union, List
+from typing import Optional, Union, List
 from pydantic import BaseModel, Field
 from enum import Enum
 from logfire.integrations.pydantic import PluginSettings
 
 
 record_all = PluginSettings(logfire={"record": "all"})
+
+
+class ChatModel(str, Enum):
+    LLAMA_3_70B = "llama-3-70b"
+    GPT_4o = "gpt-4o"
 
 
 class MessageRole(str, Enum):
@@ -22,6 +27,7 @@ class Message(BaseModel):
 class ChatRequest(BaseModel, plugin_settings=record_all):
     query: str
     history: List[Message] = Field(default_factory=list)
+    model: ChatModel = ChatModel.LLAMA_3_70B
 
 
 class RelatedQueries(BaseModel):

@@ -6,10 +6,12 @@ from llama_index.llms.openai import OpenAI
 from backend.prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
 from backend.search import search_tavily
 from llama_index.llms.groq import Groq
+from llama_index.core.llms import LLM
 
 import instructor
 
 from backend.schemas import (
+    ChatModel,
     ChatRequest,
     ChatResponseEvent,
     FinalResponseStream,
@@ -29,9 +31,7 @@ LLAMA_8B_MODEL = "llama3-8b-8192"
 LLAMA_70B_MODEL = "llama3-70b-8192"
 
 
-def rephrase_query_with_history(
-    question: str, history: List[Message], llm: OpenAI
-) -> str:
+def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
     if history:
         history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
         question = llm.complete(
@@ -41,10 +41,18 @@ def rephrase_query_with_history(
     return question
 
 
+def get_llm(model: ChatModel) -> LLM:
+    if model == ChatModel.LLAMA_3_70B:
+        return Groq(model=LLAMA_70B_MODEL)
+    elif model == ChatModel.GPT_4o:
+        return OpenAI(model=GPT4_MODEL)
+    else:
+        raise ValueError(f"Unknown model: {model}")
+
+
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
 
-    llm = Groq(model=LLAMA_70B_MODEL)
-
+    llm = get_llm(request.model)
     query = rephrase_query_with_history(request.query, request.history, llm)
 
     search_response = await search_tavily(query)
