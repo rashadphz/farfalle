@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { motion } from "framer-motion";
+import { ModelSelection } from "./model-selection";
 
 const Section = ({
   title,
@@ -229,6 +230,9 @@ export const ChatPanel = () => {
         <span className="text-3xl">Ask anything</span>
       </div>
       <AskInput sendMessage={handleSend} />
+      <div className="w-full flex justify-start pt-2">
+        <ModelSelection />
+      </div>
     </div>
   );
 };
