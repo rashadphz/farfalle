@@ -19,7 +19,7 @@ class Message(BaseModel):
     role: MessageRole
 
 
-class ChatRequest(BaseModel):
+class ChatRequest(BaseModel, plugin_settings=record_all):
     query: str
     history: List[Message] = Field(default_factory=list)
 
