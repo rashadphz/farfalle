@@ -24,35 +24,44 @@ from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+def configure_logging(app: FastAPI, logfire_token: str):
+    if logfire_token:
+        logfire.configure()
+        logfire.instrument_fastapi(app)
 
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool, redis_url: str):
+    limiter = Limiter(
+        key_func=get_ipaddr,
+        enabled=rate_limit_enabled and bool(redis_url),
+        storage_uri=redis_url,
+    )
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Logging
-if os.getenv("LOGFIRE_TOKEN"):
-    logfire.configure()
-    logfire.instrument_fastapi(app)
 
-# Rate Limiting
-rate_limit_enabled = os.getenv("RATE_LIMIT_ENABLED", False)
-redis_url = os.getenv("REDIS_URL").strip()
+def configure_middleware(app: FastAPI, frontend_url: str):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[frontend_url, "http://localhost:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-enabled = rate_limit_enabled and redis_url
-limiter = Limiter(
-    key_func=get_ipaddr,
-    enabled=rate_limit_enabled and bool(redis_url),
-    storage_uri=redis_url,
-)
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+def create_app() -> FastAPI:
+    app = FastAPI()
+    configure_middleware(app, os.getenv("FRONTEND_URL"))
+    configure_logging(app, os.getenv("LOGFIRE_TOKEN"))
+    configure_rate_limiting(
+        app, os.getenv("RATE_LIMIT_ENABLED", False), os.getenv("REDIS_URL")
+    )
+    return app
+
+
+app = create_app()
 
 
 @app.get("/")
@@ -61,7 +70,7 @@ async def root():
 
 
 @app.post("/chat")
-@limiter.limit("5/minute")
+@app.state.limiter.limit("5/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
