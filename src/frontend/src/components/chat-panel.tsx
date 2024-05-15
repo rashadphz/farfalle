@@ -196,7 +196,12 @@ export const ChatPanel = () => {
   }, [messages]);
 
   useEffect(() => {
-    messageBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.at(-1)?.role === MessageType.USER) {
+      messageBottomRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
   }, [messages]);
 
   if (messages.length > 0) {
