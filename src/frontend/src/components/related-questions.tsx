@@ -16,7 +16,7 @@ export default function RelatedQuestions({
           onClick={() => onSelect(question)}
         >
           <span>{question.toLowerCase()}</span>
-          <PlusIcon className="text-accent-foreground mr-2" size={20} />
+          <PlusIcon className="text-tint mr-2" size={20} />
         </div>
       ))}
     </div>

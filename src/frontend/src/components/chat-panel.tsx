@@ -115,7 +115,6 @@ const AssistantMessageContent = ({
               >
                 <img
                   src={image}
-                  alt="Search result"
                   className="w-full object-cover object-top h-full max-h-[80vh]"
                 />
               </a>
