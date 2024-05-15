@@ -201,7 +201,7 @@ export const ChatPanel = () => {
 
   if (messages.length > 0) {
     return (
-      <div ref={messagesRef} className="w-full relative">
+      <div ref={messagesRef} className="pt-10 w-full relative">
         <Messages
           messages={messages}
           streamingMessage={streamingMessage}

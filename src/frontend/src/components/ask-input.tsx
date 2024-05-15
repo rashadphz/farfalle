@@ -30,7 +30,7 @@ export const AskInput = ({
           }
         }}
       >
-        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-muted border-2 ">
+        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-accent border ">
           <TextareaAutosize
             className="w-full bg-transparent text-md resize-none h-[40px] focus:outline-none p-2"
             placeholder={
