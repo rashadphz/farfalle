@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { StreamEvent } from './StreamEvent';
+import type { StreamEvent } from "./StreamEvent";
 export type FinalResponseStream = {
-    event_type?: StreamEvent;
-    message: string;
+  event_type?: StreamEvent;
+  message: string;
 };
-

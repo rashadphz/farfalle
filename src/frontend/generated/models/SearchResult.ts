@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SearchResult = {
-    title: string;
-    url: string;
-    content: string;
+  title: string;
+  url: string;
+  content: string;
 };
-

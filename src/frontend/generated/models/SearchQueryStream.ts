@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { StreamEvent } from './StreamEvent';
+import type { StreamEvent } from "./StreamEvent";
 export type SearchQueryStream = {
-    event_type?: StreamEvent;
-    query: string;
+  event_type?: StreamEvent;
+  query: string;
 };
-

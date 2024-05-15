@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { StreamEvent } from './StreamEvent';
+import type { StreamEvent } from "./StreamEvent";
 export type StreamEndStream = {
-    event_type?: StreamEvent;
+  event_type?: StreamEvent;
 };
-

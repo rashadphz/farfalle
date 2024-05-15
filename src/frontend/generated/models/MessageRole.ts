@@ -3,6 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export enum MessageRole {
-    USER = 'user',
-    ASSISTANT = 'assistant',
+  USER = "user",
+  ASSISTANT = "assistant",
 }

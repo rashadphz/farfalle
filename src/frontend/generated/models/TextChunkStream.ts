@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { StreamEvent } from './StreamEvent';
+import type { StreamEvent } from "./StreamEvent";
 export type TextChunkStream = {
-    event_type?: StreamEvent;
-    text: string;
+  event_type?: StreamEvent;
+  text: string;
 };
-

@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Message } from './Message';
+import type { Message } from "./Message";
 export type ChatRequest = {
-    query: string;
-    history?: Array<Message>;
+  query: string;
+  history?: Array<Message>;
 };
-

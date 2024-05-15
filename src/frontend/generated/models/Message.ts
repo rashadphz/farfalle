@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { MessageRole } from './MessageRole';
+import type { MessageRole } from "./MessageRole";
 export type Message = {
-    content: string;
-    role: MessageRole;
+  content: string;
+  role: MessageRole;
 };
-
