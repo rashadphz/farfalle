@@ -9,10 +9,10 @@ Open-source AI-powered search engine.
 [farfalle.dev](https://farfalle.dev/)
 
 ## 📖 Overview
+
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Deploy](#deploy)
-
 
 ## 🛠️ Tech Stack
 
@@ -24,39 +24,46 @@ Open-source AI-powered search engine.
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
 ## 🚀 Getting Started
+
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/en/download/)
 - [pnpm](https://pnpm.io/installation) or [npm](https://www.npmjs.com/get-npm)
 - [Python](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
 
 ### Get API Keys
+
 - [Tavily](https://app.tavily.com/home)
 - [OpenAI](https://platform.openai.com/api-keys)
 - [Groq](https://console.groq.com/keys)
 
-
-
 ### 1. Clone the Repo
+
 ```
 git clone git@github.com:rashadphz/farfalle.git
 ```
+
 ### 2. Install Dependencies
 
 #### Frontend
+
 ```
 cd farfalle/src/frontend
 pnpm install
 ```
 
 #### Backend
+
 ```
 cd farfalle/src/backend
 poetry install
 ```
 
 ### 3. Secrets
+
 Create a `.env` file in the root of the project and add these variables:
+
 ```
 TAVILY_API_KEY=...
 OPENAI_API_KEY=...
@@ -80,12 +87,14 @@ REDIS_URL=
 ### 4. Run the App Locally
 
 #### Frontend
+
 ```
 cd farfalle/src/frontend
 pnpm dev
 ```
 
 #### Backend
+
 ```
 cd farfalle/src/backend
 poetry shell
@@ -95,4 +104,5 @@ uvicorn backend.main:app --reload
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## 🚀 Deploy
+
 - TODO
