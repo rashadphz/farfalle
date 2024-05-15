@@ -13,4 +13,70 @@ Open-source AI-powered search engine.
 - Frontend: [Next.js](https://nextjs.org/)
 - Backend: [FastAPI](fastapi.tiangolo.com/)
 - Search API: [Tavily](https://tavily.com/)
+- Logging: [Logfire](https://pydantic.dev/logfire)
+- Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
+
+## Getting Started
+### Prerequisites
+- [Node.js](https://nodejs.org/en/download/)
+- [pnpm](https://pnpm.io/installation) or [npm](https://www.npmjs.com/get-npm)
+- [Python](https://www.python.org/downloads/)
+- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+
+### Get API Keys
+- [OpenAI](https://platform.openai.com/api-keys)
+- [Tavily](https://app.tavily.com/home)
+- [Groq](https://console.groq.com/keys)
+
+
+
+### 1. Clone the Repo
+```
+git clone git@github.com:rashadphz/farfalle.git
+```
+### 2. Install Dependencies
+
+#### Frontend
+```
+cd farfalle/src/frontend
+pnpm install
+```
+
+#### Backend
+```
+cd farfalle/src/backend
+poetry install
+```
+
+### 3. Secrets
+Create a `.env` file in the root of the project and add these variables:
+```
+TAVILY_API_KEY=...
+OPENAI_API_KEY=...
+GROQ_API_KEY=...
+FRONTEND_URL=... # (default: http://localhost:3000)
+
+# Optional
+LOGFIRE_TOKEN=...
+RATE_LIMIT_ENABLED=True
+REDIS_URL=...
+```
+
+### 4. Run the App Locally
+
+#### Frontend
+```
+cd farfalle/src/frontend
+pnpm dev
+```
+
+#### Backend
+```
+cd farfalle/src/backend
+poetry shell
+uvicorn backend.main:app --reload
+```
+
+## Deploy
+- TODO
