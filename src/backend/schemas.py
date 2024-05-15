@@ -55,6 +55,7 @@ class StreamEvent(str, Enum):
     RELATED_QUERIES = "related-queries"
     STREAM_END = "stream-end"
     FINAL_RESPONSE = "final-response"
+    ERROR = "error"
 
 
 class ChatObject(BaseModel):
@@ -91,6 +92,11 @@ class FinalResponseStream(ChatObject, plugin_settings=record_all):
     message: str
 
 
+class ErrorStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.ERROR
+    detail: str
+
+
 class ChatResponseEvent(BaseModel):
     event: StreamEvent
     data: Union[
@@ -100,4 +106,5 @@ class ChatResponseEvent(BaseModel):
         RelatedQueriesStream,
         StreamEndStream,
         FinalResponseStream,
+        ErrorStream,
     ]

@@ -19,7 +19,13 @@ export type ChatResponseEvent = {
     | TextChunkStream
     | RelatedQueriesStream
     | StreamEndStream
-    | FinalResponseStream;
+    | FinalResponseStream
+    | ErrorStream;
+};
+
+export type ErrorStream = {
+  event_type?: StreamEvent;
+  detail: string;
 };
 
 export type FinalResponseStream = {
@@ -74,6 +80,7 @@ export enum StreamEvent {
   RELATED_QUERIES = "related-queries",
   STREAM_END = "stream-end",
   FINAL_RESPONSE = "final-response",
+  ERROR = "error",
 }
 
 export type TextChunkStream = {

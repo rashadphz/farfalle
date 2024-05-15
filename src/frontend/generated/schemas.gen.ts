@@ -58,6 +58,9 @@ export const $ChatResponseEvent = {
         {
           $ref: "#/components/schemas/FinalResponseStream",
         },
+        {
+          $ref: "#/components/schemas/ErrorStream",
+        },
       ],
       title: "Data",
     },
@@ -65,6 +68,26 @@ export const $ChatResponseEvent = {
   type: "object",
   required: ["event", "data"],
   title: "ChatResponseEvent",
+} as const;
+
+export const $ErrorStream = {
+  properties: {
+    event_type: {
+      allOf: [
+        {
+          $ref: "#/components/schemas/StreamEvent",
+        },
+      ],
+      default: "error",
+    },
+    detail: {
+      type: "string",
+      title: "Detail",
+    },
+  },
+  type: "object",
+  required: ["detail"],
+  title: "ErrorStream",
 } as const;
 
 export const $FinalResponseStream = {
@@ -237,6 +260,7 @@ export const $StreamEvent = {
     "related-queries",
     "stream-end",
     "final-response",
+    "error",
   ],
   title: "StreamEvent",
 } as const;

@@ -8,19 +8,19 @@ from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from backend.chat import stream_qa_objects
-from sse_starlette.sse import EventSourceResponse
+from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 import logfire
 
 
 from backend.schemas import (
     ChatRequest,
     ChatResponseEvent,
+    ErrorStream,
 )
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_ipaddr
 from slowapi.errors import RateLimitExceeded
-
 
 
 load_dotenv()
@@ -71,13 +71,28 @@ async def root():
 
 
 @app.post("/chat")
-@app.state.limiter.limit("5/minute")
+@app.state.limiter.limit("10/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
     async def generator():
-        async for obj in stream_qa_objects(chat_request):
-            yield json.dumps(jsonable_encoder(obj))
+        try:
+            async for obj in stream_qa_objects(chat_request):
+                if await request.is_disconnected():
+                    break
+
+                yield json.dumps(jsonable_encoder(obj))
+                await asyncio.sleep(0)
+        except Exception as e:
+            obj = ChatResponseEvent(
+                data=ErrorStream(detail=str(e.detail)),
+                event="error",
+            )
+            yield ServerSentEvent(
+                data=json.dumps(jsonable_encoder(obj)),
+                event="error",
+            )
             await asyncio.sleep(0)
+            return
 
     return EventSourceResponse(generator(), media_type="text/event-stream")

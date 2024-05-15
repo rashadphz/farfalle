@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import {
   ChatRequest,
   ChatResponseEvent,
+  ErrorStream,
   Message,
   MessageRole,
   RelatedQueriesStream,
@@ -18,6 +19,7 @@ import {
 import { useState } from "react";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { useMessageStore } from "@/stores";
+import { useToast } from "@/components/ui/use-toast";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -54,6 +56,7 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 
 export const useChat = () => {
   const { addMessage, messages, model } = useMessageStore();
+  const { toast } = useToast();
 
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);
@@ -92,6 +95,14 @@ export const useChat = () => {
         return;
       case StreamEvent.FINAL_RESPONSE:
         return;
+      case StreamEvent.ERROR:
+        const errorData = eventItem.data as ErrorStream;
+        toast({
+          title: "Error",
+          description: errorData.detail,
+          variant: "destructive",
+        });
+        break;
     }
     setStreamingMessage({
       role: MessageType.ASSISTANT,

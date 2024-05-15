@@ -1,5 +1,6 @@
 import asyncio
 from typing import AsyncIterator, List
+from fastapi import HTTPException
 
 from llama_index.llms.openai import OpenAI
 
@@ -32,13 +33,21 @@ LLAMA_70B_MODEL = "llama3-70b-8192"
 
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
-    if history:
-        history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
-        question = llm.complete(
-            HISTORY_QUERY_REPHRASE.format(chat_history=history_str, question=question)
-        ).text
-        question = question.replace('"', "")
-    return question
+    try:
+
+        if history:
+            history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
+            question = llm.complete(
+                HISTORY_QUERY_REPHRASE.format(
+                    chat_history=history_str, question=question
+                )
+            ).text
+            question = question.replace('"', "")
+        return question
+    except Exception:
+        raise HTTPException(
+            status_code=500, detail="Model is at capacity. Please try again later."
+        )
 
 
 def get_llm(model: ChatModel) -> LLM:
