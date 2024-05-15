@@ -24,7 +24,7 @@ type Model = {
 
 const modelMap: Record<ChatModel, Model> = {
   [ChatModel.LLAMA_3_70B]: {
-    name: "Super Fast",
+    name: "Hyper",
     description: "Groq/LLaMA3-70B",
     value: ChatModel.LLAMA_3_70B,
     smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
@@ -70,7 +70,7 @@ export function ModelSelection() {
         <SelectValue>
           <div className="flex items-center space-x-2">
             {modelMap[model].smallIcon}
-            <span className="font-medium">{modelMap[model].name}</span>
+            <span className="font-semibold">{modelMap[model].name}</span>
           </div>
         </SelectValue>
       </SelectTrigger>

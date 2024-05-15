@@ -40,8 +40,6 @@ const Text = ({
   isStreaming: boolean;
   containerElement: React.ElementType;
 }) => {
-  console.log({ children });
-
   const renderText = (node: React.ReactNode): React.ReactNode => {
     if (typeof node === "string") {
       const chunks = isStreaming ? chunkString(node) : [node];

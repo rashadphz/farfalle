@@ -30,7 +30,7 @@ export const AskInput = ({
           }
         }}
       >
-        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-accent border ">
+        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-2 ">
           <TextareaAutosize
             className="w-full bg-transparent text-md resize-none h-[40px] focus:outline-none p-2"
             placeholder={
@@ -43,7 +43,7 @@ export const AskInput = ({
             type="submit"
             variant="default"
             size="icon"
-            className="rounded-full bg-accent aspect-square h-8 disabled:opacity-20 hover:bg-accent/80"
+            className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80"
             disabled={input.trim().length < 5}
           >
             <ArrowUp size={20} />

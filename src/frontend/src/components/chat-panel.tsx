@@ -113,12 +113,10 @@ const AssistantMessageContent = ({
                 rel="noopener noreferrer"
                 className="aspect-video w-full h-full overflow-hidden hover:scale-[1.03] duration-150 rounded-lg transition-all shadow-md"
               >
-                <Image
+                <img
                   src={image}
                   alt="Search result"
                   className="w-full object-cover object-top h-full max-h-[80vh]"
-                  width={500}
-                  height={0}
                 />
               </a>
             ))}
