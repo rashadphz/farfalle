@@ -4,11 +4,17 @@ Open-source AI-powered search engine.
 
 <img width="900" alt="image" src="https://github.com/rashadphz/farfalle/assets/20783686/254d77a6-9e5f-4a95-a50a-d8c66d62cf66">
 
-## Live Demo
+## 💻 Live Demo
 
 [farfalle.vercel.app](https://farfalle.vercel.app/)
 
-## Stack
+## 📖 Overview
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Deploy](#deploy)
+
+
+## 🛠️ Tech Stack
 
 - Frontend: [Next.js](https://nextjs.org/)
 - Backend: [FastAPI](fastapi.tiangolo.com/)
@@ -17,7 +23,7 @@ Open-source AI-powered search engine.
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
-## Getting Started
+## 🚀 Getting Started
 ### Prerequisites
 - [Node.js](https://nodejs.org/en/download/)
 - [pnpm](https://pnpm.io/installation) or [npm](https://www.npmjs.com/get-npm)
@@ -59,7 +65,7 @@ FRONTEND_URL=... # (default: http://localhost:3000)
 
 # Optional
 LOGFIRE_TOKEN=...
-RATE_LIMIT_ENABLED=True
+RATE_LIMIT_ENABLED=... # (True | False)
 REDIS_URL=...
 ```
 
@@ -78,5 +84,5 @@ poetry shell
 uvicorn backend.main:app --reload
 ```
 
-## Deploy
+## 🚀 Deploy
 - TODO
