@@ -8,6 +8,7 @@ import { JetBrains_Mono as Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/react";
 import { Navbar } from "@/components/nav";
+import { Footer } from "@/components/footer";
 
 const mono = Mono({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({
             >
               <Navbar />
               {children}
+              <Footer />
               <Analytics />
             </ThemeProvider>
           </Providers>

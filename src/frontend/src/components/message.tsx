@@ -148,7 +148,7 @@ export const MessageComponent: FC<MessageProps> = ({
         // @ts-ignore
         li: isStreaming ? StreamingListItem : ListItem,
       }}
-      className="prose prose-custom dark:prose-invert inline leading-relaxed break-words "
+      className="prose dark:prose-invert inline leading-relaxed break-words "
       rehypePlugins={[rehypeRaw]}
     >
       {parsedMessage}

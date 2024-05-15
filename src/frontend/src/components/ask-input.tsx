@@ -43,7 +43,7 @@ export const AskInput = ({
             type="submit"
             variant="default"
             size="icon"
-            className="rounded-full bg-accent-foreground aspect-square h-8 disabled:opacity-20"
+            className="rounded-full bg-accent aspect-square h-8 disabled:opacity-20 hover:bg-accent/80"
             disabled={input.trim().length < 5}
           >
             <ArrowUp size={20} />
