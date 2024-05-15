@@ -6,7 +6,7 @@ Open-source AI-powered search engine.
 
 ## 💻 Live Demo
 
-[farfalle.vercel.app](https://farfalle.vercel.app/)
+[farfalle.dev](https://farfalle.dev/)
 
 ## 📖 Overview
 - [Tech Stack](#tech-stack)
