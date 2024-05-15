@@ -43,7 +43,6 @@ def rephrase_query_with_history(
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
 
-    # llm = OpenAI(model=GPT4_MODEL)
     llm = Groq(model=LLAMA_70B_MODEL)
 
     query = rephrase_query_with_history(request.query, request.history, llm)

@@ -63,10 +63,18 @@ OPENAI_API_KEY=...
 GROQ_API_KEY=...
 
 # Optional
-FRONTEND_URL=... # (default: http://localhost:3000)
-LOGFIRE_TOKEN=...
-RATE_LIMIT_ENABLED=... # (True | False)
-REDIS_URL=...
+
+# Default (http://localhost:3000)
+FRONTEND_URL=
+
+# Logfire
+LOGFIRE_TOKEN=
+
+# (True | False)
+RATE_LIMIT_ENABLED=
+
+# Redis URL
+REDIS_URL=
 ```
 
 ### 4. Run the App Locally
