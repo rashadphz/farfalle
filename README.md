@@ -84,5 +84,7 @@ poetry shell
 uvicorn backend.main:app --reload
 ```
 
+Visit [http://localhost:3000](http://localhost:3000) to view the app.
+
 ## 🚀 Deploy
 - TODO
