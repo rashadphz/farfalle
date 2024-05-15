@@ -24,31 +24,37 @@ from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
-FRONTEND_URL = os.getenv("FRONTEND_URL") or "http://localhost:3000"
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=[FRONTEND_URL, "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Logging
-if os.getenv("LOGFIRE_TOKEN"):
-    logfire.configure()
-    logfire.instrument_fastapi(app)
+try:
+    if os.getenv("LOGFIRE_TOKEN"):
+        logfire.configure()
+        logfire.instrument_fastapi(app)
+except Exception as e:
+    print("Logfire not configured")
 
 # Rate Limiting
-rate_limit_enabled = os.getenv("RATE_LIMIT_ENABLED", False)
-redis_url = os.getenv("REDIS_URL")
-enabled = rate_limit_enabled and redis_url
-
-limiter = Limiter(key_func=get_ipaddr, enabled=enabled, storage_uri=redis_url)
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+try:
+    rate_limit_enabled = os.getenv("RATE_LIMIT_ENABLED", False)
+    redis_url = os.getenv("REDIS_URL")
+    enabled = rate_limit_enabled and redis_url
+    limiter = Limiter(key_func=get_ipaddr, enabled=enabled, storage_uri=redis_url)
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+except Exception as e:
+    limiter = Limiter(key_func=get_ipaddr, enabled=False)
+    print("Rate limiting not configured")
 
 
 @app.get("/")
