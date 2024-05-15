@@ -17,6 +17,8 @@ import { MessageComponent, MessageComponentSkeleton } from "./message";
 import { useMessageStore } from "@/stores";
 import { cn } from "@/lib/utils";
 import {
+  ArrowUpRight,
+  ArrowUpRightSquare,
   ListPlusIcon,
   SparkleIcon,
   StarIcon,
@@ -25,6 +27,12 @@ import {
 
 import { motion } from "framer-motion";
 import { ModelSelection } from "./model-selection";
+
+const starterQuestions = [
+  "what is farfalle?",
+  "what's new with openai?",
+  "what is groq?",
+];
 
 const Section = ({
   title,
@@ -227,7 +235,21 @@ export const ChatPanel = () => {
         <span className="text-3xl">Ask anything</span>
       </div>
       <AskInput sendMessage={handleSend} />
-      <div className="w-full flex justify-start pt-2">
+      <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
+        <ul className="flex flex-col space-y-1 pt-2">
+          {starterQuestions.map((question) => (
+            <li key={question} className="flex items-center space-x-2">
+              <ArrowUpRight size={18} className="text-tint" />
+              <button
+                onClick={() => handleSend(question)}
+                className="font-medium hover:underline decoration-tint underline-offset-4 transition-all duration-200 ease-in-out transform hover:scale-[1.02]"
+              >
+                {question}
+              </button>
+            </li>
+          ))}
+        </ul>
+
         <ModelSelection />
       </div>
     </div>

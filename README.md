@@ -31,8 +31,8 @@ Open-source AI-powered search engine.
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
 
 ### Get API Keys
-- [OpenAI](https://platform.openai.com/api-keys)
 - [Tavily](https://app.tavily.com/home)
+- [OpenAI](https://platform.openai.com/api-keys)
 - [Groq](https://console.groq.com/keys)
 
 
@@ -62,7 +62,7 @@ TAVILY_API_KEY=...
 OPENAI_API_KEY=...
 GROQ_API_KEY=...
 
-# Optional
+# Everything below is optional
 
 # Default (http://localhost:3000)
 FRONTEND_URL=

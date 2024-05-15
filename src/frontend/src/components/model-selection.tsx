@@ -66,7 +66,7 @@ export function ModelSelection() {
         }
       }}
     >
-      <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border-none select-none focus:ring-0 shadow-none">
+      <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border-none select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm">
         <SelectValue>
           <div className="flex items-center space-x-2">
             {modelMap[model].smallIcon}
