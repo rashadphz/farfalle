@@ -10,20 +10,29 @@ import MessagesList from "./messages-list";
 import { ModelSelection } from "./model-selection";
 import { StarterQuestionsList } from "./starter-questions";
 
-export const ChatPanel = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { handleSend, streamingMessage } = useChat();
+const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useMessageStore();
 
-  const [width, setWidth] = useState(0);
-  const messagesRef = useRef<HTMLDivElement | null>(null);
-  const messageBottomRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (messages.at(-1)?.role === MessageType.USER) {
+      ref.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [messages, ref]);
+};
+
+const useAutoResizeInput = (
+  ref: React.RefObject<HTMLDivElement>,
+  setWidth: (width: number) => void
+) => {
+  const { messages } = useMessageStore();
 
   useEffect(() => {
-    inputRef.current?.focus();
     const updatePosition = () => {
-      if (messagesRef.current) {
-        setWidth(messagesRef.current.scrollWidth);
+      if (ref.current) {
+        setWidth(ref.current.scrollWidth);
       }
     };
     updatePosition();
@@ -31,16 +40,27 @@ export const ChatPanel = () => {
     return () => {
       window.removeEventListener("resize", updatePosition);
     };
-  }, [messages]);
+  }, [messages, ref, setWidth]);
+};
 
+const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
   useEffect(() => {
-    if (messages.at(-1)?.role === MessageType.USER) {
-      messageBottomRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [messages]);
+    ref.current?.focus();
+  }, [ref]);
+};
+
+export const ChatPanel = () => {
+  const { handleSend, streamingMessage } = useChat();
+  const { messages } = useMessageStore();
+
+  const [width, setWidth] = useState(0);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
+  const messageBottomRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutoScroll(messageBottomRef);
+  useAutoResizeInput(messagesRef, setWidth);
+  useAutoFocus(inputRef);
 
   if (messages.length > 0) {
     return (
@@ -55,22 +75,22 @@ export const ChatPanel = () => {
           className="bottom-16 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
           style={{ width: `${width}px` }}
         >
-          <AskInput isFollowingUp sendMessage={handleSend} />
+          <AskInput ref={inputRef} isFollowingUp sendMessage={handleSend} />
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="w-full flex flex-col justify-center items-center">
+        <div className="flex items-center justify-center mb-8">
+          <span className="text-3xl">Ask anything</span>
+        </div>
+        <AskInput ref={inputRef} sendMessage={handleSend} />
+        <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
+          <StarterQuestionsList handleSend={handleSend} />
+          <ModelSelection />
         </div>
       </div>
     );
   }
-
-  return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <div className="flex items-center justify-center mb-8">
-        <span className="text-3xl">Ask anything</span>
-      </div>
-      <AskInput sendMessage={handleSend} />
-      <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
-        <StarterQuestionsList handleSend={handleSend} />
-        <ModelSelection />
-      </div>
-    </div>
-  );
 };
