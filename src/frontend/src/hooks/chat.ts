@@ -53,7 +53,7 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 };
 
 export const useChat = () => {
-  const { addMessage, messages } = useMessageStore();
+  const { addMessage, messages, model } = useMessageStore();
 
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);
@@ -120,8 +120,12 @@ export const useChat = () => {
         sources: [],
       });
 
+      const req = {
+        ...request,
+        model,
+      };
       await streamChat({
-        request,
+        request: req,
         onMessage: (event) => {
           const eventItem: ChatResponseEvent = JSON.parse(event.data);
           handleEvent(eventItem, state);
