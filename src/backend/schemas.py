@@ -1,6 +1,6 @@
 # Some of the code here is based on github.com/cohere-ai/cohere-toolkit/
 
-from typing import Optional, Union, List
+from typing import Union, List
 from pydantic import BaseModel, Field
 from enum import Enum
 from logfire.integrations.pydantic import PluginSettings
