@@ -4,6 +4,7 @@ const starterQuestions = [
   "what is farfalle?",
   "what's new with openai?",
   "what is groq?",
+  "what happened to ilya?",
 ];
 
 export const StarterQuestionsList = ({
