@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
   "what is farfalle?",
-  "what's new with openai?",
+  "what's gpt-4o?",
   "what is groq?",
   "what happened to ilya?",
 ];
