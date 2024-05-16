@@ -17,6 +17,7 @@ Open-source AI-powered search engine.
 ## 🛣️ Roadmap
 
 - [ ] Add support for local LLMs
+- [ ] Docker deployment setup
 
 ## 🛠️ Tech Stack
 
