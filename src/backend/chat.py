@@ -1,15 +1,17 @@
 import asyncio
 from typing import AsyncIterator, List
+from backend.related_queries import generate_related_queries
 from fastapi import HTTPException
 
 from llama_index.llms.openai import OpenAI
 
-from backend.prompts import CHAT_PROMPT, RELATED_QUESTION_PROMPT, HISTORY_QUERY_REPHRASE
+from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
+from backend.constants import *
 from backend.search import search_tavily
 from llama_index.llms.groq import Groq
 from llama_index.core.llms import LLM
+from llama_index.llms.ollama import Ollama
 
-import instructor
 
 from backend.schemas import (
     ChatModel,
@@ -17,20 +19,16 @@ from backend.schemas import (
     ChatResponseEvent,
     FinalResponseStream,
     Message,
-    RelatedQueries,
     RelatedQueriesStream,
-    SearchResult,
     SearchResultStream,
     StreamEndStream,
     StreamEvent,
     TextChunkStream,
 )
-import openai
 
-GPT4_MODEL = "gpt-4o"
-GPT3_MODEL = "gpt-3.5-turbo"
-LLAMA_8B_MODEL = "llama3-8b-8192"
-LLAMA_70B_MODEL = "llama3-70b-8192"
+
+def is_local_model(model: ChatModel) -> bool:
+    return model in [ChatModel.LOCAL_LLAMA_3, ChatModel.LOCAL_GEMMA]
 
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
@@ -45,19 +43,19 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
             ).text
             question = question.replace('"', "")
         return question
-    except Exception:
+    except Exception as e:
         raise HTTPException(
             status_code=500, detail="Model is at capacity. Please try again later."
         )
 
 
 def get_llm(model: ChatModel) -> LLM:
-    if model == ChatModel.LLAMA_3_70B:
+    if model in [ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o]:
+        return OpenAI(model=model_mappings[model])
+    elif model in [ChatModel.LOCAL_GEMMA, ChatModel.LOCAL_LLAMA_3]:
+        return Ollama(model=model_mappings[model])
+    elif model == ChatModel.LLAMA_3_70B:
         return Groq(model=LLAMA_70B_MODEL)
-    elif model == ChatModel.GPT_4o:
-        return OpenAI(model=GPT4_MODEL)
-    elif model == ChatModel.GPT_3_5_TURBO:
-        return OpenAI(model=GPT3_MODEL)
     else:
         raise ValueError(f"Unknown model: {model}")
 
@@ -74,8 +72,13 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         search_results = search_response.results
         images = search_response.images
 
-        related_queries_task = asyncio.create_task(
-            generate_related_queries(query, search_results)
+        # Only create the task if the model is not local
+        related_queries_task = (
+            asyncio.create_task(
+                generate_related_queries(query, search_results, request.model)
+            )
+            if not is_local_model(request.model)
+            else None
         )
 
         yield ChatResponseEvent(
@@ -106,7 +109,13 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 event=StreamEvent.TEXT_CHUNK,
                 data=TextChunkStream(text=completion.delta or ""),
             )
-        related_queries = await related_queries_task
+
+        # For local models, generate the answer before the related queries
+        related_queries = await (
+            related_queries_task
+            or generate_related_queries(query, search_results, request.model)
+        )
+
         yield ChatResponseEvent(
             event=StreamEvent.RELATED_QUERIES,
             data=RelatedQueriesStream(related_queries=related_queries),
@@ -122,28 +131,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             data=FinalResponseStream(message=full_response),
         )
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=500, detail="Model is at capacity. Please try again later."
         )
-
-
-async def generate_related_queries(
-    query: str, search_results: list[SearchResult]
-) -> list[str]:
-    from openai import AsyncOpenAI
-
-    context = "\n\n".join([f"{str(result)}" for result in search_results])
-    client = instructor.from_openai(AsyncOpenAI())
-
-    related = await client.chat.completions.create(
-        model=GPT3_MODEL,
-        response_model=RelatedQueries,
-        messages=[
-            {
-                "role": "user",
-                "content": RELATED_QUESTION_PROMPT.format(query=query, context=context),
-            },
-        ],
-    )
-
-    return [query.lower().replace("?", "") for query in related.related_queries]

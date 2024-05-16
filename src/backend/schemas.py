@@ -14,6 +14,10 @@ class ChatModel(str, Enum):
     GPT_4o = "gpt-4o"
     GPT_3_5_TURBO = "gpt-3.5-turbo"
 
+    # Local models
+    LOCAL_LLAMA_3 = "llama3"
+    LOCAL_GEMMA = "gemma"
+
 
 class MessageRole(str, Enum):
     USER = "user"
@@ -41,7 +45,7 @@ class SearchResult(BaseModel):
     content: str
 
     def __str__(self):
-        return f"Title: {self.title}\nURL: {self.url}\Summary: {self.content}"
+        return f"Title: {self.title}\nURL: {self.url}\n Summary: {self.content}"
 
 
 class SearchResponse(BaseModel):
