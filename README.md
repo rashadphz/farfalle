@@ -14,6 +14,11 @@ Open-source AI-powered search engine.
 - 🏃🏿‍♂️ [Getting Started](#%EF%B8%8F-getting-started)
 - 🚀 [Deploy](#-deploy)
 
+## 🛣️ Roadmap
+
+- [ ] Add support for local LLMs
+- [ ] Docker deployment setup
+
 ## 🛠️ Tech Stack
 
 - Frontend: [Next.js](https://nextjs.org/)
