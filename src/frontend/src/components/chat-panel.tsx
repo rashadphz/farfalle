@@ -72,7 +72,7 @@ export const ChatPanel = () => {
         />
         <div ref={messageBottomRef} className="h-0" />
         <div
-          className="bottom-16 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
+          className="bottom-12 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
           style={{ width: `${width}px` }}
         >
           <AskInput ref={inputRef} isFollowingUp sendMessage={handleSend} />
