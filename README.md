@@ -2,7 +2,7 @@
 
 Open-source AI-powered search engine.
 
-<img width="900" alt="image" src="https://github.com/rashadphz/farfalle/assets/20783686/254d77a6-9e5f-4a95-a50a-d8c66d62cf66">
+![Untitled (1200 x 630 px) (1)](https://github.com/rashadphz/farfalle/assets/20783686/ee589b9e-46b0-4a31-8e6a-9824993454dd)
 
 ## 💻 Live Demo
 
