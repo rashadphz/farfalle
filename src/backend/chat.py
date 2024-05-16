@@ -25,6 +25,7 @@ from backend.schemas import (
     StreamEvent,
     TextChunkStream,
 )
+import openai
 
 GPT4_MODEL = "gpt-4o"
 GPT3_MODEL = "gpt-3.5-turbo"
@@ -60,59 +61,66 @@ def get_llm(model: ChatModel) -> LLM:
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
+    try:
+        llm = get_llm(request.model)
+        query = rephrase_query_with_history(request.query, request.history, llm)
 
-    llm = get_llm(request.model)
-    query = rephrase_query_with_history(request.query, request.history, llm)
+        search_response = await search_tavily(query)
 
-    search_response = await search_tavily(query)
+        search_results = search_response.results
+        images = search_response.images
 
-    search_results = search_response.results
-    images = search_response.images
-
-    related_queries_task = asyncio.create_task(
-        generate_related_queries(query, search_results)
-    )
-
-    yield ChatResponseEvent(
-        event=StreamEvent.SEARCH_RESULTS,
-        data=SearchResultStream(
-            results=search_results,
-            images=images,
-        ),
-    )
-
-    context_str = "\n\n".join(
-        [f"Citation {i+1}. {str(result)}" for i, result in enumerate(search_results)]
-    )
-
-    fmt_qa_prompt = CHAT_PROMPT.format(
-        my_context=context_str,
-        my_query=query,
-    )
-
-    full_response = ""
-    for completion in llm.stream_complete(fmt_qa_prompt):
-        full_response += completion.delta or ""
-        yield ChatResponseEvent(
-            event=StreamEvent.TEXT_CHUNK,
-            data=TextChunkStream(text=completion.delta or ""),
+        related_queries_task = asyncio.create_task(
+            generate_related_queries(query, search_results)
         )
 
-    related_queries = await related_queries_task
-    yield ChatResponseEvent(
-        event=StreamEvent.RELATED_QUERIES,
-        data=RelatedQueriesStream(related_queries=related_queries),
-    )
+        yield ChatResponseEvent(
+            event=StreamEvent.SEARCH_RESULTS,
+            data=SearchResultStream(
+                results=search_results,
+                images=images,
+            ),
+        )
 
-    yield ChatResponseEvent(
-        event=StreamEvent.STREAM_END,
-        data=StreamEndStream(),
-    )
+        context_str = "\n\n".join(
+            [
+                f"Citation {i+1}. {str(result)}"
+                for i, result in enumerate(search_results)
+            ]
+        )
 
-    yield ChatResponseEvent(
-        event=StreamEvent.FINAL_RESPONSE,
-        data=FinalResponseStream(message=full_response),
-    )
+        fmt_qa_prompt = CHAT_PROMPT.format(
+            my_context=context_str,
+            my_query=query,
+        )
+
+        full_response = ""
+        for completion in llm.stream_complete(fmt_qa_prompt):
+            full_response += completion.delta or ""
+            yield ChatResponseEvent(
+                event=StreamEvent.TEXT_CHUNK,
+                data=TextChunkStream(text=completion.delta or ""),
+            )
+
+        related_queries = await related_queries_task
+        yield ChatResponseEvent(
+            event=StreamEvent.RELATED_QUERIES,
+            data=RelatedQueriesStream(related_queries=related_queries),
+        )
+
+        yield ChatResponseEvent(
+            event=StreamEvent.STREAM_END,
+            data=StreamEndStream(),
+        )
+
+        yield ChatResponseEvent(
+            event=StreamEvent.FINAL_RESPONSE,
+            data=FinalResponseStream(message=full_response),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail="Model is at capacity. Please try again later."
+        )
 
 
 async def generate_related_queries(

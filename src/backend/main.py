@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.chat import stream_qa_objects
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 import logfire
-
+import cProfile
+import pstats
 
 from backend.schemas import (
     ChatRequest,
@@ -65,22 +66,34 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
+@app.on_event("startup")
+async def startup_event():
+    profiler = cProfile.Profile()
+    profiler.enable()
+    app.state.profiler = profiler
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    profiler = app.state.profiler
+    profiler.disable()
+    stats = pstats.Stats(profiler)
+    stats.sort_stats(pstats.SortKey.CUMULATIVE).print_stats(10)
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello!"}
 
 
 @app.post("/chat")
-@app.state.limiter.limit("10/minute")
+# @app.state.limiter.limit("10/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
     async def generator():
         try:
             async for obj in stream_qa_objects(chat_request):
-                if await request.is_disconnected():
-                    break
-
                 yield json.dumps(jsonable_encoder(obj))
                 await asyncio.sleep(0)
         except Exception as e:
