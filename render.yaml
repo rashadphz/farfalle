@@ -1,0 +1,18 @@
+services:
+- type: web
+  name: farfalle
+  runtime: python
+  repo: https://github.com/rashadphz/farfalle
+  plan: free
+  envVars:
+  - key: TAVILY_API_KEY
+    sync: false
+  - key: OPENAI_API_KEY
+    sync: false
+  - key: GROQ_API_KEY
+    sync: false
+  region: oregon
+  buildCommand: poetry install
+  startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+  rootDir: src/backend
+version: "1"
