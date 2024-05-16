@@ -14,7 +14,7 @@ redis_client = redis.Redis.from_url(redis_url) if redis_url else None
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 
-async def search_tavily(query: str) -> SearchResponse:
+def search_tavily(query: str) -> SearchResponse:
     try:
         cache_key = f"search:{query}"
         cached_results = None

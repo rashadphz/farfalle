@@ -61,11 +61,13 @@ def get_llm(model: ChatModel) -> LLM:
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
+
     try:
+
         llm = get_llm(request.model)
         query = rephrase_query_with_history(request.query, request.history, llm)
 
-        search_response = await search_tavily(query)
+        search_response = search_tavily(query)
 
         search_results = search_response.results
         images = search_response.images
@@ -95,13 +97,13 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         )
 
         full_response = ""
-        for completion in llm.stream_complete(fmt_qa_prompt):
+        response_gen = await llm.astream_complete(fmt_qa_prompt)
+        async for completion in response_gen:
             full_response += completion.delta or ""
             yield ChatResponseEvent(
                 event=StreamEvent.TEXT_CHUNK,
                 data=TextChunkStream(text=completion.delta or ""),
             )
-
         related_queries = await related_queries_task
         yield ChatResponseEvent(
             event=StreamEvent.RELATED_QUERIES,
