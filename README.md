@@ -71,9 +71,6 @@ GROQ_API_KEY=...
 
 # Everything below is optional
 
-# Default (http://localhost:3000)
-FRONTEND_URL=
-
 # Logfire
 LOGFIRE_TOKEN=
 
