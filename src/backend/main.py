@@ -45,7 +45,7 @@ def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool, redis_url: s
 def configure_middleware(app: FastAPI, frontend_url: str):
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[frontend_url, "http://localhost:3000"],
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
