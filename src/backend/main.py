@@ -65,29 +65,13 @@ def create_app() -> FastAPI:
 
 app = create_app()
 
-
-@app.on_event("startup")
-async def startup_event():
-    profiler = cProfile.Profile()
-    profiler.enable()
-    app.state.profiler = profiler
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    profiler = app.state.profiler
-    profiler.disable()
-    stats = pstats.Stats(profiler)
-    stats.sort_stats(pstats.SortKey.CUMULATIVE).print_stats(10)
-
-
 @app.get("/")
 async def root():
     return {"message": "Hello!"}
 
 
 @app.post("/chat")
-# @app.state.limiter.limit("10/minute")
+@app.state.limiter.limit("10/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
