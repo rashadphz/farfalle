@@ -105,4 +105,6 @@ Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## 🚀 Deploy
 
-- TODO
+### Backend
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/rashadphz/farfalle)
+
