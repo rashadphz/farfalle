@@ -20,8 +20,9 @@ import { useState } from "react";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { useMessageStore } from "@/stores";
 import { useToast } from "@/components/ui/use-toast";
+import { env } from "../env.mjs";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
 const streamChat = async ({
   request,
