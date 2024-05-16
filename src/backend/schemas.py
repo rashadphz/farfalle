@@ -12,6 +12,7 @@ record_all = PluginSettings(logfire={"record": "all"})
 class ChatModel(str, Enum):
     LLAMA_3_70B = "llama-3-70b"
     GPT_4o = "gpt-4o"
+    GPT_3_5_TURBO = "gpt-3.5-turbo"
 
 
 class MessageRole(str, Enum):
@@ -27,7 +28,7 @@ class Message(BaseModel):
 class ChatRequest(BaseModel, plugin_settings=record_all):
     query: str
     history: List[Message] = Field(default_factory=list)
-    model: ChatModel = ChatModel.LLAMA_3_70B
+    model: ChatModel = ChatModel.GPT_3_5_TURBO
 
 
 class RelatedQueries(BaseModel):

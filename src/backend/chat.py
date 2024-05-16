@@ -56,6 +56,8 @@ def get_llm(model: ChatModel) -> LLM:
         return Groq(model=LLAMA_70B_MODEL)
     elif model == ChatModel.GPT_4o:
         return OpenAI(model=GPT4_MODEL)
+    elif model == ChatModel.GPT_3_5_TURBO:
+        return OpenAI(model=GPT3_MODEL)
     else:
         raise ValueError(f"Unknown model: {model}")
 

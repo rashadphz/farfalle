@@ -2,7 +2,7 @@
 
 export const $ChatModel = {
   type: "string",
-  enum: ["llama-3-70b", "gpt-4o"],
+  enum: ["llama-3-70b", "gpt-4o", "gpt-3.5-turbo"],
   title: "ChatModel",
 } as const;
 
@@ -25,7 +25,7 @@ export const $ChatRequest = {
           $ref: "#/components/schemas/ChatModel",
         },
       ],
-      default: "llama-3-70b",
+      default: "gpt-3.5-turbo",
     },
   },
   type: "object",

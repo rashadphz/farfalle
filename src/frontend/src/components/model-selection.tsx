@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LightningBoltIcon } from "@radix-ui/react-icons";
-import { BrainIcon } from "lucide-react";
+import { BrainIcon, Rabbit, RabbitIcon } from "lucide-react";
 import { useMessageStore } from "@/stores";
 import { ChatModel } from "../../generated";
 
@@ -23,12 +23,12 @@ type Model = {
 };
 
 const modelMap: Record<ChatModel, Model> = {
-  [ChatModel.LLAMA_3_70B]: {
-    name: "Hyper",
-    description: "Groq/LLaMA3-70B",
-    value: ChatModel.LLAMA_3_70B,
-    smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
-    icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
+  [ChatModel.GPT_3_5_TURBO]: {
+    name: "Fast",
+    description: "OpenAI/GPT-3.5-turbo",
+    value: ChatModel.GPT_3_5_TURBO,
+    smallIcon: <RabbitIcon className="w-4 h-4 text-cyan-500" />,
+    icon: <RabbitIcon className="w-5 h-5 text-cyan-500" />,
   },
   [ChatModel.GPT_4O]: {
     name: "Powerful",
@@ -36,6 +36,13 @@ const modelMap: Record<ChatModel, Model> = {
     value: ChatModel.GPT_4O,
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
     icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
+  },
+  [ChatModel.LLAMA_3_70B]: {
+    name: "Hyper",
+    description: "Groq/LLaMA3-70B",
+    value: ChatModel.LLAMA_3_70B,
+    smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
+    icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
   },
 };
 

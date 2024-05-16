@@ -38,9 +38,7 @@ const streamChat = async ({
     },
     body: JSON.stringify({ ...request }),
     onmessage: onMessage,
-    onerror: (error) => {
-      console.error(error);
-    },
+    onerror: (error) => {},
   });
 };
 

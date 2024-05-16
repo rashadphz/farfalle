@@ -14,7 +14,7 @@ type StoreState = MessageStore;
 const useStore = create<StoreState>((set) => ({
   searchResults: [],
   messages: [],
-  model: ChatModel.LLAMA_3_70B,
+  model: ChatModel.GPT_3_5_TURBO,
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
   setModel: (model) => set({ model }),
