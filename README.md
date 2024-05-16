@@ -11,7 +11,7 @@ Open-source AI-powered search engine.
 ## 📖 Overview
 
 - 🛠️ [Tech Stack](#%EF%B8%8F-tech-stack)
-- 🏃🏿‍♂️ [Getting Started](%EF%B8%8F-getting-started)
+- 🏃🏿‍♂️ [Getting Started](#%EF%B8%8F-getting-started)
 - 🚀 [Deploy](#-deploy)
 
 ## 🛠️ Tech Stack
