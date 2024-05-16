@@ -10,9 +10,9 @@ Open-source AI-powered search engine.
 
 ## 📖 Overview
 
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Deploy](#deploy)
+- 🛠️ [Tech Stack](#-tech-stack)
+- 🏃🏿‍♂️ [Getting Started](#-getting-started)
+- 🚀 [Deploy](#-deploy)
 
 ## 🛠️ Tech Stack
 
@@ -23,7 +23,7 @@ Open-source AI-powered search engine.
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
-## 🚀 Getting Started
+## 🏃🏿‍♂️ Getting Started
 
 ### Prerequisites
 
