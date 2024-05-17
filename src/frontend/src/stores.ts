@@ -1,6 +1,7 @@
 import { ChatMessage } from "@/types";
 import { create } from "zustand";
 import { ChatModel } from "../generated";
+import { env } from "./env.mjs";
 
 type MessageStore = {
   messages: ChatMessage[];
@@ -27,6 +28,11 @@ const useStore = create<StoreState>((set) => ({
   localMode: false,
   toggleLocalMode: () =>
     set((state) => {
+      const localModeEnabled = env.NEXT_PUBLIC_LOCAL_MODE_ENABLED;
+      if (!localModeEnabled) {
+        return { localMode: false };
+      }
+
       const newLocalMode = !state.localMode;
       const newModel = newLocalMode
         ? ChatModel.LLAMA3

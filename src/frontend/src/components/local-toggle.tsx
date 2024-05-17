@@ -12,6 +12,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Separator } from "./ui/separator";
+import { env } from "@/env.mjs";
 
 export function LocalToggle() {
   const { localMode, toggleLocalMode } = useConfigStore();
@@ -20,23 +21,29 @@ export function LocalToggle() {
     <HoverCard>
       <HoverCardTrigger
         asChild
-        className="hover:cursor-pointer"
+        className={cn(
+          "hover:cursor-pointer",
+          !env.NEXT_PUBLIC_LOCAL_MODE_ENABLED && "hover:cursor-not-allowed"
+        )}
         onClick={toggleLocalMode}
       >
-        <div className="flex space-x-2 items-center justify-end pr-3 hover:text-primary">
-          <Switch checked={localMode} />
+        <div className="group flex space-x-2 items-center justify-end pr-3 hover:text-primary">
+          <Switch
+            disabled={!env.NEXT_PUBLIC_LOCAL_MODE_ENABLED}
+            checked={localMode}
+          />
           <span
             className={cn(
-              "font-bold text-sm",
-              localMode ? "text-tint" : "text-gray-500 hover:text-primary"
+              "font-bold text-sm transition-all",
+              localMode ? "text-tint " : "text-gray-500 group-hover:text-white"
             )}
           >
             Local
           </span>
           {localMode ? (
-            <CloudOffIcon className="h-[1.2rem] w-[1.2rem] transition-all text-tint" />
+            <CloudOffIcon className="h-[1.2rem] w-[1.2rem] text-tint " />
           ) : (
-            <CloudIcon className="h-[1.2rem] w-[1.2rem] transition-all text-gray-500" />
+            <CloudIcon className="h-[1.2rem] w-[1.2rem] transition-all text-gray-500 group-hover:text-white duration-100" />
           )}
         </div>
       </HoverCardTrigger>
