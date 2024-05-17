@@ -1,12 +1,12 @@
 # Farfalle
 
-Open-source AI-powered search engine.
+Open-source AI-powered search engine. Run your own local LLM or use the cloud.
 
 ![Untitled (1200 x 630 px) (1)](https://github.com/rashadphz/farfalle/assets/20783686/ee589b9e-46b0-4a31-8e6a-9824993454dd)
 
 ## 💻 Live Demo
 
-[farfalle.dev](https://farfalle.dev/)
+[farfalle.dev](https://farfalle.dev/) (Cloud models only)
 
 ## 📖 Overview
 
@@ -16,8 +16,8 @@ Open-source AI-powered search engine.
 
 ## 🛣️ Roadmap
 
-- [ ] Add support for local LLMs
-- [ ] Docker deployment setup
+- [x] Add support for local LLMs through Ollama
+- [x] Docker deployment setup
 
 ## 🛠️ Tech Stack
 
@@ -32,76 +32,68 @@ Open-source AI-powered search engine.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/)
-- [pnpm](https://pnpm.io/installation) or [npm](https://www.npmjs.com/get-npm)
-- [Python](https://www.python.org/downloads/)
-- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Ollama](https://ollama.com/download)
+  - Download any of the supported models: **llama3**, **mistral**, **gemma**
+  - Start ollama server `ollama serve`
 
 ### Get API Keys
 
 - [Tavily](https://app.tavily.com/home)
-- [OpenAI](https://platform.openai.com/api-keys)
-- [Groq](https://console.groq.com/keys)
+- [OpenAI (Optional)](https://platform.openai.com/api-keys)
+- [Groq (Optional)](https://console.groq.com/keys)
 
 ### 1. Clone the Repo
 
 ```
 git clone git@github.com:rashadphz/farfalle.git
+cd farfalle
 ```
 
-### 2. Install Dependencies
-
-#### Frontend
-
+### 2. Add Environment Variables
 ```
-cd farfalle/src/frontend
-pnpm install
+touch .env
 ```
 
-#### Backend
+Add the following variables to the .env file:
 
-```
-cd farfalle/src/backend
-poetry install
-```
-
-### 3. Secrets
-
-Create a `.env` file in the root of the project and add these variables:
-
+#### Required
 ```
 TAVILY_API_KEY=...
+```
+
+#### Optional
+```
+# Cloud Models
 OPENAI_API_KEY=...
 GROQ_API_KEY=...
 
-# Everything below is optional
-
-# Logfire
-LOGFIRE_TOKEN=
-
-# (True | False)
+# Rate Limit
 RATE_LIMIT_ENABLED=
+REDIS_URL=...
 
-# Redis URL
-REDIS_URL=
+# Logging
+LOGFIRE_TOKEN=...
 ```
 
-### 4. Run the App Locally
-
-#### Frontend
-
+#### Optional Variables (Pre-configured Defaults)
 ```
-cd farfalle/src/frontend
-pnpm dev
+# API URL
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# Local Models
+NEXT_PUBLIC_LOCAL_MODE_ENABLED=true
+ENABLE_LOCAL_MODELS=True
 ```
 
-#### Backend
 
+### 3. Run Containers
+This requires Docker Compose version 2.22.0 or later.
 ```
-cd farfalle/src/backend
-poetry shell
-uvicorn backend.main:app --reload
+docker-compose -f docker-compose.dev.yml up -d
 ```
+
+
 
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
