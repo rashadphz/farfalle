@@ -9,6 +9,7 @@ import { AskInput } from "./ask-input";
 import MessagesList from "./messages-list";
 import { ModelSelection } from "./model-selection";
 import { StarterQuestionsList } from "./starter-questions";
+import { LocalToggle } from "./local-toggle";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useMessageStore();
@@ -88,7 +89,10 @@ export const ChatPanel = () => {
         <AskInput ref={inputRef} sendMessage={handleSend} />
         <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
           <StarterQuestionsList handleSend={handleSend} />
-          <ModelSelection />
+          <div className="flex flex-col gap-2 items-end ">
+            <ModelSelection />
+            <LocalToggle />
+          </div>
         </div>
       </div>
     );
