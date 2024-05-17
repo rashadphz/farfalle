@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { useConfigStore, useMessageStore } from "@/stores";
 import { ChatModel } from "../../generated";
-import LlamaIcon from "@/icons/llama";
 import { isCloudModel, isLocalModel } from "@/lib/utils";
 import _ from "lodash";
 
