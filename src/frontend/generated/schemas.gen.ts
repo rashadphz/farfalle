@@ -2,7 +2,14 @@
 
 export const $ChatModel = {
   type: "string",
-  enum: ["llama-3-70b", "gpt-4o", "gpt-3.5-turbo"],
+  enum: [
+    "llama-3-70b",
+    "gpt-4o",
+    "gpt-3.5-turbo",
+    "llama3",
+    "gemma",
+    "mistral",
+  ],
   title: "ChatModel",
 } as const;
 
