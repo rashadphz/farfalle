@@ -6,6 +6,9 @@ import instructor
 import openai
 from backend.constants import model_mappings
 from backend.schemas import RelatedQueries, SearchResult
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
@@ -24,7 +27,7 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
     ]:
         return instructor.from_openai(
             openai.AsyncOpenAI(
-                base_url=f"{OLLAMA_HOST}",
+                base_url=f"{OLLAMA_HOST}/v1",
                 api_key="ollama",
             ),
             mode=instructor.Mode.JSON,

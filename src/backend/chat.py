@@ -10,7 +10,6 @@ from llama_index.llms.openai import OpenAI
 
 from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
 from backend.constants import (
-    LLAMA_70B_MODEL,
     model_mappings,
 )
 from backend.search import search_tavily
@@ -63,7 +62,7 @@ def get_llm(model: ChatModel) -> LLM:
             model=model_mappings[model],
         )
     elif model == ChatModel.LLAMA_3_70B:
-        return Groq(model=LLAMA_70B_MODEL)
+        return Groq(model=model_mappings[model])
     else:
         raise ValueError(f"Unknown model: {model}")
 
@@ -80,7 +79,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         search_results = search_response.results
         images = search_response.images
 
-        # Only create the task if the model is not local
+        # Only create the task first if the model is not local
         related_queries_task = (
             asyncio.create_task(
                 generate_related_queries(query, search_results, request.model)
@@ -121,7 +120,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         # For local models, generate the answer before the related queries
         related_queries = await (
             related_queries_task
-            or generate_related_queries(query, search_results, request.model)
+            if related_queries_task
+            else generate_related_queries(query, search_results, request.model)
         )
 
         yield ChatResponseEvent(
