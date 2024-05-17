@@ -29,12 +29,10 @@ services:
       context: .
       dockerfile: ./src/frontend/Dockerfile.dev
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
     ports:
       - "3000:3000"
-    env_file:
-      - .env
     develop:
       watch:
         - action: sync
