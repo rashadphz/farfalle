@@ -91,7 +91,7 @@ ENABLE_LOCAL_MODELS=True
 ### 3. Run Containers
 This requires Docker Compose version 2.22.0 or later.
 ```
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.dev.yaml up -d
 ```
 
 
