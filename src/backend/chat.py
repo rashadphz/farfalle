@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import AsyncIterator, List
 from backend.constants import ChatModel
 from backend.related_queries import generate_related_queries
@@ -57,7 +58,10 @@ def get_llm(model: ChatModel) -> LLM:
         ChatModel.LOCAL_LLAMA_3,
         ChatModel.LOCAL_MISTRAL,
     ]:
-        return Ollama(model=model_mappings[model])
+        return Ollama(
+            base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434"),
+            model=model_mappings[model],
+        )
     elif model == ChatModel.LLAMA_3_70B:
         return Groq(model=LLAMA_70B_MODEL)
     else:

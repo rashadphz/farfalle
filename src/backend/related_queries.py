@@ -1,3 +1,4 @@
+import os
 from backend.constants import ChatModel
 from backend.prompts import RELATED_QUESTION_PROMPT
 import groq
@@ -5,6 +6,9 @@ import instructor
 import openai
 from backend.constants import model_mappings
 from backend.schemas import RelatedQueries, SearchResult
+
+
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 
 
 def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
@@ -20,7 +24,7 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
     ]:
         return instructor.from_openai(
             openai.AsyncOpenAI(
-                base_url="http://localhost:11434/v1",
+                base_url=f"{OLLAMA_HOST}",
                 api_key="ollama",
             ),
             mode=instructor.Mode.JSON,
