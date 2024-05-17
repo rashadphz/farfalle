@@ -23,6 +23,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_ipaddr
 from slowapi.errors import RateLimitExceeded
 
+from src.backend.constants import ChatModel
+
 
 load_dotenv()
 
@@ -77,7 +79,22 @@ def create_error_event(detail: str):
     )
 
 
-LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
+def validate_model(model: ChatModel):
+    if model in {ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o}:
+        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        if not OPENAI_API_KEY:
+            raise ValueError("OPENAI_API_KEY environment variable not found")
+    elif model == ChatModel.LLAMA_3_70B:
+        GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+        if not GROQ_API_KEY:
+            raise ValueError("GROQ_API_KEY environment variable not found")
+    elif is_local_model(model):
+        LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
+        if not LOCAL_MODELS_ENABLED:
+            raise ValueError("Local models are not enabled")
+    else:
+        raise ValueError("Invalid model")
+    return True
 
 
 @app.post("/chat")
@@ -88,18 +105,14 @@ async def chat(
 
     async def generator():
         try:
-            if not LOCAL_MODELS_ENABLED and is_local_model(chat_request.model):
-                yield create_error_event("Local models are not enabled.")
-                await asyncio.sleep(0)
-                return
-
+            validate_model(chat_request.model)
             async for obj in stream_qa_objects(chat_request):
                 if await request.is_disconnected():
                     break
                 yield json.dumps(jsonable_encoder(obj))
                 await asyncio.sleep(0)
         except Exception as e:
-            yield create_error_event(str(e.detail))
+            yield create_error_event(str(e))
             await asyncio.sleep(0)
             return
 
