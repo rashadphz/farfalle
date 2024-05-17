@@ -1,0 +1,13 @@
+FROM node:18-alpine
+
+WORKDIR /app/src/frontend
+
+COPY . /app
+
+RUN corepack enable
+RUN pnpm i
+
+
+EXPOSE 3000
+
+CMD ["pnpm", "dev"]
