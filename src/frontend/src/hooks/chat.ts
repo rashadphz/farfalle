@@ -36,6 +36,8 @@ const streamChat = async ({
     headers: {
       "Content-Type": "application/json",
     },
+    keepalive: true,
+    openWhenHidden: true,
     body: JSON.stringify({ ...request }),
     onmessage: onMessage,
     onerror: (error) => {},
@@ -137,6 +139,9 @@ export const useChat = () => {
       await streamChat({
         request: req,
         onMessage: (event) => {
+          // Handles keep-alive events
+          if (!event.data) return;
+
           const eventItem: ChatResponseEvent = JSON.parse(event.data);
           handleEvent(eventItem, state);
         },
