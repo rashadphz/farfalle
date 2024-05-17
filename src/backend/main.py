@@ -23,7 +23,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_ipaddr
 from slowapi.errors import RateLimitExceeded
 
-from src.backend.constants import ChatModel
+from backend.constants import ChatModel
 
 
 load_dotenv()
