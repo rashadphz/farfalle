@@ -1,12 +1,17 @@
 import asyncio
 from typing import AsyncIterator, List
+from backend.constants import ChatModel
 from backend.related_queries import generate_related_queries
+from backend.utils import is_local_model
 from fastapi import HTTPException
 
 from llama_index.llms.openai import OpenAI
 
 from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
-from backend.constants import *
+from backend.constants import (
+    LLAMA_70B_MODEL,
+    model_mappings,
+)
 from backend.search import search_tavily
 from llama_index.llms.groq import Groq
 from llama_index.core.llms import LLM
@@ -14,7 +19,6 @@ from llama_index.llms.ollama import Ollama
 
 
 from backend.schemas import (
-    ChatModel,
     ChatRequest,
     ChatResponseEvent,
     FinalResponseStream,
@@ -25,10 +29,6 @@ from backend.schemas import (
     StreamEvent,
     TextChunkStream,
 )
-
-
-def is_local_model(model: ChatModel) -> bool:
-    return model in [ChatModel.LOCAL_LLAMA_3, ChatModel.LOCAL_GEMMA]
 
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
@@ -43,7 +43,7 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
             ).text
             question = question.replace('"', "")
         return question
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=500, detail="Model is at capacity. Please try again later."
         )
@@ -52,7 +52,11 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
 def get_llm(model: ChatModel) -> LLM:
     if model in [ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o]:
         return OpenAI(model=model_mappings[model])
-    elif model in [ChatModel.LOCAL_GEMMA, ChatModel.LOCAL_LLAMA_3]:
+    elif model in [
+        ChatModel.LOCAL_GEMMA,
+        ChatModel.LOCAL_LLAMA_3,
+        ChatModel.LOCAL_MISTRAL,
+    ]:
         return Ollama(model=model_mappings[model])
     elif model == ChatModel.LLAMA_3_70B:
         return Groq(model=LLAMA_70B_MODEL)

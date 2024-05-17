@@ -1,13 +1,10 @@
-import groq
 import instructor
 import openai
+import groq
 from backend.constants import ChatModel
-from backend.schemas import ChatModel
 
 
 def instructor_client(model: ChatModel) -> instructor.Instructor:
-    import openai
-    import groq
 
     if model in [
         ChatModel.GPT_3_5_TURBO,

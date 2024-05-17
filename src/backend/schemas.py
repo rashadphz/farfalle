@@ -1,22 +1,18 @@
 # Some of the code here is based on github.com/cohere-ai/cohere-toolkit/
 
 from typing import Union, List
+from backend.constants import ChatModel
+from backend.utils import strtobool
 from pydantic import BaseModel, Field
 from enum import Enum
 from logfire.integrations.pydantic import PluginSettings
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 record_all = PluginSettings(logfire={"record": "all"})
-
-
-class ChatModel(str, Enum):
-    LLAMA_3_70B = "llama-3-70b"
-    GPT_4o = "gpt-4o"
-    GPT_3_5_TURBO = "gpt-3.5-turbo"
-
-    # Local models
-    LOCAL_LLAMA_3 = "llama3"
-    LOCAL_GEMMA = "gemma"
 
 
 class MessageRole(str, Enum):
@@ -27,6 +23,9 @@ class MessageRole(str, Enum):
 class Message(BaseModel):
     content: str
     role: MessageRole
+
+
+LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
 
 
 class ChatRequest(BaseModel, plugin_settings=record_all):

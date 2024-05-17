@@ -1,9 +1,10 @@
+from backend.constants import ChatModel
 from backend.prompts import RELATED_QUESTION_PROMPT
 import groq
 import instructor
 import openai
-from backend.constants import ChatModel, model_mappings
-from backend.schemas import ChatModel, RelatedQueries, SearchResult
+from backend.constants import model_mappings
+from backend.schemas import RelatedQueries, SearchResult
 
 
 def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
@@ -12,7 +13,11 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
         ChatModel.GPT_4o,
     ]:
         return instructor.from_openai(openai.AsyncOpenAI())
-    elif model in [ChatModel.LOCAL_GEMMA, ChatModel.LOCAL_LLAMA_3]:
+    elif model in [
+        ChatModel.LOCAL_GEMMA,
+        ChatModel.LOCAL_LLAMA_3,
+        ChatModel.LOCAL_MISTRAL,
+    ]:
         return instructor.from_openai(
             openai.AsyncOpenAI(
                 base_url="http://localhost:11434/v1",
