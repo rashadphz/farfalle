@@ -30,7 +30,7 @@ def search_tavily(query: str) -> SearchResponse:
                 include_images=True,
             )  # type: ignore
             if redis_client:
-                redis_client.set(cache_key, json.dumps(response), ex=3600)
+                redis_client.set(cache_key, json.dumps(response), ex=7200)
         else:
             response = json.loads(cached_results)
     except Exception as e:
