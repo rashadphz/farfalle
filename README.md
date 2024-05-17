@@ -2,7 +2,8 @@
 
 Open-source AI-powered search engine. Run your own local LLM or use the cloud.
 
-![Untitled (1200 x 630 px) (1)](https://github.com/rashadphz/farfalle/assets/20783686/ee589b9e-46b0-4a31-8e6a-9824993454dd)
+https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6fc1be5b8dae
+
 
 ## 💻 Live Demo
 
@@ -90,7 +91,7 @@ ENABLE_LOCAL_MODELS=True
 ### 3. Run Containers
 This requires Docker Compose version 2.22.0 or later.
 ```
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.dev.yaml up -d
 ```
 
 
