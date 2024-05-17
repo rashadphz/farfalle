@@ -4,11 +4,9 @@ import { Button } from "./ui/button";
 import { ArrowUp } from "lucide-react";
 
 export const AskInput = ({
-  ref,
   sendMessage,
   isFollowingUp = false,
 }: {
-  ref: React.RefObject<HTMLTextAreaElement>;
   sendMessage: (message: string) => void;
   isFollowingUp?: boolean;
 }) => {
@@ -40,7 +38,6 @@ export const AskInput = ({
             }
             onChange={(e) => setInput(e.target.value)}
             value={input}
-            ref={ref}
           />
           <Button
             type="submit"
