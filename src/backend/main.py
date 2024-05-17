@@ -81,7 +81,7 @@ LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
 
 
 @app.post("/chat")
-@app.state.limiter.limit("10/minute")
+@app.state.limiter.limit("10/hour")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
