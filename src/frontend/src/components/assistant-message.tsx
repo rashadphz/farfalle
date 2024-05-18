@@ -20,7 +20,7 @@ export function ErrorMessage({ content }: { content: string }) {
                 href={word}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 underline"
+                className="underline"
               >
                 {word}
               </a>
