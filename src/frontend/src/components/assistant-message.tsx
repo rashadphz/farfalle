@@ -11,7 +11,23 @@ export function ErrorMessage({ content }: { content: string }) {
     <Alert className="bg-red-500/5 border-red-500/15 p-5">
       <AlertCircle className="h-4 w-4 stroke-red-500 stroke-2" />
       <AlertDescription className="text-base text-foreground">
-        {content}
+        {content.split(" ").map((word, index) => {
+          const urlPattern = /(https?:\/\/[^\s]+)/g;
+          if (urlPattern.test(word)) {
+            return (
+              <a
+                key={index}
+                href={word}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                {word}
+              </a>
+            );
+          }
+          return word + " ";
+        })}
       </AlertDescription>
     </Alert>
   );
