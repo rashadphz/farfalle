@@ -88,7 +88,7 @@ def validate_model(model: ChatModel):
             GPT4_ENABLED = strtobool(os.getenv("GPT4_ENABLED", True))
             if not GPT4_ENABLED:
                 raise ValueError(
-                    "GPT4-o has been disabled. Please self-host the app for GPT4-o access by following the instructions here: https://github.com/rashadphz/farfalle"
+                    "GPT4-o has been disabled. Please try a different model or self-host the app by following the instructions here: https://github.com/rashadphz/farfalle"
                 )
 
     elif model == ChatModel.LLAMA_3_70B:
