@@ -2,6 +2,8 @@
 
 Open-source AI-powered search engine. Run your own local LLM or use the cloud.
 
+Demo answering questions with llama3 on my M1 Macbook Pro:
+
 https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6fc1be5b8dae
 
 
