@@ -19,6 +19,7 @@ from llama_index.llms.ollama import Ollama
 
 
 from backend.schemas import (
+    BeginStream,
     ChatRequest,
     ChatResponseEvent,
     FinalResponseStream,
@@ -70,8 +71,17 @@ def get_llm(model: ChatModel) -> LLM:
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
 
     try:
-
         llm = get_llm(request.model)
+
+        yield ChatResponseEvent(
+            event=StreamEvent.BEGIN_STREAM,
+            data=BeginStream(
+                model=request.model,
+                query=request.query,
+                history=request.history,
+            ),
+        )
+
         query = rephrase_query_with_history(request.query, request.history, llm)
 
         search_response = search_tavily(query)

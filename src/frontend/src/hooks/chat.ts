@@ -72,6 +72,14 @@ export const useChat = () => {
     }
   ) => {
     switch (eventItem.event) {
+      case StreamEvent.BEGIN_STREAM:
+        setStreamingMessage({
+          role: MessageType.ASSISTANT,
+          content: "",
+          relatedQuestions: [],
+          sources: [],
+        });
+        break;
       case StreamEvent.SEARCH_RESULTS:
         const data = eventItem.data as SearchResultStream;
         state.sources = data.results ?? [];
@@ -98,12 +106,15 @@ export const useChat = () => {
         return;
       case StreamEvent.ERROR:
         const errorData = eventItem.data as ErrorStream;
-        toast({
-          title: "Error",
-          description: errorData.detail,
-          variant: "destructive",
+        addMessage({
+          role: MessageType.ASSISTANT,
+          content: errorData.detail,
+          relatedQuestions: [],
+          sources: [],
+          images: [],
+          isErrorMessage: true,
         });
-        break;
+        return;
     }
     setStreamingMessage({
       role: MessageType.ASSISTANT,
@@ -124,13 +135,6 @@ export const useChat = () => {
         images: [],
       };
       addMessage({ role: MessageType.USER, content: request.query });
-
-      setStreamingMessage({
-        role: MessageType.ASSISTANT,
-        content: "",
-        relatedQuestions: [],
-        sources: [],
-      });
 
       const req = {
         ...request,

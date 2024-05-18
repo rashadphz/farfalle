@@ -53,7 +53,7 @@ class SearchResponse(BaseModel):
 
 
 class StreamEvent(str, Enum):
-    SEARCH_QUERY = "search-query"
+    BEGIN_STREAM = "begin-stream"
     SEARCH_RESULTS = "search-results"
     TEXT_CHUNK = "text-chunk"
     RELATED_QUERIES = "related-queries"
@@ -66,8 +66,8 @@ class ChatObject(BaseModel):
     event_type: StreamEvent
 
 
-class SearchQueryStream(ChatObject, plugin_settings=record_all):
-    event_type: StreamEvent = StreamEvent.SEARCH_QUERY
+class BeginStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.BEGIN_STREAM
     query: str
 
 
@@ -104,7 +104,7 @@ class ErrorStream(ChatObject, plugin_settings=record_all):
 class ChatResponseEvent(BaseModel):
     event: StreamEvent
     data: Union[
-        SearchQueryStream,
+        BeginStream,
         SearchResultStream,
         TextChunkStream,
         RelatedQueriesStream,

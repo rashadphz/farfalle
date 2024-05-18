@@ -23,6 +23,7 @@ export type AssistantMessage = BaseMessage & {
   sources?: SearchResult[];
   relatedQuestions?: string[];
   images?: string[];
+  isErrorMessage?: boolean;
 };
 
 export type ChatMessage = UserMessage | AssistantMessage;
