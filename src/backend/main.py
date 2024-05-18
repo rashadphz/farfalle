@@ -84,6 +84,13 @@ def validate_model(model: ChatModel):
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         if not OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY environment variable not found")
+        if model == ChatModel.GPT_4o:
+            GPT4_ENABLED = strtobool(os.getenv("GPT4_ENABLED", True))
+            if not GPT4_ENABLED:
+                raise ValueError(
+                    "GPT4-o has been disabled. Please self-host the app for GPT4-o access by following the instructions here: https://github.com/rashadphz/farfalle"
+                )
+
     elif model == ChatModel.LLAMA_3_70B:
         GROQ_API_KEY = os.getenv("GROQ_API_KEY")
         if not GROQ_API_KEY:
