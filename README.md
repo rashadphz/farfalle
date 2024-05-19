@@ -1,6 +1,8 @@
 # Farfalle
 
-Open-source AI-powered search engine. Run your own local LLM or use the cloud.
+Open-source AI-powered search engine. 
+
+Run your local LLM (**llama3**, **gemma**, **mistral**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
 Demo answering questions with llama3 on my M1 Macbook Pro:
 
@@ -21,11 +23,12 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
+- [ ] Integrate with LiteLLM
 
 ## 🛠️ Tech Stack
 
 - Frontend: [Next.js](https://nextjs.org/)
-- Backend: [FastAPI](fastapi.tiangolo.com/)
+- Backend: [FastAPI](https://fastapi.tiangolo.com/)
 - Search API: [Tavily](https://tavily.com/)
 - Logging: [Logfire](https://pydantic.dev/logfire)
 - Rate Limiting: [Redis](https://redis.io/)
