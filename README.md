@@ -74,33 +74,13 @@ TAVILY_API_KEY=...
 # Cloud Models
 OPENAI_API_KEY=...
 GROQ_API_KEY=...
-
-# Rate Limit
-RATE_LIMIT_ENABLED=
-REDIS_URL=...
-
-# Logging
-LOGFIRE_TOKEN=...
 ```
-
-#### Optional Variables (Pre-configured Defaults)
-```
-# API URL
-NEXT_PUBLIC_API_URL=http://localhost:8000
-
-# Local Models
-NEXT_PUBLIC_LOCAL_MODE_ENABLED=true
-ENABLE_LOCAL_MODELS=True
-```
-
 
 ### 3. Run Containers
 This requires Docker Compose version 2.22.0 or later.
 ```
 docker-compose -f docker-compose.dev.yaml up -d
 ```
-
-
 
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
