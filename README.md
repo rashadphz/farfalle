@@ -25,7 +25,7 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 ## 🛠️ Tech Stack
 
 - Frontend: [Next.js](https://nextjs.org/)
-- Backend: [FastAPI](fastapi.tiangolo.com/)
+- Backend: [FastAPI](https://fastapi.tiangolo.com/)
 - Search API: [Tavily](https://tavily.com/)
 - Logging: [Logfire](https://pydantic.dev/logfire)
 - Rate Limiting: [Redis](https://redis.io/)
