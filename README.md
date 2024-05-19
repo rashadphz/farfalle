@@ -1,6 +1,8 @@
 # Farfalle
 
-Open-source AI-powered search engine. Run your own local LLM or use the cloud.
+Open-source AI-powered search engine. 
+
+Run your local LLM (**llama3**, **gemma**, **mistral**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
 Demo answering questions with llama3 on my M1 Macbook Pro:
 
