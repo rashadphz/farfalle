@@ -23,6 +23,7 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
+- [ ] Integrate with LiteLLM
 
 ## 🛠️ Tech Stack
 
