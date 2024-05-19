@@ -24,6 +24,7 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
 - [ ] Integrate with LiteLLM
+- [ ] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
 
 ## 🛠️ Tech Stack
 
@@ -73,33 +74,13 @@ TAVILY_API_KEY=...
 # Cloud Models
 OPENAI_API_KEY=...
 GROQ_API_KEY=...
-
-# Rate Limit
-RATE_LIMIT_ENABLED=
-REDIS_URL=...
-
-# Logging
-LOGFIRE_TOKEN=...
 ```
-
-#### Optional Variables (Pre-configured Defaults)
-```
-# API URL
-NEXT_PUBLIC_API_URL=http://localhost:8000
-
-# Local Models
-NEXT_PUBLIC_LOCAL_MODE_ENABLED=true
-ENABLE_LOCAL_MODELS=True
-```
-
 
 ### 3. Run Containers
 This requires Docker Compose version 2.22.0 or later.
 ```
 docker-compose -f docker-compose.dev.yaml up -d
 ```
-
-
 
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
