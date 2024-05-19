@@ -25,6 +25,7 @@ from backend.schemas import (
     FinalResponseStream,
     Message,
     RelatedQueriesStream,
+    SearchResult,
     SearchResultStream,
     StreamEndStream,
     StreamEvent,
@@ -68,6 +69,12 @@ def get_llm(model: ChatModel) -> LLM:
         raise ValueError(f"Unknown model: {model}")
 
 
+def format_context(search_results: List[SearchResult]) -> str:
+    return "\n\n".join(
+        [f"Citation {i+1}. {str(result)}" for i, result in enumerate(search_results)]
+    )
+
+
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
 
     try:
@@ -90,13 +97,11 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         images = search_response.images
 
         # Only create the task first if the model is not local
-        related_queries_task = (
-            asyncio.create_task(
+        related_queries_task = None
+        if not is_local_model(request.model):
+            related_queries_task = asyncio.create_task(
                 generate_related_queries(query, search_results, request.model)
             )
-            if not is_local_model(request.model)
-            else None
-        )
 
         yield ChatResponseEvent(
             event=StreamEvent.SEARCH_RESULTS,
@@ -106,15 +111,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             ),
         )
 
-        context_str = "\n\n".join(
-            [
-                f"Citation {i+1}. {str(result)}"
-                for i, result in enumerate(search_results)
-            ]
-        )
-
         fmt_qa_prompt = CHAT_PROMPT.format(
-            my_context=context_str,
+            my_context=format_context(search_results),
             my_query=query,
         )
 
@@ -127,7 +125,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 data=TextChunkStream(text=completion.delta or ""),
             )
 
-        # For local models, generate the answer before the related queries
         related_queries = await (
             related_queries_task
             if related_queries_task

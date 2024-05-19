@@ -2,13 +2,14 @@ import asyncio
 import json
 import os
 from typing import Generator
-from backend.utils import is_local_model, strtobool
+from backend.utils import strtobool
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from backend.chat import stream_qa_objects
+from backend.validators import validate_model
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 import logfire
@@ -23,7 +24,6 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_ipaddr
 from slowapi.errors import RateLimitExceeded
 
-from backend.constants import ChatModel
 
 
 load_dotenv()
@@ -77,31 +77,6 @@ def create_error_event(detail: str):
         data=json.dumps(jsonable_encoder(obj)),
         event="error",
     )
-
-
-def validate_model(model: ChatModel):
-    if model in {ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o}:
-        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY environment variable not found")
-        if model == ChatModel.GPT_4o:
-            GPT4_ENABLED = strtobool(os.getenv("GPT4_ENABLED", True))
-            if not GPT4_ENABLED:
-                raise ValueError(
-                    "GPT4-o has been disabled. Please try a different model or self-host the app by following the instructions here: https://github.com/rashadphz/farfalle"
-                )
-
-    elif model == ChatModel.LLAMA_3_70B:
-        GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-        if not GROQ_API_KEY:
-            raise ValueError("GROQ_API_KEY environment variable not found")
-    elif is_local_model(model):
-        LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
-        if not LOCAL_MODELS_ENABLED:
-            raise ValueError("Local models are not enabled")
-    else:
-        raise ValueError("Invalid model")
-    return True
 
 
 @app.post("/chat")
