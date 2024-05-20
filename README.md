@@ -89,6 +89,8 @@ Visit [http://localhost:3000](http://localhost:3000) to view the app. If you are
 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://your-private-ip-address:8000}
 ```
 
+For custom setup instructions, see [custom-setup-instructions.md](/custom-setup-instructions.md)
+
 ## 🚀 Deploy
 
 ### Backend
