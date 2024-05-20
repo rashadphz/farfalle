@@ -1,6 +1,6 @@
 # Farfalle
 
-Open-source AI-powered search engine. 
+Open-source AI-powered search engine. (Perplexity Clone)
 
 Run your local LLM (**llama3**, **gemma**, **mistral**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
