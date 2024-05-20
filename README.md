@@ -85,6 +85,8 @@ docker-compose -f docker-compose.dev.yaml up -d
 
 Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
+For custom setup instructions, see [custom-setup-instructions.md](/custom-setup-instructions.md)
+
 ## 🚀 Deploy
 
 ### Backend
