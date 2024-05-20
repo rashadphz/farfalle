@@ -8,6 +8,7 @@ Demo answering questions with llama3 on my M1 Macbook Pro:
 
 https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6fc1be5b8dae
 
+Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [create an issue](https://github.com/rashadphz/farfalle/issues/new) if you have any questions.
 
 ## 💻 Live Demo
 
