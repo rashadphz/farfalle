@@ -1,6 +1,6 @@
 # Farfalle
 
-Open-source AI-powered search engine. 
+Open-source AI-powered search engine. (Perplexity Clone)
 
 Run your local LLM (**llama3**, **gemma**, **mistral**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
@@ -8,6 +8,7 @@ Demo answering questions with llama3 on my M1 Macbook Pro:
 
 https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6fc1be5b8dae
 
+Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [create an issue](https://github.com/rashadphz/farfalle/issues/new) if you have any questions.
 
 ## 💻 Live Demo
 
@@ -35,12 +36,12 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
-## 🏃🏿‍♂️ Getting Started
+## 🏃🏿‍♂️ Getting Started Locally
 
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Ollama](https://ollama.com/download)
+- [Ollama](https://ollama.com/download) (If running local models)
   - Download any of the supported models: **llama3**, **mistral**, **gemma**
   - Start ollama server `ollama serve`
 
