@@ -1,7 +1,4 @@
-
-
 from enum import Enum
-
 
 GPT4_MODEL = "gpt-4o"
 GPT3_MODEL = "gpt-3.5-turbo"
@@ -22,6 +19,7 @@ class ChatModel(str, Enum):
     LOCAL_LLAMA_3 = "llama3"
     LOCAL_GEMMA = "gemma"
     LOCAL_MISTRAL = "mistral"
+
 
 model_mappings: dict[ChatModel, str] = {
     ChatModel.GPT_3_5_TURBO: GPT3_MODEL,

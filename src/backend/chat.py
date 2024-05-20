@@ -1,23 +1,16 @@
 import asyncio
 import os
 from typing import AsyncIterator, List
-from backend.constants import ChatModel
-from backend.related_queries import generate_related_queries
-from backend.utils import is_local_model
-from fastapi import HTTPException
 
+from fastapi import HTTPException
+from llama_index.core.llms import LLM
+from llama_index.llms.groq import Groq
+from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
 
+from backend.constants import ChatModel, model_mappings
 from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
-from backend.constants import (
-    model_mappings,
-)
-from backend.search import search_tavily
-from llama_index.llms.groq import Groq
-from llama_index.core.llms import LLM
-from llama_index.llms.ollama import Ollama
-
-
+from backend.related_queries import generate_related_queries
 from backend.schemas import (
     BeginStream,
     ChatRequest,
@@ -31,11 +24,12 @@ from backend.schemas import (
     StreamEvent,
     TextChunkStream,
 )
+from backend.search import search_tavily
+from backend.utils import is_local_model
 
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
     try:
-
         if history:
             history_str = "\n".join([f"{msg.role}: {msg.content}" for msg in history])
             question = llm.complete(
@@ -76,7 +70,6 @@ def format_context(search_results: List[SearchResult]) -> str:
 
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
-
     try:
         llm = get_llm(request.model)
 

@@ -1,6 +1,7 @@
+import os
+
 from backend.constants import ChatModel
 from backend.utils import is_local_model, strtobool
-import os
 
 
 def validate_model(model: ChatModel):

@@ -2,29 +2,21 @@ import asyncio
 import json
 import os
 from typing import Generator
-from backend.utils import strtobool
 
+import logfire
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from backend.chat import stream_qa_objects
-from backend.validators import validate_model
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_ipaddr
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
-import logfire
-
-from backend.schemas import (
-    ChatRequest,
-    ChatResponseEvent,
-    ErrorStream,
-)
-
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_ipaddr
-from slowapi.errors import RateLimitExceeded
-
-
+from backend.chat import stream_qa_objects
+from backend.schemas import ChatRequest, ChatResponseEvent, ErrorStream
+from backend.utils import strtobool
+from backend.validators import validate_model
 
 load_dotenv()
 
@@ -84,7 +76,6 @@ def create_error_event(detail: str):
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
-
     async def generator():
         try:
             validate_model(chat_request.model)

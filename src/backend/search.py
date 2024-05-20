@@ -1,9 +1,10 @@
 import json
 import os
+
+import redis
 from dotenv import load_dotenv
 from fastapi import HTTPException
 from tavily import TavilyClient
-import redis
 
 from backend.schemas import SearchResponse, SearchResult
 

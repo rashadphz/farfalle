@@ -1,12 +1,13 @@
 import os
-from backend.constants import ChatModel
-from backend.prompts import RELATED_QUESTION_PROMPT
+
 import groq
 import instructor
 import openai
-from backend.constants import model_mappings
-from backend.schemas import RelatedQueries, SearchResult
 from dotenv import load_dotenv
+
+from backend.constants import ChatModel, model_mappings
+from backend.prompts import RELATED_QUESTION_PROMPT
+from backend.schemas import RelatedQueries, SearchResult
 
 load_dotenv()
 
