@@ -35,12 +35,12 @@ https://github.com/rashadphz/farfalle/assets/20783686/790a47c3-b978-4134-aabc-6f
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
-## 🏃🏿‍♂️ Getting Started
+## 🏃🏿‍♂️ Getting Started Locally
 
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [Ollama](https://ollama.com/download)
+- [Ollama](https://ollama.com/download) (If running local models)
   - Download any of the supported models: **llama3**, **mistral**, **gemma**
   - Start ollama server `ollama serve`
 
