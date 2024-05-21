@@ -26,7 +26,7 @@ def create_error_event(detail: str):
         data=ErrorStream(detail=detail),
         event="error",
     )
-    yield ServerSentEvent(
+    return ServerSentEvent(
         data=json.dumps(jsonable_encoder(obj)),
         event="error",
     )
@@ -39,9 +39,11 @@ def configure_logging(app: FastAPI, logfire_token: str):
 
 
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
-    print(exc.detail)
+    def generator():
+        yield create_error_event("Rate limit exceeded, please try again later.")
+
     return EventSourceResponse(
-        create_error_event("Rate limit exceeded, please try again later."),
+        generator(),
         media_type="text/event-stream",
     )
 
@@ -49,7 +51,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
 def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool, redis_url: str):
     limiter = Limiter(
         key_func=get_ipaddr,
-        enabled=strtobool(rate_limit_enabled) and redis_url,
+        enabled=strtobool(rate_limit_enabled) and redis_url is not None,
         storage_uri=redis_url,
     )
     app.state.limiter = limiter
@@ -80,7 +82,7 @@ app = create_app()
 
 
 @app.post("/chat")
-@app.state.limiter.limit("15/hour")
+@app.state.limiter.limit("4/min")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
