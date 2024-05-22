@@ -61,14 +61,17 @@ async def perform_search(query: str) -> SearchResponse:
 
     try:
         cache_key = f"search:{query}"
-        cached_results = redis_client.get(cache_key)
-        if cached_results:
-            return SearchResponse(**json.loads(cached_results))
+        if redis_client and (cached_results := redis_client.get(cache_key)):
+            cached_json = json.loads(json.loads(cached_results.decode("utf-8")))
+            return SearchResponse(**cached_json)
 
         results = await search_provider.search(query)
-        redis_client.set(cache_key, json.dumps(results.model_dump_json()), ex=7200)
+
+        if redis_client:
+            redis_client.set(cache_key, json.dumps(results.model_dump_json()), ex=7200)
 
         return results
-    except Exception as e:
-        detail = e.detail if e.detail else "There was an error while searching."
-        raise HTTPException(status_code=500, detail=detail)
+    except Exception:
+        raise HTTPException(
+            status_code=500, detail="There was an error while searching."
+        )

@@ -75,11 +75,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
         yield ChatResponseEvent(
             event=StreamEvent.BEGIN_STREAM,
-            data=BeginStream(
-                model=request.model,
-                query=request.query,
-                history=request.history,
-            ),
+            data=BeginStream(query=request.query),
         )
 
         query = rephrase_query_with_history(request.query, request.history, llm)
@@ -139,9 +135,5 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             data=FinalResponseStream(message=full_response),
         )
     except Exception as e:
-        detail = (
-            str(e.detail)
-            if e.detail
-            else "Model is at capacity. Please try again later."
-        )
+        detail = str(e)
         raise HTTPException(status_code=500, detail=detail)
