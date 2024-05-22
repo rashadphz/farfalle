@@ -14,11 +14,11 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 WORKDIR /workspace
 
 # Copy dependency files to avoid cache invalidations
-COPY pyproject.toml poetry.lock ./
-
-COPY src/backend/ src/backend/
+COPY pyproject.toml ./
 
 RUN pip install poetry && poetry install
+
+COPY src/backend/ src/backend/
 
 EXPOSE 8000
 

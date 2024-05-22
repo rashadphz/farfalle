@@ -15,7 +15,10 @@ def validate_model(model: ChatModel):
                 raise ValueError(
                     "GPT4-o has been disabled. Please try a different model or self-host the app by following the instructions here: https://github.com/rashadphz/farfalle"
                 )
-
+    elif model in {ChatModel.OPENROUTER_GPT_3_5_TURBO, ChatModel.OPENROUTER_GPT_4o}:
+        OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+        if not OPENROUTER_API_KEY:
+            raise ValueError("OPENROUTER_API_KEY environment variable not found")
     elif model == ChatModel.LLAMA_3_70B:
         GROQ_API_KEY = os.getenv("GROQ_API_KEY")
         if not GROQ_API_KEY:
