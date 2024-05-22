@@ -34,7 +34,7 @@ services:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
       - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
     ports:
-      - "30000:3000"
+      - "3000:3000"
     develop:
       watch:
         - action: sync
