@@ -78,12 +78,12 @@ const modelMap: Record<ChatModel, Model> = {
 
 const localModelMap: Partial<Record<ChatModel, Model>> = _.pickBy(
   modelMap,
-  (_, key) => isLocalModel(key as ChatModel)
+  (_, key) => isLocalModel(key as ChatModel),
 );
 
 const cloudModelMap: Partial<Record<ChatModel, Model>> = _.pickBy(
   modelMap,
-  (_, key) => isCloudModel(key as ChatModel)
+  (_, key) => isCloudModel(key as ChatModel),
 );
 
 const ModelItem: React.FC<{ model: Model }> = ({ model }) => (
@@ -128,7 +128,7 @@ export function ModelSelection() {
           {Object.values(localMode ? localModelMap : cloudModelMap).map(
             (model) => (
               <ModelItem key={model.value} model={model} />
-            )
+            ),
           )}
         </SelectGroup>
       </SelectContent>

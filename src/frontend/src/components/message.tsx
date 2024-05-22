@@ -48,7 +48,7 @@ const Text = ({
           <span
             key={`${index}-streaming`}
             className={cn(
-              isStreaming ? "animate-in fade-in-25 duration-700" : ""
+              isStreaming ? "animate-in fade-in-25 duration-700" : "",
             )}
           >
             {chunk}
@@ -59,7 +59,7 @@ const Text = ({
       return React.cloneElement(
         node,
         node.props,
-        renderText(node.props.children)
+        renderText(node.props.children),
       );
     } else if (Array.isArray(node)) {
       return node.map((child, index) => (
@@ -80,7 +80,7 @@ const StreamingParagraph = memo(
         {children}
       </Text>
     );
-  }
+  },
 );
 const Paragraph = memo(
   ({ children }: React.HTMLProps<HTMLParagraphElement>) => {
@@ -89,7 +89,7 @@ const Paragraph = memo(
         {children}
       </Text>
     );
-  }
+  },
 );
 
 const ListItem = memo(({ children }: React.HTMLProps<HTMLLIElement>) => {
@@ -107,7 +107,7 @@ const StreamingListItem = memo(
         {children}
       </Text>
     );
-  }
+  },
 );
 
 StreamingParagraph.displayName = "StreamingParagraph";
@@ -127,7 +127,7 @@ export const MessageComponent: FC<MessageProps> = ({
     const newMessage = content.replace(citationRegex, (match) => {
       const number = match.slice(1, -1);
       const source = sources?.find(
-        (source, idx) => idx + 1 === parseInt(number)
+        (source, idx) => idx + 1 === parseInt(number),
       );
       return CitationText({
         number: parseInt(number),

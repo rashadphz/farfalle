@@ -15,3 +15,10 @@ repos:
     - id: ruff
       args: [ --fix ]
     - id: ruff-format
+- repo: https://github.com/pre-commit/mirrors-prettier
+  rev: v3.1.0
+  hooks:
+  - id: prettier
+    types_or: [html, css, javascript, ts, tsx]
+    additional_dependencies:
+    - prettier

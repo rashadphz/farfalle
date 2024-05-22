@@ -49,8 +49,8 @@ const useStore = create<StoreState>()(
         model: state.model,
         localMode: state.localMode,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export const useMessageStore = () =>

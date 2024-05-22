@@ -69,7 +69,7 @@ export const useChat = () => {
       sources: SearchResult[];
       relatedQuestions: string[];
       images: string[];
-    }
+    },
   ) => {
     switch (eventItem.event) {
       case StreamEvent.BEGIN_STREAM:

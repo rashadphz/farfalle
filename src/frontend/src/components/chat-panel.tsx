@@ -26,7 +26,7 @@ const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
 
 const useAutoResizeInput = (
   ref: React.RefObject<HTMLDivElement>,
-  setWidth: (width: number) => void
+  setWidth: (width: number) => void,
 ) => {
   const { messages } = useMessageStore();
 
