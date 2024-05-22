@@ -31,7 +31,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 
 - Frontend: [Next.js](https://nextjs.org/)
 - Backend: [FastAPI](https://fastapi.tiangolo.com/)
-- Search API: [Tavily](https://tavily.com/)
+- Search API: [SearXNG](https://github.com/searxng/searxng) or [Tavily](https://tavily.com/)
 - Logging: [Logfire](https://pydantic.dev/logfire)
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
