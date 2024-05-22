@@ -14,7 +14,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 WORKDIR /workspace
 
 # Copy dependency files to avoid cache invalidations
-COPY pyproject.toml ./
+COPY pyproject.toml poetry.lock ./
 
 RUN pip install poetry && poetry install
 
