@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_ipaddr
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
@@ -21,10 +21,31 @@ from backend.validators import validate_model
 load_dotenv()
 
 
+def create_error_event(detail: str):
+    obj = ChatResponseEvent(
+        data=ErrorStream(detail=detail),
+        event=StreamEvent.ERROR,
+    )
+    return ServerSentEvent(
+        data=json.dumps(jsonable_encoder(obj)),
+        event=StreamEvent.ERROR,
+    )
+
+
 def configure_logging(app: FastAPI, logfire_token: str | None):
     if logfire_token:
         logfire.configure()
         logfire.instrument_fastapi(app)
+
+
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    def generator():
+        yield create_error_event("Rate limit exceeded, please try again later.")
+
+    return EventSourceResponse(
+        generator(),
+        media_type="text/event-stream",
+    )
 
 
 def configure_rate_limiting(
@@ -32,11 +53,11 @@ def configure_rate_limiting(
 ):
     limiter = Limiter(
         key_func=get_ipaddr,
-        enabled=rate_limit_enabled and redis_url is not None,
+        enabled=strtobool(rate_limit_enabled) and redis_url is not None,
         storage_uri=redis_url,
     )
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 
 def configure_middleware(app: FastAPI):
@@ -64,16 +85,8 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
-def create_error_event(detail: str):
-    obj = ChatResponseEvent(data=ErrorStream(detail=detail), event=StreamEvent.ERROR)
-    return ServerSentEvent(
-        data=json.dumps(jsonable_encoder(obj)),
-        event="error",
-    )
-
-
 @app.post("/chat")
-@app.state.limiter.limit("10/hour")
+@app.state.limiter.limit("4/min")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
