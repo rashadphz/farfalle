@@ -114,6 +114,7 @@ export const useChat = () => {
           images: [],
           isErrorMessage: true,
         });
+        setStreamingMessage(null);
         return;
     }
     setStreamingMessage({

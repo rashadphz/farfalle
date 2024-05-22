@@ -12,8 +12,9 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GROQ_API_KEY=${GROQ_API_KEY}
       - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
-    env_file:
-      - .env
+      - SEARCH_PROVIDER=${SEARCH_PROVIDER:-tavily}
+      - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://host.docker.internal:8080}
+      - REDIS_URL=${REDIS_URL}
     develop:
       watch:
         - action: sync
@@ -40,3 +41,19 @@ services:
           target: /app
           ignore:
             - node_modules/
+
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    networks:
+      - searxng
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_BASE_URL:-localhost}/
+
+networks:
+  searxng:

@@ -24,7 +24,7 @@ from backend.schemas import (
     StreamEvent,
     TextChunkStream,
 )
-from backend.search import search_tavily
+from backend.search.search_service import perform_search
 from backend.utils import is_local_model
 
 
@@ -75,16 +75,12 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
         yield ChatResponseEvent(
             event=StreamEvent.BEGIN_STREAM,
-            data=BeginStream(
-                model=request.model,
-                query=request.query,
-                history=request.history,
-            ),
+            data=BeginStream(query=request.query),
         )
 
         query = rephrase_query_with_history(request.query, request.history, llm)
 
-        search_response = search_tavily(query)
+        search_response = await perform_search(query)
 
         search_results = search_response.results
         images = search_response.images
@@ -139,7 +135,5 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             data=FinalResponseStream(message=full_response),
         )
     except Exception as e:
-        print(e)
-        raise HTTPException(
-            status_code=500, detail="Model is at capacity. Please try again later."
-        )
+        detail = str(e)
+        raise HTTPException(status_code=500, detail=detail)
