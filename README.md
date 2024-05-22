@@ -24,8 +24,8 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
+- [x] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
 - [ ] Integrate with LiteLLM
-- [ ] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
 
 ## 🛠️ Tech Stack
 
@@ -35,6 +35,12 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - Logging: [Logfire](https://pydantic.dev/logfire)
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
+
+
+## Features
+- Search with multiple search providers (Tavily, Searxng)
+- Answer questions with cloud models (OpenAI/gpt4-o, OpenAI/gpt3.5-turbo, Groq/Llama3)
+- Answer questions with local models (llama3, mistral, gemma)
 
 ## 🏃🏿‍♂️ Getting Started Locally
 
@@ -47,7 +53,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 
 ### Get API Keys
 
-- [Tavily](https://app.tavily.com/home)
+- [Tavily (Optional)](https://app.tavily.com/home)
 - [OpenAI (Optional)](https://platform.openai.com/api-keys)
 - [Groq (Optional)](https://console.groq.com/keys)
 
@@ -65,9 +71,18 @@ touch .env
 
 Add the following variables to the .env file:
 
-#### Required
+#### Search Provider
+You can use Tavily or Searxng as the search provider.
+
+**Tavily** (Requires API Key)
 ```
 TAVILY_API_KEY=...
+SEARCH_PROVIDER=tavily
+```
+
+**Searxng** (No API Key Required)
+```
+SEARCH_PROVIDER=searxng
 ```
 
 #### Optional
