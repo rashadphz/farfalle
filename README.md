@@ -2,7 +2,7 @@
 
 Open-source AI-powered search engine. (Perplexity Clone)
 
-Run your local LLM (**llama3**, **gemma**, **mistral**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
+Run your local LLM (**llama3**, **gemma**, **mistral**, **phi3**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
 Demo answering questions with llama3 on my M1 Macbook Pro:
 
@@ -40,7 +40,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 ## Features
 - Search with multiple search providers (Tavily, Searxng)
 - Answer questions with cloud models (OpenAI/gpt4-o, OpenAI/gpt3.5-turbo, Groq/Llama3)
-- Answer questions with local models (llama3, mistral, gemma)
+- Answer questions with local models (llama3, mistral, gemma, phi3)
 
 ## 🏃🏿‍♂️ Getting Started Locally
 
@@ -48,7 +48,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Ollama](https://ollama.com/download) (If running local models)
-  - Download any of the supported models: **llama3**, **mistral**, **gemma**
+  - Download any of the supported models: **llama3**, **mistral**, **gemma**, **phi3**
   - Start ollama server `ollama serve`
 
 ### Get API Keys
