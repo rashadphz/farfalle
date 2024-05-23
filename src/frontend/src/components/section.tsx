@@ -31,7 +31,7 @@ export const Section = ({
     <div
       className={cn(
         "flex flex-col mb-8",
-        animate ? "animate-in fade-in duration-1000 ease-out" : ""
+        animate ? "animate-in fade-in duration-1000 ease-out" : "",
       )}
     >
       <div className="flex items-center space-x-2">

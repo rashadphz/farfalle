@@ -26,7 +26,7 @@ const MessagesList = ({
             />
             {index !== messages.length - 1 && <Separator />}
           </>
-        )
+        ),
       )}
       {streamingMessage && (
         <AssistantMessageContent

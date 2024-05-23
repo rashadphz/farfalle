@@ -17,13 +17,11 @@ const mono = Mono({
   variable: "--font-mono",
 });
 
-const inter = Inter({ subsets: ["latin"] });
-
 const title = "Farfalle";
 const description = "Open-source AI powered answer engine.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://farfalle.vercel.app/"),
+  metadataBase: new URL("https://farfalle.dev/"),
   title,
   description,
   openGraph: {

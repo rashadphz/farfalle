@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
   "what is farfalle?",
-  "explain openai scarlett johansson",
+  "openai scarlett johansson?",
   "what is groq?",
   "what happened to ilya?",
 ];
@@ -19,7 +19,7 @@ export const StarterQuestionsList = ({
           <ArrowUpRight size={18} className="text-tint" />
           <button
             onClick={() => handleSend(question)}
-            className="font-medium hover:underline decoration-tint underline-offset-4 transition-all duration-200 ease-in-out transform hover:scale-[1.02]"
+            className="font-medium hover:underline decoration-tint underline-offset-4 transition-all duration-200 ease-in-out transform hover:scale-[1.02] text-left break-words normal-case"
           >
             {question}
           </button>

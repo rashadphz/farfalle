@@ -23,7 +23,7 @@ export function LocalToggle() {
         asChild
         className={cn(
           "hover:cursor-pointer",
-          !env.NEXT_PUBLIC_LOCAL_MODE_ENABLED && "hover:cursor-not-allowed"
+          !env.NEXT_PUBLIC_LOCAL_MODE_ENABLED && "hover:cursor-not-allowed",
         )}
         onClick={toggleLocalMode}
       >
@@ -35,7 +35,7 @@ export function LocalToggle() {
           <span
             className={cn(
               "font-bold text-sm transition-all",
-              localMode ? "text-tint " : "text-gray-500 group-hover:text-white"
+              localMode ? "text-tint " : "text-gray-500 group-hover:text-white",
             )}
           >
             Local

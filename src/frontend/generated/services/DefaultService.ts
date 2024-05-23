@@ -26,7 +26,7 @@ export class DefaultService {
    * @throws ApiError
    */
   public static chatChatPost(
-    requestBody: ChatRequest
+    requestBody: ChatRequest,
   ): CancelablePromise<Array<ChatResponseEvent>> {
     return __request(OpenAPI, {
       method: "POST",
