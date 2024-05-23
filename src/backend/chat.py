@@ -52,6 +52,7 @@ def get_llm(model: ChatModel) -> LLM:
         ChatModel.LOCAL_GEMMA,
         ChatModel.LOCAL_LLAMA_3,
         ChatModel.LOCAL_MISTRAL,
+        ChatModel.LOCAL_PHI3_14B,
     ]:
         return Ollama(
             base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434"),

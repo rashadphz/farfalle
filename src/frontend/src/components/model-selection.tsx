@@ -13,6 +13,7 @@ import { LightningBoltIcon, MagicWandIcon } from "@radix-ui/react-icons";
 import {
   AtomIcon,
   BrainIcon,
+  FlameIcon,
   Rabbit,
   RabbitIcon,
   SparklesIcon,
@@ -73,6 +74,13 @@ const modelMap: Record<ChatModel, Model> = {
     value: ChatModel.MISTRAL,
     smallIcon: <AtomIcon className="w-4 h-4 text-[#FF7000]" />,
     icon: <AtomIcon className="w-5 h-5 text-[#FF7000]" />,
+  },
+  [ChatModel.LOCAL_PHI3_14B]: {
+    name: "Phi3",
+    description: "ollama/phi3:14b",
+    value: ChatModel.LOCAL_PHI3_14B,
+    smallIcon: <FlameIcon className="w-4 h-4 text-green-500" />,
+    icon: <FlameIcon className="w-5 h-5 text-green-500" />,
   },
 };
 
