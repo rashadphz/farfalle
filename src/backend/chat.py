@@ -7,6 +7,7 @@ from llama_index.core.llms import LLM
 from llama_index.llms.groq import Groq
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
+from llama_index.llms.openrouter import OpenRouter
 
 from backend.constants import ChatModel, model_mappings
 from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
@@ -48,6 +49,8 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
 def get_llm(model: ChatModel) -> LLM:
     if model in [ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o]:
         return OpenAI(model=model_mappings[model])
+    elif model in [ChatModel.OPENROUTER_GPT_3_5_TURBO, ChatModel.OPENROUTER_GPT_4o]:
+        return OpenRouter(model=model_mappings[model])
     elif model in [
         ChatModel.LOCAL_GEMMA,
         ChatModel.LOCAL_LLAMA_3,

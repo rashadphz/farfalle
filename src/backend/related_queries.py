@@ -13,6 +13,15 @@ load_dotenv()
 
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+# Extract API key from environment
+openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
+assert openrouter_api_key, "OPENROUTER_API_KEY is not set in environment variables"
+
+# Base URL for OpenAI client
+openrouter_api_base = os.environ.get("OPENROUTER_API_BASE")
+assert openrouter_api_base, "OPENROUTER_BASE_URL is not set in environment variables"
+
+
 
 
 def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
@@ -21,6 +30,17 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
         ChatModel.GPT_4o,
     ]:
         return instructor.from_openai(openai.AsyncOpenAI())
+    if model in [
+        ChatModel.OPENROUTER_GPT_3_5_TURBO,
+        ChatModel.OPENROUTER_GPT_4o,
+    ]:
+        return instructor.from_openai(
+            openai.AsyncOpenAI(
+                base_url=openrouter_api_base,
+                api_key=openrouter_api_key,
+            ),
+            mode=instructor.Mode.JSON,
+        )
     elif model in [
         ChatModel.LOCAL_GEMMA,
         ChatModel.LOCAL_LLAMA_3,

@@ -1,7 +1,9 @@
 from enum import Enum
 
 GPT4_MODEL = "gpt-4o"
+OPENROUTER_GPT4_MODEL = "openai/gpt-4o"
 GPT3_MODEL = "gpt-3.5-turbo"
+OPENROUTER_GPT3_MODEL = "openai/gpt-3.5-turbo"
 LLAMA_8B_MODEL = "llama3-8b-8192"
 LLAMA_70B_MODEL = "llama3-70b-8192"
 
@@ -14,7 +16,9 @@ LOCAL_PHI3_14B = "phi3:14b"
 class ChatModel(str, Enum):
     LLAMA_3_70B = "llama-3-70b"
     GPT_4o = "gpt-4o"
+    OPENROUTER_GPT_4o = "openai/gpt-4o"
     GPT_3_5_TURBO = "gpt-3.5-turbo"
+    OPENROUTER_GPT_3_5_TURBO = "openai/gpt-3.5-turbo"
 
     # Local models
     LOCAL_LLAMA_3 = "llama3"
@@ -25,7 +29,9 @@ class ChatModel(str, Enum):
 
 model_mappings: dict[ChatModel, str] = {
     ChatModel.GPT_3_5_TURBO: GPT3_MODEL,
+    ChatModel.OPENROUTER_GPT_3_5_TURBO: OPENROUTER_GPT3_MODEL,
     ChatModel.GPT_4o: GPT4_MODEL,
+    ChatModel.OPENROUTER_GPT_4o: OPENROUTER_GPT4_MODEL,
     ChatModel.LLAMA_3_70B: LLAMA_70B_MODEL,
     ChatModel.LOCAL_LLAMA_3: LOCAL_LLAMA3_MODEL,
     ChatModel.LOCAL_GEMMA: LOCAL_GEMMA_MODEL,
