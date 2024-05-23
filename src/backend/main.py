@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import traceback
 from typing import Generator
 
 import logfire
@@ -99,6 +100,7 @@ async def chat(
                 yield json.dumps(jsonable_encoder(obj))
                 await asyncio.sleep(0)
         except Exception as e:
+            print(traceback.format_exc())
             yield create_error_event(str(e))
             await asyncio.sleep(0)
             return

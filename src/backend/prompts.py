@@ -26,14 +26,16 @@ Answer (in the language of the user's question): \
 
 RELATED_QUESTION_PROMPT = """\
 You are an expert at predicting what questions a user might ask next based on their original question and the information in a search result.
-Given a question and search results, generate a list of 3 questions the user might want to follow up with. Build upon the original question and information from the search results. Do ask a question that is similar to the origina question
+Given a question and search results, generate a list of 3 questions the user might want to follow up with. Build upon the original question and information from the search results.
 
 There must be EXACTLY 3 questions. Keep the questions SHORT, CONCISE, and SIMPLE.
 
 Make sure to match the language of the user's question.
 
 Original Question: {query}
-Search Results: {context}
+<context>
+{context}
+</context>
 """
 
 HISTORY_QUERY_REPHRASE = """
