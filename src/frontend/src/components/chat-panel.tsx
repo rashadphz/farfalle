@@ -76,7 +76,7 @@ export const ChatPanel = () => {
   }, [queryMessage]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       {messages.length > 0 ? (
         <div ref={messagesRef} className="pt-10 w-full relative">
           <MessagesList
@@ -107,6 +107,6 @@ export const ChatPanel = () => {
           </div>
         </div>
       )}
-    </Suspense>
+    </>
   );
 };
