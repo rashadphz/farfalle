@@ -18,7 +18,7 @@ import {
 } from "@microsoft/fetch-event-source";
 import { useState } from "react";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
-import { useMessageStore } from "@/stores";
+import { useConfigStore, useMessageStore } from "@/stores";
 import { useToast } from "@/components/ui/use-toast";
 import { env } from "../env.mjs";
 
@@ -56,8 +56,8 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 };
 
 export const useChat = () => {
-  const { addMessage, messages, model } = useMessageStore();
-  const { toast } = useToast();
+  const { addMessage, messages } = useMessageStore();
+  const { model } = useConfigStore();
 
   const [streamingMessage, setStreamingMessage] =
     useState<AssistantMessage | null>(null);
