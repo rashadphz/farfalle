@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/hover-card";
 import { Separator } from "./ui/separator";
 import { env } from "@/env.mjs";
+import { memo } from "react";
 
-export function LocalToggle() {
+const LocalToggle = () => {
   const { localMode, toggleLocalMode } = useConfigStore();
 
   return (
@@ -81,4 +82,6 @@ export function LocalToggle() {
       </HoverCardContent>
     </HoverCard>
   );
-}
+};
+
+export default memo(LocalToggle);

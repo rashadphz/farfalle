@@ -2,6 +2,7 @@ import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { AssistantMessageContent } from "./assistant-message";
 import { Separator } from "./ui/separator";
 import { UserMessageContent } from "./user-message";
+import { memo } from "react";
 
 const MessagesList = ({
   messages,
@@ -39,4 +40,4 @@ const MessagesList = ({
   );
 };
 
-export default MessagesList;
+export default memo(MessagesList);

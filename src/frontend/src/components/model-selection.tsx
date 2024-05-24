@@ -116,6 +116,7 @@ export function ModelSelection() {
   return (
     <Select
       defaultValue={model}
+      value={model}
       onValueChange={(value) => {
         if (value) {
           setModel(value as ChatModel);

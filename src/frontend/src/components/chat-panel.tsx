@@ -4,13 +4,13 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useChat } from "@/hooks/chat";
 import { useMessageStore } from "@/stores";
 import { MessageType } from "@/types";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AskInput } from "./ask-input";
 
 import MessagesList from "./messages-list";
 import { ModelSelection } from "./model-selection";
 import { StarterQuestionsList } from "./starter-questions";
-import { LocalToggle } from "./local-toggle";
+import LocalToggle from "./local-toggle";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useMessageStore();
@@ -54,6 +54,7 @@ const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
 export const ChatPanel = () => {
   const searchParams = useSearchParams();
   const queryMessage = searchParams.get("q");
+  const hasRun = useRef(false);
 
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
@@ -68,10 +69,11 @@ export const ChatPanel = () => {
   useAutoFocus(inputRef);
 
   useEffect(() => {
-    if (queryMessage) {
-      //   handleSend(queryMessage);
+    if (queryMessage && !hasRun.current) {
+      hasRun.current = true;
+      handleSend(queryMessage);
     }
-  }, [queryMessage, handleSend]);
+  }, [queryMessage]);
 
   if (messages.length > 0) {
     return (
