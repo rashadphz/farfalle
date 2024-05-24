@@ -2,13 +2,13 @@ FROM node:18-alpine
 
 RUN apk add --no-cache libc6-compat
 
-WORKDIR /app/src/frontend
+WORKDIR /app
 
-COPY . /app
+COPY src/frontend/package.json src/frontend/pnpm-lock.yaml ./
 
-RUN corepack enable
-RUN pnpm i
+RUN corepack enable pnpm && pnpm i
 
+COPY src/frontend/ .
 
 EXPOSE 3000
 
