@@ -111,8 +111,7 @@ const ModelItem: React.FC<{ model: Model }> = ({ model }) => (
 );
 
 export function ModelSelection() {
-  const { model, setModel } = useMessageStore();
-  const { localMode } = useConfigStore();
+  const { model, setModel, localMode } = useConfigStore();
 
   return (
     <Select

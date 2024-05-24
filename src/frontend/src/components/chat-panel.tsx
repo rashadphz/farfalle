@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams, useSearchParams } from "next/navigation";
 import { useChat } from "@/hooks/chat";
 import { useMessageStore } from "@/stores";
 import { MessageType } from "@/types";
@@ -51,6 +52,9 @@ const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
 };
 
 export const ChatPanel = () => {
+  const searchParams = useSearchParams();
+  const queryMessage = searchParams.get("q");
+
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
 
@@ -62,6 +66,12 @@ export const ChatPanel = () => {
   useAutoScroll(messageBottomRef);
   useAutoResizeInput(messagesRef, setWidth);
   useAutoFocus(inputRef);
+
+  useEffect(() => {
+    if (queryMessage) {
+      //   handleSend(queryMessage);
+    }
+  }, [queryMessage, handleSend]);
 
   if (messages.length > 0) {
     return (
