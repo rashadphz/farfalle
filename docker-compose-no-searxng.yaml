@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./src/backend/Dockerfile.dev
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
+      - SEARCH_PROVIDER=${SEARCH_PROVIDER:-tavily}
+      - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://host.docker.internal:8080}
+      - REDIS_URL=${REDIS_URL}
+    develop:
+      watch:
+        - action: sync
+          path: ./src/backend
+          target: /workspace/src/backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: .
+      dockerfile: ./src/frontend/Dockerfile.dev
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./src/frontend
+          target: /app
+          ignore:
+            - node_modules/
