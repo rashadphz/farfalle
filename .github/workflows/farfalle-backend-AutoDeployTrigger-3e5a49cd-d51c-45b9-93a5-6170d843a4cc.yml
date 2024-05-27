@@ -35,7 +35,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}
-          dockerfilePath: ${{ github.workspace }}/src/backend/Dockerfile
+          dockerfilePath: ./src/backend/Dockerfile
           registryUrl: farfallebackend.azurecr.io
           registryUsername: ${{ secrets.FARFALLEBACKEND_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.FARFALLEBACKEND_REGISTRY_PASSWORD }}
