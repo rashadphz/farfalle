@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: farfallebackend.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_abc14ec1783a4e46b2aaa3b71b6ff5f2 }}/farfalle-backend:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./src/backend/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
