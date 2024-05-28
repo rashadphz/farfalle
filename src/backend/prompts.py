@@ -27,7 +27,9 @@ Answer (in the language of the user's question): \
 RELATED_QUESTION_PROMPT = """\
 Given a question and search result context, generate 3 follow-up questions the user might ask. Use the original question and context.
 
-There must be EXACTLY 3 questions. Keep the questions concise, and simple.
+There must be EXACTLY 3 questions. Keep the questions concise, and simple. This should return an object with the following fields:
+
+questions: A list of 3 concise, simple questions
 
 Make sure to match the language of the user's question.
 

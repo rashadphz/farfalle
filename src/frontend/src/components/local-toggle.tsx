@@ -64,6 +64,7 @@ const LocalToggle = () => {
               <li>Llama3</li>
               <li>Gemma</li>
               <li>Mistral</li>
+              <li>Phi3</li>
             </ul>
           </div>
           <Separator className="mt-1" />
