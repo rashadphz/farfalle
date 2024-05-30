@@ -37,6 +37,8 @@ Original Question: {query}
 <context>
 {context}
 </context>
+
+Your 3 follow-up questions:
 """
 
 HISTORY_QUERY_REPHRASE = """
