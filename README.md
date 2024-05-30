@@ -25,7 +25,11 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
 - [x] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
-- [ ] Integrate with LiteLLM
+- [ ] Create a pre-built Docker Image
+- [ ] Chat History
+- [ ] Chat with local files
+
+
 
 ## 🛠️ Tech Stack
 
