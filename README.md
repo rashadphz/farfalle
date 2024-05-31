@@ -35,14 +35,14 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 
 - Frontend: [Next.js](https://nextjs.org/)
 - Backend: [FastAPI](https://fastapi.tiangolo.com/)
-- Search API: [SearXNG](https://github.com/searxng/searxng), [Tavily](https://tavily.com/), [Serper](https://serper.dev/)
+- Search API: [SearXNG](https://github.com/searxng/searxng), [Tavily](https://tavily.com/), [Serper](https://serper.dev/), [Bing](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 - Logging: [Logfire](https://pydantic.dev/logfire)
 - Rate Limiting: [Redis](https://redis.io/)
 - Components: [shadcn/ui](https://ui.shadcn.com/)
 
 
 ## Features
-- Search with multiple search providers (Tavily, Searxng, Serper)
+- Search with multiple search providers (Tavily, Searxng, Serper, Bing)
 - Answer questions with cloud models (OpenAI/gpt4-o, OpenAI/gpt3.5-turbo, Groq/Llama3)
 - Answer questions with local models (llama3, mistral, gemma, phi3)
 
@@ -60,6 +60,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [Tavily (Optional)](https://app.tavily.com/home)
 - [Serper (Optional)](https://serper.dev/dashboard)
 - [OpenAI (Optional)](https://platform.openai.com/api-keys)
+- [Bing (Optional)](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 - [Groq (Optional)](https://console.groq.com/keys)
 
 ### 1. Clone the Repo
@@ -77,7 +78,7 @@ touch .env
 Add the following variables to the .env file:
 
 #### Search Provider
-You can use Tavily, Searxng, or Serper as the search provider.
+You can use Tavily, Searxng, Serper, or Bing as the search provider.
 
 **Searxng** (No API Key Required)
 ```
@@ -93,6 +94,12 @@ SEARCH_PROVIDER=tavily
 ```
 SERPER_API_KEY=...
 SEARCH_PROVIDER=serper
+```
+
+**Bing** (Requires API Key)
+```
+BING_API_KEY=...
+SEARCH_PROVIDER=bing
 ```
 
 

@@ -7,6 +7,7 @@ from fastapi import HTTPException
 
 from backend.schemas import SearchResponse
 from backend.search.providers.base import SearchProvider
+from backend.search.providers.bing import BingSearchProvider
 from backend.search.providers.searxng import SearxngSearchProvider
 from backend.search.providers.serper import SerperSearchProvider
 from backend.search.providers.tavily import TavilySearchProvider
@@ -48,9 +49,18 @@ def get_serper_api_key():
     return serper_api_key
 
 
+def get_bing_api_key():
+    bing_api_key = os.getenv("BING_API_KEY")
+    if not bing_api_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Bing API key is not set in the environment variables. Please set the BING_API_KEY environment variable or set SEARCH_PROVIDER to 'searxng', 'tavily', or 'serper'.",
+        )
+    return bing_api_key
+
+
 def get_search_provider() -> SearchProvider:
     search_provider = os.getenv("SEARCH_PROVIDER", "tavily")
-    print(f"Search provider: {search_provider}")
 
     match search_provider:
         case "searxng":
@@ -62,6 +72,9 @@ def get_search_provider() -> SearchProvider:
         case "serper":
             serper_api_key = get_serper_api_key()
             return SerperSearchProvider(serper_api_key)
+        case "bing":
+            bing_api_key = get_bing_api_key()
+            return BingSearchProvider(bing_api_key)
         case _:
             raise HTTPException(
                 status_code=500,
