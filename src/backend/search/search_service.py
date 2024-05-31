@@ -78,7 +78,7 @@ def get_search_provider() -> SearchProvider:
         case _:
             raise HTTPException(
                 status_code=500,
-                detail="Invalid search provider. Please set the SEARCH_PROVIDER environment variable to either 'searxng' or 'tavily'.",
+                detail="Invalid search provider. Please set the SEARCH_PROVIDER environment variable to either 'searxng', 'tavily', 'serper', or 'bing'.",
             )
 
 
