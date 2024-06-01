@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import {
+  CameraIcon,
   ListPlusIcon,
   SparkleIcon,
   StarIcon,
@@ -14,7 +15,7 @@ export const Section = ({
   animate = true,
   streaming = false,
 }: {
-  title: "Sources" | "Answer" | "Related";
+  title: "Sources" | "Answer" | "Related" | "Images";
   children: React.ReactNode;
   animate?: boolean;
   streaming?: boolean;
@@ -23,6 +24,7 @@ export const Section = ({
     Sources: TextSearchIcon,
     Answer: SparkleIcon,
     Related: ListPlusIcon,
+    Images: CameraIcon,
   };
 
   const IconComponent = iconMap[title] || StarIcon;

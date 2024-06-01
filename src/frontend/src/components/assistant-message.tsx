@@ -69,25 +69,27 @@ export const AssistantMessageContent = ({
         ) : (
           <>
             <SearchResults results={sources} />
-            {images && images.length > 0 && (
-              <div className="my-4 grid grid-cols-1 gap-2 lg:grid-cols-2">
-                {images.map((image) => (
-                  <a
-                    key={image}
-                    href={image}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="aspect-video w-full h-full overflow-hidden hover:scale-[1.03] duration-150 rounded-lg transition-all shadow-md"
-                  >
-                    <img
-                      src={image}
-                      className="w-full object-cover object-top h-full max-h-[80vh]"
-                    />
-                  </a>
-                ))}
-              </div>
-            )}
           </>
+        )}
+      </Section>
+      <Section title="Images" animate={isStreaming}>
+        {images && images.length > 0 && (
+          <div className="my-4 grid grid-cols-1 gap-2 lg:grid-cols-2">
+            {images.map((image) => (
+              <a
+                key={image}
+                href={image}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="aspect-video w-full h-full overflow-hidden hover:scale-[1.03] duration-150 rounded-lg transition-all shadow-md"
+              >
+                <img
+                  src={image}
+                  className="w-full object-cover object-top h-full max-h-[80vh]"
+                />
+              </a>
+            ))}
+          </div>
         )}
       </Section>
       {relatedQuestions && relatedQuestions.length > 0 && (
