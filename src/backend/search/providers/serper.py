@@ -43,7 +43,7 @@ class SerperSearchProvider(SearchProvider):
         ]
 
     async def get_image_results(
-        self, client: httpx.AsyncClient, query: str, num_results: int = 5
+        self, client: httpx.AsyncClient, query: str, num_results: int = 4
     ) -> list[str]:
         response = await client.get(
             f"{self.host}/images",
