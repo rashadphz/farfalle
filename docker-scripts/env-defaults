@@ -1,0 +1,23 @@
+# Ollama
+export OLLAMA_HOST=${OLLAMA_HOST:-http://localhost:11434}
+
+# Search
+export TAVILY_API_KEY=${TAVILY_API_KEY}
+export BING_API_KEY=${BING_API_KEY}
+export SERP_API_KEY=${SERP_API_KEY}
+
+export SEARCH_PROVIDER=${SEARCH_PROVIDER:-searxng}
+export SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://localhost:8080}
+
+# LLM
+export OPENAI_API_KEY=${OPENAI_API_KEY}
+export GROQ_API_KEY=${GROQ_API_KEY}
+export ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
+
+# Frontend
+export NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+export NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
+
+
+# Redis
+export REDIS_URL=${REDIS_URL}

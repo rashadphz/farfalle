@@ -1,9 +1,13 @@
 # see https://docs.searxng.org/admin/settings/settings.html#settings-use-default-settings
 use_default_settings: true
+
 server:
   secret_key: "f9e603d4191caab069b021fa0568391a33c8a837b470892c64461b5dd12464f4"
   limiter: false
   image_proxy: true
+  port: 8080
+  bind_address : "0.0.0.0"
+
 ui:
   static_use_hash: true
 search:
