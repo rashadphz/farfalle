@@ -10,6 +10,7 @@ run_backend() {
 
 run_frontend() {
     cd /workspace/src/frontend
+    pnpm build
     echo "Running frontend"
     pm2 start pnpm -- start
 }
