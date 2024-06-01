@@ -44,8 +44,8 @@ async def generate_related_queries(
     query: str, search_results: list[SearchResult], model: ChatModel
 ) -> list[str]:
     context = "\n\n".join([f"{str(result)}" for result in search_results])
-    # Truncate the context to 5000 characters (mainly for smaller models)
-    context = context[:5000]
+    # Truncate the context to 4000 characters (mainly for smaller models)
+    context = context[:4000]
 
     client = instructor_client(model)
     model_name = model_mappings[model]
