@@ -1,5 +1,5 @@
 # Ollama
-export OLLAMA_HOST=${OLLAMA_HOST:-http://localhost:11434}
+export OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
 
 # Search
 export TAVILY_API_KEY=${TAVILY_API_KEY}
