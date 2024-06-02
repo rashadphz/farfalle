@@ -26,7 +26,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [x] Add support for local LLMs through Ollama
 - [x] Docker deployment setup
 - [x] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
-- [ ] Create a pre-built Docker Image
+- [x] Create a pre-built Docker Image
 - [ ] Chat History
 - [ ] Chat with local files
 
@@ -63,6 +63,41 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [OpenAI (Optional)](https://platform.openai.com/api-keys)
 - [Bing (Optional)](https://www.microsoft.com/en-us/bing/apis/bing-web-search-api)
 - [Groq (Optional)](https://console.groq.com/keys)
+
+### Quick Start:
+```
+docker run \
+    -p 8000:8000 -p 3000:3000 -p 8080:8080 \
+    --add-host=host.docker.internal:host-gateway \
+    ghcr.io/rashadphz/farfalle:main
+```
+
+#### Optional
+- `OPENAI_API_KEY`: Your OpenAI API key. Not required if you are using Ollama.
+- `SEARCH_PROVIDER`: The search provider to use. Can be `tavily`, `serper`, `bing`, or `searxng`.
+- `OPENAI_API_KEY`: Your OpenAI API key. Not required if you are using Ollama.
+- `TAVILY_API_KEY`: Your Tavily API key.
+- `SERPER_API_KEY`: Your Serper API key.
+- `BING_API_KEY`: Your Bing API key.
+- `GROQ_API_KEY`: Your Groq API key.
+- `SEARXNG_BASE_URL`: The base URL for the SearXNG instance.
+
+Add any env variable to the docker run command like so:
+```
+docker run \
+    -e ENV_VAR_NAME1='YOUR_ENV_VAR_VALUE1' \
+    -e ENV_VAR_NAME2='YOUR_ENV_VAR_VALUE2' \
+    -p 8000:8000 -p 3000:3000 -p 8080:8080 \
+    --add-host=host.docker.internal:host-gateway \
+    ghcr.io/rashadphz/farfalle:main
+```
+
+
+
+Wait for the app to start then visit [http://localhost:3000](http://localhost:3000).
+
+or follow the instructions below to clone the repo and run the app locally
+
 
 ### 1. Clone the Repo
 
