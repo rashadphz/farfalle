@@ -10,7 +10,7 @@ services:
       - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - BING_API_KEY=${BING_API_KEY}
-      - SERP_API_KEY=${SERP_API_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GROQ_API_KEY=${GROQ_API_KEY}
       - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
