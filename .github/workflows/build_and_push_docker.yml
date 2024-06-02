@@ -3,9 +3,8 @@
 name: Create and publish single container image
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 env:
   REGISTRY: ghcr.io
