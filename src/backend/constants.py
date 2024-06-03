@@ -9,6 +9,7 @@ LOCAL_LLAMA3_MODEL = "llama3"
 LOCAL_GEMMA_MODEL = "gemma:7b"
 LOCAL_MISTRAL_MODEL = "mistral"
 LOCAL_PHI3_14B = "phi3:14b"
+CUSTOM_MODEL = "gpt-4" # llama_index really wants to know model context length so 8k by default.
 
 
 class ChatModel(str, Enum):
@@ -21,6 +22,7 @@ class ChatModel(str, Enum):
     LOCAL_GEMMA = "gemma"
     LOCAL_MISTRAL = "mistral"
     LOCAL_PHI3_14B = "phi3:14b"
+    CUSTOM = "custom-api"
 
 
 model_mappings: dict[ChatModel, str] = {
@@ -31,4 +33,5 @@ model_mappings: dict[ChatModel, str] = {
     ChatModel.LOCAL_GEMMA: LOCAL_GEMMA_MODEL,
     ChatModel.LOCAL_MISTRAL: LOCAL_MISTRAL_MODEL,
     ChatModel.LOCAL_PHI3_14B: LOCAL_PHI3_14B,
+    ChatModel.CUSTOM: CUSTOM_MODEL,
 }

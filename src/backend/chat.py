@@ -60,6 +60,11 @@ def get_llm(model: ChatModel) -> LLM:
         )
     elif model == ChatModel.LLAMA_3_70B:
         return Groq(model=model_mappings[model])
+    elif model == ChatModel.CUSTOM:
+        return OpenAI(model=model_mappings[model], # can use https://docs.llamaindex.ai/en/stable/api_reference/llms/openai_like/ instead
+                      api_base=os.environ.get("CUSTOM_HOST", "http://localhost:1234/v1"),
+                      api_key=os.environ.get("CUSTOM_API_KEY", "custom-key")  
+        )
     else:
         raise ValueError(f"Unknown model: {model}")
 

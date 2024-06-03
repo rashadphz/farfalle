@@ -12,6 +12,8 @@ services:
       - BING_API_KEY=${BING_API_KEY}
       - SERPER_API_KEY=${SERPER_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CUSTOM_HOST=${CUSTOM_HOST:-http://host.docker.internal:1234/v1}
+      - CUSTOM_API_KEY=${CUSTOM_API_KEY}
       - GROQ_API_KEY=${GROQ_API_KEY}
       - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
       - SEARCH_PROVIDER=${SEARCH_PROVIDER:-tavily}

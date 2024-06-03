@@ -24,6 +24,10 @@ def validate_model(model: ChatModel):
         LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
         if not LOCAL_MODELS_ENABLED:
             raise ValueError("Local models are not enabled")
+    elif model == ChatModel.CUSTOM:
+        CUSTOM_HOST = os.getenv("CUSTOM_HOST")
+        if not CUSTOM_HOST:
+            raise ValueError("CUSTOM_HOST environment variable not found")
     else:
         raise ValueError("Invalid model")
     return True
