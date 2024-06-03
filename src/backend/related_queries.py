@@ -36,6 +36,14 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
         )
     elif model == ChatModel.LLAMA_3_70B:
         return instructor.from_groq(groq.AsyncGroq(), mode=instructor.Mode.JSON)
+    elif model == ChatModel.CUSTOM:
+        return instructor.from_openai(
+            openai.AsyncOpenAI(
+                base_url=os.environ.get("CUSTOM_HOST", "http://localhost:1234/v1"),
+                api_key=os.environ.get("CUSTOM_API_KEY", "custom-key")
+            ),
+            mode=instructor.Mode.JSON,
+        )
     else:
         raise ValueError(f"Unknown model: {model}")
 

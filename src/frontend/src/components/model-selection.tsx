@@ -82,6 +82,13 @@ const modelMap: Record<ChatModel, Model> = {
     smallIcon: <FlameIcon className="w-4 h-4 text-green-500" />,
     icon: <FlameIcon className="w-5 h-5 text-green-500" />,
   },
+  [ChatModel.CUSTOM]: {
+    name: "Custom API",
+    description: "Custom API",
+    value: ChatModel.CUSTOM,
+    smallIcon: <MagicWandIcon className="w-4 h-4 text-[#FF0080]" />,
+    icon: <MagicWandIcon className="w-5 h-5 text-[#FF0080]" />,
+  },
 };
 
 const localModelMap: Partial<Record<ChatModel, Model>> = _.pickBy(
