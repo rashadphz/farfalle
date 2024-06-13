@@ -15,8 +15,27 @@ load_dotenv()
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 
 
+def get_openai_client() -> openai.AsyncOpenAI:
+    openai_mode = os.environ.get("OPENAI_MODE", "openai")
+    if openai_mode == "openai":
+        return openai.AsyncOpenAI()
+    elif openai_mode == "azure":
+        return openai.AsyncAzureOpenAI(
+            azure_deployment=os.environ.get("AZURE_DEPLOYMENT_NAME"),
+            azure_endpoint=os.environ["AZURE_CHAT_ENDPOINT"],
+            api_key=os.environ.get("AZURE_API_KEY"),
+            api_version="2024-04-01-preview",
+        )
+    else:
+        raise ValueError(f"Unknown openai mode: {openai_mode}")
+
+
 def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
-    if model in [
+    if model == ChatModel.GPT_3_5_TURBO:
+        return instructor.from_openai(
+            get_openai_client(),
+        )
+    elif model in [
         ChatModel.GPT_3_5_TURBO,
         ChatModel.GPT_4o,
     ]:
@@ -35,7 +54,7 @@ def instructor_client(model: ChatModel) -> instructor.AsyncInstructor:
             mode=instructor.Mode.JSON,
         )
     elif model == ChatModel.LLAMA_3_70B:
-        return instructor.from_groq(groq.AsyncGroq(), mode=instructor.Mode.JSON)
+        return instructor.from_groq(groq.AsyncGroq(), mode=instructor.Mode.JSON)  # type: ignore
     else:
         raise ValueError(f"Unknown model: {model}")
 
@@ -50,6 +69,8 @@ async def generate_related_queries(
     client = instructor_client(model)
     model_name = model_mappings[model]
 
+    print(RELATED_QUESTION_PROMPT.format(query=query, context=context))
+
     related = await client.chat.completions.create(
         model=model_name,
         response_model=RelatedQueries,
@@ -61,4 +82,4 @@ async def generate_related_queries(
         ],
     )
 
-    return [query.lower().replace("?", "") for query in related.questions]
+    return [query.lower().replace("?", "") for query in related.related_questions]

@@ -27,10 +27,10 @@ Answer (in the language of the user's question): \
 RELATED_QUESTION_PROMPT = """\
 Given a question and search result context, generate 3 follow-up questions the user might ask. Use the original question and context.
 
-There must be EXACTLY 3 questions. Keep the questions concise, and simple. This should return an object with the following fields:
-
-questions: A list of 3 concise, simple questions
-
+Instructions:
+- Generate exactly 3 questions.
+- These questions should be concise, and simple.
+- Ensure the follow-up questions are relevant to the original question and context.
 Make sure to match the language of the user's question.
 
 Original Question: {query}
@@ -38,7 +38,8 @@ Original Question: {query}
 {context}
 </context>
 
-Your EXACTLY 3 (three) follow-up questions:
+Output:
+related_questions: A list of EXACTLY three concise, simple follow-up questions
 """
 
 HISTORY_QUERY_REPHRASE = """

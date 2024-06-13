@@ -4,6 +4,7 @@ from typing import AsyncIterator, List
 
 from fastapi import HTTPException
 from llama_index.core.llms import LLM
+from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.llms.groq import Groq
 from llama_index.llms.ollama import Ollama
 from llama_index.llms.openai import OpenAI
@@ -45,8 +46,25 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
         )
 
 
+def get_openai_model(model: ChatModel) -> LLM:
+    openai_mode = os.environ.get("OPENAI_MODE", "openai")
+    if openai_mode == "azure":
+        return AzureOpenAI(
+            deployment_name=os.environ.get("AZURE_DEPLOYMENT_NAME"),
+            api_key=os.environ.get("AZURE_API_KEY"),
+            azure_endpoint=os.environ.get("AZURE_CHAT_ENDPOINT"),
+            api_version="2024-04-01-preview",
+        )
+    elif openai_mode == "openai":
+        return OpenAI(model=model_mappings[model])
+    else:
+        raise ValueError(f"Unknown model: {model}")
+
+
 def get_llm(model: ChatModel) -> LLM:
-    if model in [ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o]:
+    if model == ChatModel.GPT_3_5_TURBO:
+        return get_openai_model(model)
+    elif model == ChatModel.GPT_4o:
         return OpenAI(model=model_mappings[model])
     elif model in [
         ChatModel.LOCAL_GEMMA,
