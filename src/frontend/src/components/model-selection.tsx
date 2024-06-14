@@ -16,6 +16,7 @@ import {
   FlameIcon,
   Rabbit,
   RabbitIcon,
+  SettingsIcon,
   SparklesIcon,
   WandSparklesIcon,
 } from "lucide-react";
@@ -75,12 +76,19 @@ const modelMap: Record<ChatModel, Model> = {
     smallIcon: <AtomIcon className="w-4 h-4 text-[#FF7000]" />,
     icon: <AtomIcon className="w-5 h-5 text-[#FF7000]" />,
   },
-  [ChatModel.LOCAL_PHI3_14B]: {
+  [ChatModel.PHI3_14B]: {
     name: "Phi3",
     description: "ollama/phi3:14b",
-    value: ChatModel.LOCAL_PHI3_14B,
+    value: ChatModel.PHI3_14B,
     smallIcon: <FlameIcon className="w-4 h-4 text-green-500" />,
     icon: <FlameIcon className="w-5 h-5 text-green-500" />,
+  },
+  [ChatModel.CUSTOM]: {
+    name: "Custom",
+    description: "Custom model",
+    value: ChatModel.CUSTOM,
+    smallIcon: <SettingsIcon className="w-4 h-4 text-red-500" />,
+    icon: <SettingsIcon className="w-5 h-5 text-red-500" />,
   },
 };
 

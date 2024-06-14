@@ -16,6 +16,7 @@ services:
       - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
       - SEARCH_PROVIDER=${SEARCH_PROVIDER:-tavily}
       - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://host.docker.internal:8080}
+      - CUSTOM_MODEL=${CUSTOM_MODEL}
       - REDIS_URL=${REDIS_URL}
     develop:
       watch:

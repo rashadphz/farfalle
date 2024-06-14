@@ -4,6 +4,7 @@ import instructor
 from dotenv import load_dotenv
 from instructor.client import T
 from litellm import completion
+from litellm.utils import validate_environment
 from llama_index.core.base.llms.types import (
     CompletionResponse,
     CompletionResponseAsyncGen,
@@ -32,8 +33,11 @@ class EveryLLM(BaseLLM):
         self,
         model: str,
     ):
-        self.llm = LiteLLM(model=model)
+        validation = validate_environment(model)
+        if validation["missing_keys"]:
+            raise ValueError(f"Missing keys: {validation['missing_keys']}")
 
+        self.llm = LiteLLM(model=model)
         self.client = instructor.from_litellm(completion)
 
     async def astream(self, prompt: str) -> CompletionResponseAsyncGen:

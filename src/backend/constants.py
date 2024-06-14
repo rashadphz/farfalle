@@ -17,6 +17,9 @@ class ChatModel(str, Enum):
     LOCAL_MISTRAL = "mistral"
     LOCAL_PHI3_14B = "phi3:14b"
 
+    # Custom models
+    CUSTOM = "custom"
+
 
 model_mappings: dict[ChatModel, str] = {
     ChatModel.GPT_3_5_TURBO: "gpt-3.5-turbo",
@@ -30,6 +33,12 @@ model_mappings: dict[ChatModel, str] = {
 
 
 def get_model_string(model: ChatModel) -> str:
+    if model == ChatModel.CUSTOM:
+        custom_model = os.environ.get("CUSTOM_MODEL")
+        if custom_model is None:
+            raise ValueError("CUSTOM_MODEL is not set")
+        return custom_model
+
     if model in {ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o}:
         openai_mode = os.environ.get("OPENAI_MODE", "openai")
         if openai_mode == "azure":

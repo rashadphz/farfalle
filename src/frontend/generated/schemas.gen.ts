@@ -29,6 +29,8 @@ export const $ChatModel = {
     "llama3",
     "gemma",
     "mistral",
+    "phi3:14b",
+    "custom",
   ],
   title: "ChatModel",
 } as const;

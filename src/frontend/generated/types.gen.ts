@@ -12,7 +12,8 @@ export enum ChatModel {
   LLAMA3 = "llama3",
   GEMMA = "gemma",
   MISTRAL = "mistral",
-  LOCAL_PHI3_14B = "phi3:14b",
+  PHI3_14B = "phi3:14b",
+  CUSTOM = "custom",
 }
 
 export type ChatRequest = {
