@@ -1525,6 +1525,32 @@ redis = ["redis (>3,!=4.5.2,!=4.5.3,<6.0.0)"]
 rediscluster = ["redis (>=4.2.0,!=4.5.2,!=4.5.3)"]
 
 [[package]]
+name = "litellm"
+version = "1.40.10"
+description = "Library to easily interface with LLM API providers"
+optional = false
+python-versions = "!=2.7.*,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,!=3.7.*,>=3.8"
+files = [
+    {file = "litellm-1.40.10-py3-none-any.whl", hash = "sha256:46b77c49593f4e5e7bd9c1291f5896549b6ff6ebdad457af3ce0f4937bcfc17d"},
+    {file = "litellm-1.40.10.tar.gz", hash = "sha256:cdfc86f1de60491cd85155d98d64beec019c35dd0d8c8784037655cb7c0bdddc"},
+]
+
+[package.dependencies]
+aiohttp = "*"
+click = "*"
+importlib-metadata = ">=6.8.0"
+jinja2 = ">=3.1.2,<4.0.0"
+openai = ">=1.27.0"
+python-dotenv = ">=0.2.0"
+requests = ">=2.31.0,<3.0.0"
+tiktoken = ">=0.7.0"
+tokenizers = "*"
+
+[package.extras]
+extra-proxy = ["azure-identity (>=1.15.0,<2.0.0)", "azure-keyvault-secrets (>=4.8.0,<5.0.0)", "google-cloud-kms (>=2.21.3,<3.0.0)", "prisma (==0.11.0)", "resend (>=0.8.0,<0.9.0)"]
+proxy = ["PyJWT (>=2.8.0,<3.0.0)", "apscheduler (>=3.10.4,<4.0.0)", "backoff", "cryptography (>=42.0.5,<43.0.0)", "fastapi (>=0.111.0,<0.112.0)", "fastapi-sso (>=0.10.0,<0.11.0)", "gunicorn (>=22.0.0,<23.0.0)", "orjson (>=3.9.7,<4.0.0)", "python-multipart (>=0.0.9,<0.0.10)", "pyyaml (>=6.0.1,<7.0.0)", "rq", "uvicorn (>=0.22.0,<0.23.0)"]
+
+[[package]]
 name = "llama-index"
 version = "0.10.37"
 description = "Interface between LLMs and your data"
@@ -1718,6 +1744,21 @@ files = [
 [package.dependencies]
 llama-index-core = ">=0.10.1,<0.11.0"
 llama-index-llms-openai-like = ">=0.1.3,<0.2.0"
+
+[[package]]
+name = "llama-index-llms-litellm"
+version = "0.1.4"
+description = "llama-index llms litellm integration"
+optional = false
+python-versions = "<4.0,>=3.8.1"
+files = [
+    {file = "llama_index_llms_litellm-0.1.4-py3-none-any.whl", hash = "sha256:5a4150ffcad38c874ba5d58aca7a53d85f4faede67ecfe93f40cac4416f90725"},
+    {file = "llama_index_llms_litellm-0.1.4.tar.gz", hash = "sha256:5a8a396de97b779f96e21d1d2b8554a67904ec1daf461b486ed26edc2be74508"},
+]
+
+[package.dependencies]
+litellm = ">=1.18.13,<2.0.0"
+llama-index-core = ">=0.10.1,<0.11.0"
 
 [[package]]
 name = "llama-index-llms-ollama"
@@ -5059,4 +5100,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "27c3c5ee924aa0079b97197ac70089876fa251f95528e1620ee2574d5bfee8de"
+content-hash = "aec7c9df55261292eeffe9c97b6f7d80b88ea785808949a546a6a1cf574144e7"
