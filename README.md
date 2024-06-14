@@ -2,7 +2,7 @@
 
 Open-source AI-powered search engine. (Perplexity Clone)
 
-Run your local LLM (**llama3**, **gemma**, **mistral**, **phi3**) or use  cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
+Run local LLMs (**llama3**, **gemma**, **mistral**, **phi3**), custom LLMs through **LiteLLM**, or use cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
 Demo answering questions with phi3 on my M1 Macbook Pro:
 
@@ -27,6 +27,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [x] Docker deployment setup
 - [x] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
 - [x] Create a pre-built Docker Image
+- [x] Add support for custom LLMs through LiteLLM
 - [ ] Chat History
 - [ ] Chat with local files
 
@@ -46,6 +47,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - Search with multiple search providers (Tavily, Searxng, Serper, Bing)
 - Answer questions with cloud models (OpenAI/gpt4-o, OpenAI/gpt3.5-turbo, Groq/Llama3)
 - Answer questions with local models (llama3, mistral, gemma, phi3)
+- Answer questions with any custom LLMs through [LiteLLM](https://litellm.vercel.app/docs/providers)
 
 ## 🏃🏿‍♂️ Getting Started Locally
 
@@ -144,6 +146,9 @@ SEARCH_PROVIDER=bing
 # Cloud Models
 OPENAI_API_KEY=...
 GROQ_API_KEY=...
+
+# See https://litellm.vercel.app/docs/providers for the full list of supported models
+CUSTOM_MODEL=...
 ```
 
 ### 3. Run Containers
