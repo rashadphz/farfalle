@@ -1,40 +1,26 @@
 # https://github.com/cohere-ai/cohere-toolkit/blob/main/.github/workflows/build_and_push_docker.yml
 
-name: Create and publish single container image
+name: Create and publish container images
 
 on:
   release:
     types: [published]
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: farfalle
-
 jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
+  backend:
     permissions:
       contents: read
       packages: write
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/rashadphz/${{ env.IMAGE_NAME }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          file: ./standalone.Dockerfile
+    uses: schmoaaaaah/farfalle/.github/workflows/build-container.yml@main
+    with:
+      container: backend
+      version: ${{ github.event.release.tag_name }}
+  frontend:
+    permissions:
+      contents: read
+      packages: write
+    uses: schmoaaaaah/farfalle/.github/workflows/build-container.yml@main
+    with:
+      container: frontend
+      version: ${{ github.event.release.tag_name }}
