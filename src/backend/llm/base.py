@@ -1,3 +1,4 @@
+import os
 from abc import ABC, abstractmethod
 
 import instructor
@@ -33,6 +34,8 @@ class EveryLLM(BaseLLM):
         self,
         model: str,
     ):
+        os.environ.setdefault("OLLAMA_API_BASE", "http://localhost:11434")
+
         validation = validate_environment(model)
         if validation["missing_keys"]:
             raise ValueError(f"Missing keys: {validation['missing_keys']}")
