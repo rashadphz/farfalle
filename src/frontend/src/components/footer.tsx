@@ -16,7 +16,10 @@ export function Footer() {
             <SiGithub size={16} />
           </Link>
         </Button>
-        <Link href="https://x.com/rashadphz" target="_blank">
+        <Link
+          href="https://x.com/rashadphz/status/1791098430565073383"
+          target="_blank"
+        >
           <Button variant="ghost" size="icon" className="hover:bg-transparent">
             <SiX size={16} />
           </Button>
