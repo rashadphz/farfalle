@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import {
+  ChatMessage,
   ChatRequest,
   ChatResponseEvent,
   ErrorStream,
@@ -18,9 +19,7 @@ import {
   FetchEventSourceInit,
 } from "@microsoft/fetch-event-source";
 import { useState } from "react";
-import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { useConfigStore, useChatStore } from "@/stores";
-import { useToast } from "@/components/ui/use-toast";
 import { env } from "../env.mjs";
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
@@ -48,7 +47,7 @@ const streamChat = async ({
 const convertToChatRequest = (query: string, history: ChatMessage[]) => {
   const newHistory: Message[] = history.map((message) => ({
     role:
-      message.role === MessageType.USER
+      message.role === MessageRole.USER
         ? MessageRole.USER
         : MessageRole.ASSISTANT,
     content: message.content,
@@ -60,24 +59,25 @@ export const useChat = () => {
   const { addMessage, messages, threadId, setThreadId } = useChatStore();
   const { model } = useConfigStore();
 
-  const [streamingMessage, setStreamingMessage] =
-    useState<AssistantMessage | null>(null);
+  const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(
+    null,
+  );
 
   const handleEvent = (
     eventItem: ChatResponseEvent,
     state: {
       response: string;
       sources: SearchResult[];
-      relatedQuestions: string[];
+      related_queries: string[];
       images: string[];
     },
   ) => {
     switch (eventItem.event) {
       case StreamEvent.BEGIN_STREAM:
         setStreamingMessage({
-          role: MessageType.ASSISTANT,
+          role: MessageRole.ASSISTANT,
           content: "",
-          relatedQuestions: [],
+          related_queries: [],
           sources: [],
         });
         break;
@@ -90,15 +90,15 @@ export const useChat = () => {
         state.response += (eventItem.data as TextChunkStream).text ?? "";
         break;
       case StreamEvent.RELATED_QUERIES:
-        state.relatedQuestions =
+        state.related_queries =
           (eventItem.data as RelatedQueriesStream).related_queries ?? [];
         break;
       case StreamEvent.STREAM_END:
         const endData = eventItem.data as StreamEndStream;
         addMessage({
-          role: MessageType.ASSISTANT,
+          role: MessageRole.ASSISTANT,
           content: state.response,
-          relatedQuestions: state.relatedQuestions,
+          related_queries: state.related_queries,
           sources: state.sources,
           images: state.images,
         });
@@ -110,20 +110,20 @@ export const useChat = () => {
       case StreamEvent.ERROR:
         const errorData = eventItem.data as ErrorStream;
         addMessage({
-          role: MessageType.ASSISTANT,
+          role: MessageRole.ASSISTANT,
           content: errorData.detail,
-          relatedQuestions: [],
+          related_queries: [],
           sources: [],
           images: [],
-          isErrorMessage: true,
+          is_error_message: true,
         });
         setStreamingMessage(null);
         return;
     }
     setStreamingMessage({
-      role: MessageType.ASSISTANT,
+      role: MessageRole.ASSISTANT,
       content: state.response,
-      relatedQuestions: state.relatedQuestions,
+      related_queries: state.related_queries,
       sources: state.sources,
       images: state.images,
     });
@@ -135,10 +135,10 @@ export const useChat = () => {
       const state = {
         response: "",
         sources: [],
-        relatedQuestions: [],
+        related_queries: [],
         images: [],
       };
-      addMessage({ role: MessageType.USER, content: request.query });
+      addMessage({ role: MessageRole.USER, content: request.query });
 
       const req = {
         ...request,

@@ -9,6 +9,15 @@ export type ChatHistoryResponse = {
   snapshots?: Array<ChatSnapshot>;
 };
 
+export type ChatMessage = {
+  content: string;
+  role: MessageRole;
+  related_queries?: Array<string> | null;
+  sources?: Array<SearchResult> | null;
+  images?: Array<string> | null;
+  is_error_message?: boolean;
+};
+
 export enum ChatModel {
   LLAMA_3_70B = "llama-3-70b",
   GPT_4O = "gpt-4o",
@@ -40,6 +49,7 @@ export type ChatResponseEvent = {
 };
 
 export type ChatSnapshot = {
+  id: number;
   title: string;
   date: string;
   preview: string;
@@ -105,6 +115,11 @@ export enum StreamEvent {
 export type TextChunkStream = {
   event_type?: StreamEvent;
   text: string;
+};
+
+export type ThreadResponse = {
+  thread_id: number;
+  messages?: Array<ChatMessage>;
 };
 
 export type ValidationError = {

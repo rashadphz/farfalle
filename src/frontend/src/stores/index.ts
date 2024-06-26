@@ -25,6 +25,7 @@ export const useChatStore = () =>
   useStore((state) => ({
     messages: state.messages,
     addMessage: state.addMessage,
+    setMessages: state.setMessages,
     threadId: state.threadId,
     setThreadId: state.setThreadId,
   }));

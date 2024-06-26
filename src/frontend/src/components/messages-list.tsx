@@ -1,8 +1,8 @@
-import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { AssistantMessageContent } from "./assistant-message";
 import { Separator } from "./ui/separator";
 import { UserMessageContent } from "./user-message";
 import { memo } from "react";
+import { ChatMessage, MessageRole } from "../../generated";
 
 const MessagesList = ({
   messages,
@@ -10,13 +10,13 @@ const MessagesList = ({
   onRelatedQuestionSelect,
 }: {
   messages: ChatMessage[];
-  streamingMessage: AssistantMessage | null;
+  streamingMessage: ChatMessage | null;
   onRelatedQuestionSelect: (question: string) => void;
 }) => {
   return (
     <div className="flex flex-col pb-28">
       {messages.map((message, index) =>
-        message.role === MessageType.USER ? (
+        message.role === MessageRole.USER ? (
           <UserMessageContent key={index} message={message} />
         ) : (
           <>

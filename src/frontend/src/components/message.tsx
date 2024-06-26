@@ -4,8 +4,8 @@ import rehypeRaw from "rehype-raw";
 
 import _ from "lodash";
 import { cn } from "@/lib/utils";
-import { AssistantMessage } from "@/types";
 import { Skeleton } from "./ui/skeleton";
+import { ChatMessage } from "../../generated";
 
 function chunkString(str: string): string[] {
   const words = str.split(" ");
@@ -14,7 +14,7 @@ function chunkString(str: string): string[] {
 }
 
 export interface MessageProps {
-  message: AssistantMessage;
+  message: ChatMessage;
   isStreaming?: boolean;
 }
 

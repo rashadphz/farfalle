@@ -34,6 +34,68 @@ export const $ChatHistoryResponse = {
   title: "ChatHistoryResponse",
 } as const;
 
+export const $ChatMessage = {
+  properties: {
+    content: {
+      type: "string",
+      title: "Content",
+    },
+    role: {
+      $ref: "#/components/schemas/MessageRole",
+    },
+    related_queries: {
+      anyOf: [
+        {
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Related Queries",
+    },
+    sources: {
+      anyOf: [
+        {
+          items: {
+            $ref: "#/components/schemas/SearchResult",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Sources",
+    },
+    images: {
+      anyOf: [
+        {
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Images",
+    },
+    is_error_message: {
+      type: "boolean",
+      title: "Is Error Message",
+      default: false,
+    },
+  },
+  type: "object",
+  required: ["content", "role"],
+  title: "ChatMessage",
+} as const;
+
 export const $ChatModel = {
   type: "string",
   enum: [
@@ -126,6 +188,10 @@ export const $ChatResponseEvent = {
 
 export const $ChatSnapshot = {
   properties: {
+    id: {
+      type: "integer",
+      title: "Id",
+    },
     title: {
       type: "string",
       title: "Title",
@@ -145,7 +211,7 @@ export const $ChatSnapshot = {
     },
   },
   type: "object",
-  required: ["title", "date", "preview", "model_name"],
+  required: ["id", "title", "date", "preview", "model_name"],
   title: "ChatSnapshot",
 } as const;
 
@@ -347,6 +413,25 @@ export const $TextChunkStream = {
   type: "object",
   required: ["text"],
   title: "TextChunkStream",
+} as const;
+
+export const $ThreadResponse = {
+  properties: {
+    thread_id: {
+      type: "integer",
+      title: "Thread Id",
+    },
+    messages: {
+      items: {
+        $ref: "#/components/schemas/ChatMessage",
+      },
+      type: "array",
+      title: "Messages",
+    },
+  },
+  type: "object",
+  required: ["thread_id"],
+  title: "ThreadResponse",
 } as const;
 
 export const $ValidationError = {

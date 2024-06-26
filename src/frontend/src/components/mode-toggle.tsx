@@ -31,9 +31,9 @@ export function ModeToggle() {
             className="flex gap-2 items-center font-medium"
             onClick={() => setTheme(theme)}
           >
-            {theme === "light" && <Sun size={13} />}
-            {theme === "dark" && <Moon size={13} />}
-            {theme === "system" && <ComputerIcon size={13} />}
+            {theme === "light" && <Sun size={12} />}
+            {theme === "dark" && <Moon size={12} />}
+            {theme === "system" && <ComputerIcon size={12} />}
             {theme.charAt(0).toUpperCase() + theme.slice(1)}
           </DropdownMenuItem>
         ))}

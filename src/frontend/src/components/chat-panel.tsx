@@ -3,7 +3,6 @@
 import { useParams, useSearchParams } from "next/navigation";
 import { useChat } from "@/hooks/chat";
 import { useChatStore } from "@/stores";
-import { MessageType } from "@/types";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AskInput } from "./ask-input";
 
@@ -11,12 +10,15 @@ import MessagesList from "./messages-list";
 import { ModelSelection } from "./model-selection";
 import { StarterQuestionsList } from "./starter-questions";
 import LocalToggle from "./local-toggle";
+import { useChatThread } from "@/hooks/threads";
+import { MessageRole } from "../../generated";
+import { LoaderIcon } from "lucide-react";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useChatStore();
 
   useEffect(() => {
-    if (messages.at(-1)?.role === MessageType.USER) {
+    if (messages.at(-1)?.role === MessageRole.USER) {
       ref.current?.scrollIntoView({
         behavior: "smooth",
         block: "end",
@@ -51,13 +53,14 @@ const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
   }, [ref]);
 };
 
-export const ChatPanel = () => {
+export const ChatPanel = ({ threadId }: { threadId?: number }) => {
   const searchParams = useSearchParams();
   const queryMessage = searchParams.get("q");
   const hasRun = useRef(false);
 
   const { handleSend, streamingMessage } = useChat();
-  const { messages, threadId, setThreadId } = useChatStore();
+  const { messages, setMessages, setThreadId } = useChatStore();
+  const { data: thread, isLoading, error } = useChatThread(threadId);
 
   const [width, setWidth] = useState(0);
   const messagesRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +80,12 @@ export const ChatPanel = () => {
   }, [queryMessage]);
 
   useEffect(() => {
+    if (!thread) return;
+    setThreadId(thread.thread_id);
+    setMessages(thread.messages || []);
+  }, [threadId, thread, setMessages, setThreadId]);
+
+  useEffect(() => {
     if (messages.length == 0) {
       setThreadId(null);
     }
@@ -84,21 +93,27 @@ export const ChatPanel = () => {
 
   return (
     <>
-      {messages.length > 0 ? (
-        <div ref={messagesRef} className="pt-10 w-full relative">
-          <MessagesList
-            messages={messages}
-            streamingMessage={streamingMessage}
-            onRelatedQuestionSelect={handleSend}
-          />
-          <div ref={messageBottomRef} className="h-0" />
-          <div
-            className="bottom-12 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
-            style={{ width: `${width}px` }}
-          >
-            <AskInput isFollowingUp sendMessage={handleSend} />
+      {messages.length > 0 || threadId ? (
+        isLoading ? (
+          <div className="w-full flex justify-center items-center">
+            <LoaderIcon className="animate-spin w-8 h-8" />
           </div>
-        </div>
+        ) : (
+          <div ref={messagesRef} className="pt-10 w-full relative">
+            <MessagesList
+              messages={messages}
+              streamingMessage={streamingMessage}
+              onRelatedQuestionSelect={handleSend}
+            />
+            <div ref={messageBottomRef} className="h-0" />
+            <div
+              className="bottom-12 fixed px-2 max-w-screen-md justify-center items-center md:px-2"
+              style={{ width: `${width}px` }}
+            >
+              <AskInput isFollowingUp sendMessage={handleSend} />
+            </div>
+          </div>
+        )
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
           <div className="flex items-center justify-center mb-8">
