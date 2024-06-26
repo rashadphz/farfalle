@@ -1,0 +1,20 @@
+import os
+
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+
+load_dotenv()
+
+POSTGRES_USER = os.environ.get("POSTGRES_USER") or "postgres"
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD") or "password"
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT") or "5432"
+POSTGRES_DB = os.environ.get("POSTGRES_DB") or "postgres"
+
+
+def create_connection_string():
+    print(POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB)
+    return f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+
+engine = create_engine(create_connection_string())
