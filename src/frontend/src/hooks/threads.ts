@@ -10,11 +10,11 @@ const fetchChatThread = async (threadId: number): Promise<ThreadResponse> => {
 };
 
 export const useChatThread = (threadId?: number) => {
-  const { data, isLoading, error } = useQuery<ThreadResponse, Error>({
+  const { data, isLoading, error } = useQuery<ThreadResponse | null, Error>({
     queryKey: ["thread", threadId],
     queryFn: async () => {
       if (!threadId) {
-        return {} as ThreadResponse;
+        return null;
       }
       return fetchChatThread(threadId);
     },

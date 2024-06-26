@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { useConfigStore, useChatStore } from "@/stores";
 import { env } from "../env.mjs";
+import { useRouter } from "next/navigation";
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -58,6 +59,7 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 export const useChat = () => {
   const { addMessage, messages, threadId, setThreadId } = useChatStore();
   const { model } = useConfigStore();
+  const router = useRouter();
 
   const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(
     null,
@@ -104,6 +106,7 @@ export const useChat = () => {
         });
         setStreamingMessage(null);
         setThreadId(endData.thread_id);
+        window.history.pushState({}, "", `/search/${endData.thread_id}`);
         return;
       case StreamEvent.FINAL_RESPONSE:
         return;

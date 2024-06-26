@@ -8,7 +8,7 @@ export default function RecentChat({ id, title, date, preview }: ChatSnapshot) {
 
   return (
     <Link
-      href={`/chat/${id}`}
+      href={`/search/${id}`}
       className="flex-1 rounded-md flex-col cursor-pointer transition-colors group bg-background no-underline"
     >
       <div className="p-2 flex flex-col justify-between h-full space-y-3">

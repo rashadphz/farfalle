@@ -1,5 +1,6 @@
 import re
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session, contains_eager
 
 from backend.db.models import ChatMessage as DBChatMessage
@@ -142,17 +143,15 @@ def map_search_result(search_result: DBSearchResult) -> SearchResult:
 
 
 def get_thread(*, session: Session, thread_id: int) -> ThreadResponse:
-    thread = (
-        session.query(DBChatThread)
-        .join(DBChatThread.messages)
-        .filter(DBChatThread.id == thread_id)
+    stmt = (
+        select(DBChatMessage)
+        .where(DBChatMessage.chat_thread_id == thread_id)
         .order_by(DBChatMessage.id.asc())
-        .first()
     )
-    if thread is None:
+    db_messages = session.execute(stmt).scalars().all()
+    if len(db_messages) == 0:
         raise ValueError(f"Thread with id {thread_id} not found")
 
-    print(thread.messages)
     messages = [
         ChatMessage(
             content=message.content,
@@ -163,6 +162,6 @@ def get_thread(*, session: Session, thread_id: int) -> ThreadResponse:
             ],
             images=message.image_results or [],
         )
-        for message in thread.messages
+        for message in db_messages
     ]
-    return ThreadResponse(thread_id=thread.id, messages=messages)
+    return ThreadResponse(thread_id=thread_id, messages=messages)

@@ -31,7 +31,7 @@ export function Navbar() {
   return (
     <header className="w-full flex fixed p-1 z-50 px-2 bg-background/95 justify-between items-center">
       <div className="flex items-center gap-2">
-        <Link href="/" passHref onClick={() => router.push("/")}>
+        <Link href="/" passHref onClick={() => (location.href = "/")}>
           <img
             src={theme === "light" ? "/logo-black.png" : "/logo-white.png"}
             alt="Logo"
@@ -41,7 +41,7 @@ export function Navbar() {
         {onHomePage ? <TextLogo /> : <NewChatButton />}
       </div>
       <div className="flex items-center gap-4">
-        <Link href="/history" passHref onClick={() => router.push("/history")}>
+        <Link href="/history" passHref>
           <div className="font-medium hover:underline decoration-tint underline-offset-4 transition-all duration-200 ease-in-out transform hover:scale-[1.02] text-left break-words normal-case">
             <div className="flex items-center gap-2">
               <HistoryIcon className="w-4 h-4" />
