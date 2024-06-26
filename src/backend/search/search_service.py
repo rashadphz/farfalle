@@ -20,7 +20,7 @@ redis_client = redis.Redis.from_url(redis_url) if redis_url else None
 
 
 def get_searxng_base_url():
-    searxng_base_url = os.getenv("SEARXNG_BASE_URL")
+    searxng_base_url = os.getenv("SEARXNG_BASE_URL", "http://localhost:8080/")
     if not searxng_base_url:
         raise HTTPException(
             status_code=500,

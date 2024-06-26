@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 from backend.chat import stream_qa_objects
-from backend.db.chat import get_chat_history
+from backend.db.chat import get_chat_history, get_thread
 from backend.db.engine import get_session
 from backend.schemas import (
     ChatHistoryResponse,
@@ -24,6 +24,7 @@ from backend.schemas import (
     ChatResponseEvent,
     ErrorStream,
     StreamEvent,
+    ThreadResponse,
 )
 from backend.utils import strtobool
 from backend.validators import validate_model
@@ -121,3 +122,11 @@ async def chat(
 async def recents(session: Session = Depends(get_session)) -> ChatHistoryResponse:
     history = get_chat_history(session=session)
     return ChatHistoryResponse(snapshots=history)
+
+
+@app.get("/thread/{thread_id}")
+async def thread(
+    thread_id: int, session: Session = Depends(get_session)
+) -> ThreadResponse:
+    thread = get_thread(session=session, thread_id=thread_id)
+    return thread

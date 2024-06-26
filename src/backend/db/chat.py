@@ -2,13 +2,20 @@ import re
 
 from sqlalchemy.orm import Session, contains_eager
 
-from backend.db.models import ChatMessage, ChatThread
+from backend.db.models import ChatMessage as DBChatMessage
+from backend.db.models import ChatThread as DBChatThread
 from backend.db.models import SearchResult as DBSearchResult
-from backend.schemas import ChatSnapshot, MessageRole, SearchResult
+from backend.schemas import (
+    ChatMessage,
+    ChatSnapshot,
+    MessageRole,
+    SearchResult,
+    ThreadResponse,
+)
 
 
 def create_chat_thread(*, session: Session, model_name: str):
-    chat_thread = ChatThread(model_name=model_name)
+    chat_thread = DBChatThread(model_name=model_name)
     session.add(chat_thread)
     session.commit()
     return chat_thread
@@ -42,9 +49,9 @@ def append_message(
     related_queries: list[str] | None = None,
 ):
     last_message = (
-        session.query(ChatMessage)
-        .filter(ChatMessage.chat_thread_id == thread_id)
-        .order_by(ChatMessage.id.desc())
+        session.query(DBChatMessage)
+        .filter(DBChatMessage.chat_thread_id == thread_id)
+        .order_by(DBChatMessage.id.desc())
         .first()
     )
 
@@ -71,7 +78,7 @@ def create_message(
     image_results: list[str] | None = None,
     related_queries: list[str] | None = None,
 ):
-    message = ChatMessage(
+    message = DBChatMessage(
         chat_thread_id=thread_id,
         role=role,
         content=content,
@@ -97,10 +104,10 @@ def create_message(
 
 def get_chat_history(*, session: Session) -> list[ChatSnapshot]:
     threads = (
-        session.query(ChatThread)
-        .join(ChatThread.messages)
-        .options(contains_eager(ChatThread.messages))
-        .order_by(ChatThread.time_created.desc(), ChatMessage.id.asc())
+        session.query(DBChatThread)
+        .join(DBChatThread.messages)
+        .options(contains_eager(DBChatThread.messages))
+        .order_by(DBChatThread.time_created.desc(), DBChatMessage.id.asc())
         .all()
     )
     threads = [thread for thread in threads if len(thread.messages) > 1]
@@ -116,6 +123,7 @@ def get_chat_history(*, session: Session) -> list[ChatSnapshot]:
 
         snapshots.append(
             ChatSnapshot(
+                id=thread.id,
                 title=title,
                 date=thread.time_created,
                 preview=preview,
@@ -123,3 +131,38 @@ def get_chat_history(*, session: Session) -> list[ChatSnapshot]:
             )
         )
     return snapshots
+
+
+def map_search_result(search_result: DBSearchResult) -> SearchResult:
+    return SearchResult(
+        url=search_result.url,
+        title=search_result.title,
+        content=search_result.content,
+    )
+
+
+def get_thread(*, session: Session, thread_id: int) -> ThreadResponse:
+    thread = (
+        session.query(DBChatThread)
+        .join(DBChatThread.messages)
+        .filter(DBChatThread.id == thread_id)
+        .order_by(DBChatMessage.id.asc())
+        .first()
+    )
+    if thread is None:
+        raise ValueError(f"Thread with id {thread_id} not found")
+
+    print(thread.messages)
+    messages = [
+        ChatMessage(
+            content=message.content,
+            role=message.role,
+            related_queries=message.related_queries or [],
+            sources=[
+                map_search_result(result) for result in message.search_results or []
+            ],
+            images=message.image_results or [],
+        )
+        for message in thread.messages
+    ]
+    return ThreadResponse(thread_id=thread.id, messages=messages)

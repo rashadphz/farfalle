@@ -120,6 +120,7 @@ class ChatResponseEvent(BaseModel):
 
 
 class ChatSnapshot(BaseModel):
+    id: int
     title: str
     date: datetime
     preview: str
@@ -128,3 +129,17 @@ class ChatSnapshot(BaseModel):
 
 class ChatHistoryResponse(BaseModel):
     snapshots: List[ChatSnapshot] = Field(default_factory=list)
+
+
+class ChatMessage(BaseModel):
+    content: str
+    role: MessageRole
+    related_queries: List[str] | None = None
+    sources: List[SearchResult] | None = None
+    images: List[str] | None = None
+    is_error_message: bool = False
+
+
+class ThreadResponse(BaseModel):
+    thread_id: int
+    messages: List[ChatMessage] = Field(default_factory=list)
