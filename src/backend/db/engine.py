@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 load_dotenv()
 
@@ -18,3 +19,8 @@ def create_connection_string():
 
 
 engine = create_engine(create_connection_string())
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
