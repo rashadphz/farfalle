@@ -58,5 +58,20 @@ services:
     environment:
       - SEARXNG_BASE_URL=https://${SEARXNG_BASE_URL:-localhost}/
 
+  postgres:
+    image: postgres:15.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+
 networks:
   searxng:
+
+volumes:
+  db_volume:
