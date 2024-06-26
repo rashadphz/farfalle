@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import traceback
-from datetime import datetime, timedelta
 from typing import Generator
 
 import logfire
@@ -17,12 +16,12 @@ from sqlalchemy.orm import Session
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 from backend.chat import stream_qa_objects
+from backend.db.chat import get_chat_history
 from backend.db.engine import get_session
 from backend.schemas import (
     ChatHistoryResponse,
     ChatRequest,
     ChatResponseEvent,
-    ChatSnapshot,
     ErrorStream,
     StreamEvent,
 )
@@ -119,23 +118,6 @@ async def chat(
 
 
 @app.get("/history")
-async def recents() -> ChatHistoryResponse:
-    fake_snapshots = [
-        ChatSnapshot(
-            title="test 1",
-            date=datetime.now() - timedelta(days=1),
-            preview="preview 1",
-        ),
-        ChatSnapshot(
-            title="test 2",
-            date=datetime.now() - timedelta(days=2),
-            preview="preview 2",
-        ),
-        ChatSnapshot(
-            title="test 3",
-            date=datetime.now() - timedelta(days=3),
-            preview="preview 3",
-        ),
-    ]
-
-    return ChatHistoryResponse(snapshots=fake_snapshots)
+async def recents(session: Session = Depends(get_session)) -> ChatHistoryResponse:
+    history = get_chat_history(session=session)
+    return ChatHistoryResponse(snapshots=history)

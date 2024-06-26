@@ -2,7 +2,7 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { useChat } from "@/hooks/chat";
-import { useMessageStore } from "@/stores";
+import { useChatStore } from "@/stores";
 import { MessageType } from "@/types";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AskInput } from "./ask-input";
@@ -13,7 +13,7 @@ import { StarterQuestionsList } from "./starter-questions";
 import LocalToggle from "./local-toggle";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
-  const { messages } = useMessageStore();
+  const { messages } = useChatStore();
 
   useEffect(() => {
     if (messages.at(-1)?.role === MessageType.USER) {
@@ -29,7 +29,7 @@ const useAutoResizeInput = (
   ref: React.RefObject<HTMLDivElement>,
   setWidth: (width: number) => void,
 ) => {
-  const { messages } = useMessageStore();
+  const { messages } = useChatStore();
 
   useEffect(() => {
     const updatePosition = () => {
@@ -57,7 +57,7 @@ export const ChatPanel = () => {
   const hasRun = useRef(false);
 
   const { handleSend, streamingMessage } = useChat();
-  const { messages } = useMessageStore();
+  const { messages, threadId, setThreadId } = useChatStore();
 
   const [width, setWidth] = useState(0);
   const messagesRef = useRef<HTMLDivElement | null>(null);
@@ -70,10 +70,17 @@ export const ChatPanel = () => {
 
   useEffect(() => {
     if (queryMessage && !hasRun.current) {
+      setThreadId(null);
       hasRun.current = true;
       handleSend(queryMessage);
     }
   }, [queryMessage]);
+
+  useEffect(() => {
+    if (messages.length == 0) {
+      setThreadId(null);
+    }
+  }, [messages, setThreadId]);
 
   return (
     <>

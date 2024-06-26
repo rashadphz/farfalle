@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ConfigStore, createConfigSlice } from "./slices/configSlice";
-import { createMessageSlice, MessageStore } from "./slices/messageSlice";
+import { createMessageSlice, ChatStore } from "./slices/messageSlice";
 
-type StoreState = MessageStore & ConfigStore;
+type StoreState = ChatStore & ConfigStore;
 
 const useStore = create<StoreState>()(
   persist(
@@ -21,10 +21,12 @@ const useStore = create<StoreState>()(
   ),
 );
 
-export const useMessageStore = () =>
+export const useChatStore = () =>
   useStore((state) => ({
     messages: state.messages,
     addMessage: state.addMessage,
+    threadId: state.threadId,
+    setThreadId: state.setThreadId,
   }));
 
 export const useConfigStore = () =>

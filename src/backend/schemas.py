@@ -123,6 +123,7 @@ class ChatSnapshot(BaseModel):
     title: str
     date: datetime
     preview: str
+    model_name: str
 
 
 class ChatHistoryResponse(BaseModel):

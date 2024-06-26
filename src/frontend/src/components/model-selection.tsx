@@ -20,7 +20,7 @@ import {
   SparklesIcon,
   WandSparklesIcon,
 } from "lucide-react";
-import { useConfigStore, useMessageStore } from "@/stores";
+import { useConfigStore, useChatStore } from "@/stores";
 import { ChatModel } from "../../generated";
 import { isCloudModel, isLocalModel } from "@/lib/utils";
 import _ from "lodash";

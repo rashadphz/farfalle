@@ -5,6 +5,10 @@ export type BeginStream = {
   query: string;
 };
 
+export type ChatHistoryResponse = {
+  snapshots?: Array<ChatSnapshot>;
+};
+
 export enum ChatModel {
   LLAMA_3_70B = "llama-3-70b",
   GPT_4O = "gpt-4o",
@@ -17,6 +21,7 @@ export enum ChatModel {
 }
 
 export type ChatRequest = {
+  thread_id?: number | null;
   query: string;
   history?: Array<Message>;
   model?: ChatModel;
@@ -32,6 +37,13 @@ export type ChatResponseEvent = {
     | StreamEndStream
     | FinalResponseStream
     | ErrorStream;
+};
+
+export type ChatSnapshot = {
+  title: string;
+  date: string;
+  preview: string;
+  model_name: string;
 };
 
 export type ErrorStream = {
@@ -77,6 +89,7 @@ export type SearchResultStream = {
 
 export type StreamEndStream = {
   event_type?: StreamEvent;
+  thread_id: number;
 };
 
 export enum StreamEvent {

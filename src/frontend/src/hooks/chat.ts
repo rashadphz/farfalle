@@ -8,6 +8,7 @@ import {
   RelatedQueriesStream,
   SearchResult,
   SearchResultStream,
+  StreamEndStream,
   StreamEvent,
   TextChunkStream,
 } from "../../generated";
@@ -18,7 +19,7 @@ import {
 } from "@microsoft/fetch-event-source";
 import { useState } from "react";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
-import { useConfigStore, useMessageStore } from "@/stores";
+import { useConfigStore, useChatStore } from "@/stores";
 import { useToast } from "@/components/ui/use-toast";
 import { env } from "../env.mjs";
 
@@ -56,7 +57,7 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 };
 
 export const useChat = () => {
-  const { addMessage, messages } = useMessageStore();
+  const { addMessage, messages, threadId, setThreadId } = useChatStore();
   const { model } = useConfigStore();
 
   const [streamingMessage, setStreamingMessage] =
@@ -93,6 +94,7 @@ export const useChat = () => {
           (eventItem.data as RelatedQueriesStream).related_queries ?? [];
         break;
       case StreamEvent.STREAM_END:
+        const endData = eventItem.data as StreamEndStream;
         addMessage({
           role: MessageType.ASSISTANT,
           content: state.response,
@@ -101,6 +103,7 @@ export const useChat = () => {
           images: state.images,
         });
         setStreamingMessage(null);
+        setThreadId(endData.thread_id);
         return;
       case StreamEvent.FINAL_RESPONSE:
         return;
@@ -139,6 +142,7 @@ export const useChat = () => {
 
       const req = {
         ...request,
+        thread_id: threadId,
         model,
       };
       await streamChat({

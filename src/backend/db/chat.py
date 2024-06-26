@@ -1,8 +1,10 @@
-from sqlalchemy.orm import Session
+import re
+
+from sqlalchemy.orm import Session, contains_eager
 
 from backend.db.models import ChatMessage, ChatThread
 from backend.db.models import SearchResult as DBSearchResult
-from backend.schemas import MessageRole, SearchResult
+from backend.schemas import ChatSnapshot, MessageRole, SearchResult
 
 
 def create_chat_thread(*, session: Session, model_name: str):
@@ -91,3 +93,33 @@ def create_message(
     session.add(message)
     session.commit()
     return message
+
+
+def get_chat_history(*, session: Session) -> list[ChatSnapshot]:
+    threads = (
+        session.query(ChatThread)
+        .join(ChatThread.messages)
+        .options(contains_eager(ChatThread.messages))
+        .order_by(ChatThread.time_created.desc(), ChatMessage.id.asc())
+        .all()
+    )
+    threads = [thread for thread in threads if len(thread.messages) > 1]
+
+    snapshots = []
+    for thread in threads:
+        title = thread.messages[0].content
+        preview = thread.messages[1].content
+
+        # Remove citations from the preview
+        citation_regex = re.compile(r"\[[0-9]+\]")
+        preview = citation_regex.sub("", preview)
+
+        snapshots.append(
+            ChatSnapshot(
+                title=title,
+                date=thread.time_created,
+                preview=preview,
+                model_name=thread.model_name,
+            )
+        )
+    return snapshots

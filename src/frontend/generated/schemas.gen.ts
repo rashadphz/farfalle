@@ -20,6 +20,20 @@ export const $BeginStream = {
   title: "BeginStream",
 } as const;
 
+export const $ChatHistoryResponse = {
+  properties: {
+    snapshots: {
+      items: {
+        $ref: "#/components/schemas/ChatSnapshot",
+      },
+      type: "array",
+      title: "Snapshots",
+    },
+  },
+  type: "object",
+  title: "ChatHistoryResponse",
+} as const;
+
 export const $ChatModel = {
   type: "string",
   enum: [
@@ -37,6 +51,17 @@ export const $ChatModel = {
 
 export const $ChatRequest = {
   properties: {
+    thread_id: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Thread Id",
+    },
     query: {
       type: "string",
       title: "Query",
@@ -97,6 +122,31 @@ export const $ChatResponseEvent = {
   type: "object",
   required: ["event", "data"],
   title: "ChatResponseEvent",
+} as const;
+
+export const $ChatSnapshot = {
+  properties: {
+    title: {
+      type: "string",
+      title: "Title",
+    },
+    date: {
+      type: "string",
+      format: "date-time",
+      title: "Date",
+    },
+    preview: {
+      type: "string",
+      title: "Preview",
+    },
+    model_name: {
+      type: "string",
+      title: "Model Name",
+    },
+  },
+  type: "object",
+  required: ["title", "date", "preview", "model_name"],
+  title: "ChatSnapshot",
 } as const;
 
 export const $ErrorStream = {
@@ -255,8 +305,13 @@ export const $StreamEndStream = {
       ],
       default: "stream-end",
     },
+    thread_id: {
+      type: "integer",
+      title: "Thread Id",
+    },
   },
   type: "object",
+  required: ["thread_id"],
   title: "StreamEndStream",
 } as const;
 

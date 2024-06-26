@@ -5,7 +5,7 @@ import { ModeToggle } from "./mode-toggle";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
-import { useMessageStore } from "@/stores";
+import { useChatStore } from "@/stores";
 
 const NewChatButton = () => {
   return (
@@ -22,7 +22,7 @@ const TextLogo = () => {
 
 export function Navbar() {
   const { theme } = useTheme();
-  const { messages } = useMessageStore();
+  const { messages } = useChatStore();
 
   const onHomePage = messages.length === 0;
 
