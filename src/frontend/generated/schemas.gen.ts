@@ -20,6 +20,82 @@ export const $BeginStream = {
   title: "BeginStream",
 } as const;
 
+export const $ChatHistoryResponse = {
+  properties: {
+    snapshots: {
+      items: {
+        $ref: "#/components/schemas/ChatSnapshot",
+      },
+      type: "array",
+      title: "Snapshots",
+    },
+  },
+  type: "object",
+  title: "ChatHistoryResponse",
+} as const;
+
+export const $ChatMessage = {
+  properties: {
+    content: {
+      type: "string",
+      title: "Content",
+    },
+    role: {
+      $ref: "#/components/schemas/MessageRole",
+    },
+    related_queries: {
+      anyOf: [
+        {
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Related Queries",
+    },
+    sources: {
+      anyOf: [
+        {
+          items: {
+            $ref: "#/components/schemas/SearchResult",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Sources",
+    },
+    images: {
+      anyOf: [
+        {
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Images",
+    },
+    is_error_message: {
+      type: "boolean",
+      title: "Is Error Message",
+      default: false,
+    },
+  },
+  type: "object",
+  required: ["content", "role"],
+  title: "ChatMessage",
+} as const;
+
 export const $ChatModel = {
   type: "string",
   enum: [
@@ -37,6 +113,17 @@ export const $ChatModel = {
 
 export const $ChatRequest = {
   properties: {
+    thread_id: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Thread Id",
+    },
     query: {
       type: "string",
       title: "Query",
@@ -97,6 +184,35 @@ export const $ChatResponseEvent = {
   type: "object",
   required: ["event", "data"],
   title: "ChatResponseEvent",
+} as const;
+
+export const $ChatSnapshot = {
+  properties: {
+    id: {
+      type: "integer",
+      title: "Id",
+    },
+    title: {
+      type: "string",
+      title: "Title",
+    },
+    date: {
+      type: "string",
+      format: "date-time",
+      title: "Date",
+    },
+    preview: {
+      type: "string",
+      title: "Preview",
+    },
+    model_name: {
+      type: "string",
+      title: "Model Name",
+    },
+  },
+  type: "object",
+  required: ["id", "title", "date", "preview", "model_name"],
+  title: "ChatSnapshot",
 } as const;
 
 export const $ErrorStream = {
@@ -255,6 +371,17 @@ export const $StreamEndStream = {
       ],
       default: "stream-end",
     },
+    thread_id: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Thread Id",
+    },
   },
   type: "object",
   title: "StreamEndStream",
@@ -292,6 +419,25 @@ export const $TextChunkStream = {
   type: "object",
   required: ["text"],
   title: "TextChunkStream",
+} as const;
+
+export const $ThreadResponse = {
+  properties: {
+    thread_id: {
+      type: "integer",
+      title: "Thread Id",
+    },
+    messages: {
+      items: {
+        $ref: "#/components/schemas/ChatMessage",
+      },
+      type: "array",
+      title: "Messages",
+    },
+  },
+  type: "object",
+  required: ["thread_id"],
+  title: "ThreadResponse",
 } as const;
 
 export const $ValidationError = {

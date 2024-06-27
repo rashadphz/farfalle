@@ -1,6 +1,7 @@
 # Some of the code here is based on github.com/cohere-ai/cohere-toolkit/
 
 import os
+from datetime import datetime
 from enum import Enum
 from typing import List, Union
 
@@ -31,6 +32,7 @@ LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
 
 
 class ChatRequest(BaseModel, plugin_settings=record_all):
+    thread_id: int | None = None
     query: str
     history: List[Message] = Field(default_factory=list)
     model: ChatModel = ChatModel.GPT_3_5_TURBO
@@ -90,6 +92,7 @@ class RelatedQueriesStream(ChatObject, plugin_settings=record_all):
 
 
 class StreamEndStream(ChatObject, plugin_settings=record_all):
+    thread_id: int | None = None
     event_type: StreamEvent = StreamEvent.STREAM_END
 
 
@@ -114,3 +117,29 @@ class ChatResponseEvent(BaseModel):
         FinalResponseStream,
         ErrorStream,
     ]
+
+
+class ChatSnapshot(BaseModel):
+    id: int
+    title: str
+    date: datetime
+    preview: str
+    model_name: str
+
+
+class ChatHistoryResponse(BaseModel):
+    snapshots: List[ChatSnapshot] = Field(default_factory=list)
+
+
+class ChatMessage(BaseModel):
+    content: str
+    role: MessageRole
+    related_queries: List[str] | None = None
+    sources: List[SearchResult] | None = None
+    images: List[str] | None = None
+    is_error_message: bool = False
+
+
+class ThreadResponse(BaseModel):
+    thread_id: int
+    messages: List[ChatMessage] = Field(default_factory=list)

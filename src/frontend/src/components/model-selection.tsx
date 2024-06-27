@@ -20,7 +20,7 @@ import {
   SparklesIcon,
   WandSparklesIcon,
 } from "lucide-react";
-import { useConfigStore, useMessageStore } from "@/stores";
+import { useConfigStore, useChatStore } from "@/stores";
 import { ChatModel } from "../../generated";
 import { isCloudModel, isLocalModel } from "@/lib/utils";
 import _ from "lodash";
@@ -33,7 +33,7 @@ type Model = {
   icon: React.ReactNode;
 };
 
-const modelMap: Record<ChatModel, Model> = {
+export const modelMap: Record<ChatModel, Model> = {
   [ChatModel.GPT_3_5_TURBO]: {
     name: "Fast",
     description: "OpenAI/GPT-3.5-turbo",

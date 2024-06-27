@@ -5,6 +5,19 @@ export type BeginStream = {
   query: string;
 };
 
+export type ChatHistoryResponse = {
+  snapshots?: Array<ChatSnapshot>;
+};
+
+export type ChatMessage = {
+  content: string;
+  role: MessageRole;
+  related_queries?: Array<string> | null;
+  sources?: Array<SearchResult> | null;
+  images?: Array<string> | null;
+  is_error_message?: boolean;
+};
+
 export enum ChatModel {
   LLAMA_3_70B = "llama-3-70b",
   GPT_4O = "gpt-4o",
@@ -17,6 +30,7 @@ export enum ChatModel {
 }
 
 export type ChatRequest = {
+  thread_id?: number | null;
   query: string;
   history?: Array<Message>;
   model?: ChatModel;
@@ -32,6 +46,14 @@ export type ChatResponseEvent = {
     | StreamEndStream
     | FinalResponseStream
     | ErrorStream;
+};
+
+export type ChatSnapshot = {
+  id: number;
+  title: string;
+  date: string;
+  preview: string;
+  model_name: string;
 };
 
 export type ErrorStream = {
@@ -77,6 +99,7 @@ export type SearchResultStream = {
 
 export type StreamEndStream = {
   event_type?: StreamEvent;
+  thread_id?: number | null;
 };
 
 export enum StreamEvent {
@@ -92,6 +115,11 @@ export enum StreamEvent {
 export type TextChunkStream = {
   event_type?: StreamEvent;
   text: string;
+};
+
+export type ThreadResponse = {
+  thread_id: number;
+  messages?: Array<ChatMessage>;
 };
 
 export type ValidationError = {
