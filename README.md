@@ -8,7 +8,6 @@ Demo answering questions with phi3 on my M1 Macbook Pro:
 
 https://github.com/rashadphz/farfalle/assets/20783686/9cda83b8-0d3c-4a81-83ee-ff8cce323fee
 
-
 Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [create an issue](https://github.com/rashadphz/farfalle/issues/new) if you have any questions.
 
 ## 💻 Live Demo
@@ -28,7 +27,7 @@ Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [c
 - [x] Add support for [searxng](https://github.com/searxng/searxng). Eliminates the need for external dependencies.
 - [x] Create a pre-built Docker Image
 - [x] Add support for custom LLMs through LiteLLM
-- [ ] Chat History
+- [x] Chat History
 - [ ] Chat with local files
 
 
