@@ -1,0 +1,45 @@
+# https://github.com/cohere-ai/cohere-toolkit/blob/main/.github/workflows/build_and_push_docker.yml
+
+on:
+  workflow_call:
+    inputs:
+      container:
+        description: "A container name suffix passed from the caller workflow"
+        required: false
+        type: string
+      version:
+        description: "A version passed from the caller workflow"
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: farfalle
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}-${{ inputs.container }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ inputs.version }}, ${{ steps.meta.outputs.tags }}
+          file: ./src/${{ inputs.container }}/Dockerfile
