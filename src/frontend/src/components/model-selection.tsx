@@ -33,7 +33,7 @@ type Model = {
   icon: React.ReactNode;
 };
 
-const modelMap: Record<ChatModel, Model> = {
+export const modelMap: Record<ChatModel, Model> = {
   [ChatModel.GPT_3_5_TURBO]: {
     name: "Fast",
     description: "OpenAI/GPT-3.5-turbo",

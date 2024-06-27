@@ -372,12 +372,18 @@ export const $StreamEndStream = {
       default: "stream-end",
     },
     thread_id: {
-      type: "integer",
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
       title: "Thread Id",
     },
   },
   type: "object",
-  required: ["thread_id"],
   title: "StreamEndStream",
 } as const;
 

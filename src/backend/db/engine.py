@@ -14,7 +14,6 @@ POSTGRES_DB = os.environ.get("POSTGRES_DB") or "postgres"
 
 
 def create_connection_string():
-    print(POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB)
     return f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 

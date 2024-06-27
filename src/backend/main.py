@@ -6,7 +6,7 @@ from typing import Generator
 
 import logfire
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
@@ -120,8 +120,18 @@ async def chat(
 
 @app.get("/history")
 async def recents(session: Session = Depends(get_session)) -> ChatHistoryResponse:
-    history = get_chat_history(session=session)
-    return ChatHistoryResponse(snapshots=history)
+    DB_ENABLED = strtobool(os.environ.get("DB_ENABLED", "true"))
+    if DB_ENABLED:
+        try:
+            history = get_chat_history(session=session)
+            return ChatHistoryResponse(snapshots=history)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Chat history is not available when DB is disabled. Please try self-hosting the app by following the instructions here: https://github.com/rashadphz/farfalle",
+        )
 
 
 @app.get("/thread/{thread_id}")

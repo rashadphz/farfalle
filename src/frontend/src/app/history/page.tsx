@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorMessage } from "@/components/assistant-message";
 import RecentChat from "@/components/recent-chat";
 import { Separator } from "@/components/ui/separator";
 import { useChatHistory } from "@/hooks/history";
@@ -7,8 +8,9 @@ import { HistoryIcon } from "lucide-react";
 import React from "react";
 
 export default function RecentsPage() {
-  const { data: chats, isLoading } = useChatHistory();
-  if (!chats) return <div>Loading...</div>;
+  const { data: chats, isLoading, error } = useChatHistory();
+
+  if (!error && !chats) return <div>Loading...</div>;
 
   return (
     <div className="h-screen ">
@@ -18,14 +20,17 @@ export default function RecentsPage() {
           <h1 className="text-xl font-semibold">Chat History</h1>
         </div>
         <Separator className="mb-4" />
-        <ul className="flex flex-col gap-4">
-          {chats.map((chat, index) => (
-            <React.Fragment key={chat.id}>
-              <RecentChat {...chat} />
-              {index < chats.length - 1 && <Separator className="" />}
-            </React.Fragment>
-          ))}
-        </ul>
+        {error && <ErrorMessage content={error.message} />}
+        {chats && (
+          <ul className="flex flex-col gap-4">
+            {chats.map((chat, index) => (
+              <React.Fragment key={chat.id}>
+                <RecentChat {...chat} />
+                {index < chats.length - 1 && <Separator className="" />}
+              </React.Fragment>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

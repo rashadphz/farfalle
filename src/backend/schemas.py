@@ -92,7 +92,7 @@ class RelatedQueriesStream(ChatObject, plugin_settings=record_all):
 
 
 class StreamEndStream(ChatObject, plugin_settings=record_all):
-    thread_id: int
+    thread_id: int | None = None
     event_type: StreamEvent = StreamEvent.STREAM_END
 
 

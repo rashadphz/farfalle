@@ -99,7 +99,7 @@ export type SearchResultStream = {
 
 export type StreamEndStream = {
   event_type?: StreamEvent;
-  thread_id: number;
+  thread_id?: number | null;
 };
 
 export enum StreamEvent {

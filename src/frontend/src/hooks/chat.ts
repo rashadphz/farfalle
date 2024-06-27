@@ -105,8 +105,12 @@ export const useChat = () => {
           images: state.images,
         });
         setStreamingMessage(null);
-        setThreadId(endData.thread_id);
-        window.history.pushState({}, "", `/search/${endData.thread_id}`);
+
+        // Only if the backend is using the DB
+        if (endData.thread_id) {
+          setThreadId(endData.thread_id);
+          window.history.pushState({}, "", `/search/${endData.thread_id}`);
+        }
         return;
       case StreamEvent.FINAL_RESPONSE:
         return;

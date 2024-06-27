@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import AsyncIterator, List
 
 from fastapi import HTTPException
@@ -24,7 +25,7 @@ from backend.schemas import (
     TextChunkStream,
 )
 from backend.search.search_service import perform_search
-from backend.utils import is_local_model
+from backend.utils import is_local_model, strtobool
 
 
 def rephrase_query_with_history(
@@ -58,12 +59,6 @@ async def stream_qa_objects(
     try:
         model_name = get_model_string(request.model)
         llm = EveryLLM(model=model_name)
-
-        if request.thread_id is None:
-            thread = create_chat_thread(session=session, model_name=model_name)
-            thread_id = thread.id
-        else:
-            thread_id = request.thread_id
 
         yield ChatResponseEvent(
             event=StreamEvent.BEGIN_STREAM,
@@ -117,23 +112,32 @@ async def stream_qa_objects(
             data=RelatedQueriesStream(related_queries=related_queries),
         )
 
-        user_message = append_message(
-            session=session,
-            thread_id=thread_id,
-            role=MessageRole.USER,
-            content=request.query,
-        )
+        thread_id = None
+        DB_ENABLED = strtobool(os.environ.get("DB_ENABLED", "true"))
+        if DB_ENABLED:
+            if request.thread_id is None:
+                thread = create_chat_thread(session=session, model_name=request.model)
+                thread_id = thread.id
+            else:
+                thread_id = request.thread_id
 
-        _assistant_message = create_message(
-            session=session,
-            thread_id=thread_id,
-            role=MessageRole.ASSISTANT,
-            content=full_response,
-            parent_message_id=user_message.id,
-            search_results=search_results,
-            image_results=images,
-            related_queries=related_queries,
-        )
+            user_message = append_message(
+                session=session,
+                thread_id=thread_id,
+                role=MessageRole.USER,
+                content=request.query,
+            )
+
+            _assistant_message = create_message(
+                session=session,
+                thread_id=thread_id,
+                role=MessageRole.ASSISTANT,
+                content=full_response,
+                parent_message_id=user_message.id,
+                search_results=search_results,
+                image_results=images,
+                related_queries=related_queries,
+            )
 
         yield ChatResponseEvent(
             event=StreamEvent.FINAL_RESPONSE,
