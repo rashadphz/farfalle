@@ -108,14 +108,6 @@ export type ChatSnapshot = {
   model_name: string;
 };
 
-export type ChatSnapshot = {
-  id: number;
-  title: string;
-  date: string;
-  preview: string;
-  model_name: string;
-};
-
 export type ErrorStream = {
   event_type?: StreamEvent;
   detail: string;
