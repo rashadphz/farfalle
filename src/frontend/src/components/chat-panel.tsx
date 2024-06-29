@@ -56,7 +56,12 @@ export const ChatPanel = ({ threadId }: { threadId?: number }) => {
   const queryMessage = searchParams.get("q");
   const hasRun = useRef(false);
 
-  const { handleSend, streamingMessage } = useChat();
+  const {
+    handleSend,
+    streamingMessage,
+    isStreamingMessage,
+    isStreamingProSearch,
+  } = useChat();
   const { messages, setMessages, setThreadId } = useChatStore();
   const { data: thread, isLoading, error } = useChatThread(threadId);
 
@@ -101,6 +106,8 @@ export const ChatPanel = ({ threadId }: { threadId?: number }) => {
             <MessagesList
               messages={messages}
               streamingMessage={streamingMessage}
+              isStreamingMessage={isStreamingMessage}
+              isStreamingProSearch={isStreamingProSearch}
               onRelatedQuestionSelect={handleSend}
             />
             <div ref={messageBottomRef} className="h-0" />

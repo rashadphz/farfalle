@@ -4,19 +4,19 @@ name: Trigger auto deployment for farfalle-backend
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
+    branches:
       [ main ]
     paths:
     - 'src/backend/**'
     - '.github/workflows/farfalle-backend-AutoDeployTrigger-3e5a49cd-d51c-45b9-93a5-6170d843a4cc.yml'
 
-  # Allow manual trigger 
-  workflow_dispatch:      
+  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       id-token: write #This is required for requesting the OIDC JWT Token
       contents: read #Required when GH token is used to authenticate with private repo
 

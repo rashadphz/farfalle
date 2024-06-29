@@ -12,10 +12,14 @@ import { ProSearchRender } from "./pro-search-render";
 const MessagesList = ({
   messages,
   streamingMessage,
+  isStreamingMessage,
+  isStreamingProSearch,
   onRelatedQuestionSelect,
 }: {
   messages: ChatMessage[];
   streamingMessage: ChatMessage | null;
+  isStreamingMessage: boolean;
+  isStreamingProSearch: boolean;
   onRelatedQuestionSelect: (question: string) => void;
 }) => {
   const streamingProResponse = streamingMessage?.agent_response;
@@ -38,12 +42,14 @@ const MessagesList = ({
           </>
         ),
       )}
-      {streamingProResponse && (
+      {isStreamingProSearch && (
         <div className="mb-4">
-          <ProSearchRender streamingProResponse={streamingProResponse} />
+          <ProSearchRender
+            streamingProResponse={streamingProResponse ?? null}
+          />
         </div>
       )}
-      {streamingMessage && (
+      {streamingMessage && isStreamingMessage && (
         <AssistantMessageContent
           message={streamingMessage}
           isStreaming={true}

@@ -27,6 +27,7 @@ import {
   TimelineLine,
 } from "./ui/timeline";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
 const StepSection = ({
   step,
@@ -92,6 +93,19 @@ const StepSection = ({
   );
 };
 
+const ProSearchSkeleton = () => {
+  return (
+    <div className="w-full border rounded-lg p-4 mb-4">
+      <div className="flex items-center mb-2">
+        <WandSparklesIcon className="h-5 w-5 mr-2" />
+        <h1 className="text-lg font-medium ">Expert Search</h1>
+      </div>
+      <Separator />
+      <Skeleton className="w-full h-[30px] bg-card" />
+    </div>
+  );
+};
+
 export const ProSearchRender = ({
   streamingProResponse,
 }: {
@@ -116,9 +130,8 @@ export const ProSearchRender = ({
   }, [streamingProResponse]);
 
   if (!streamingProResponse?.steps_details) {
-    return null;
+    return <ProSearchSkeleton />;
   }
-
   const { steps_details: stepDetails } = streamingProResponse;
 
   return (
