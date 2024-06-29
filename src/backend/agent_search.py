@@ -240,7 +240,6 @@ async def stream_pro_search_objects(
             full_response = ""
             response_gen = await llm.astream(fmt_qa_prompt)
             async for completion in response_gen:
-                print(completion.delta)
                 full_response += completion.delta or ""
                 yield ChatResponseEvent(
                     event=StreamEvent.TEXT_CHUNK,

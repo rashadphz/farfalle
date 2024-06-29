@@ -8,7 +8,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_API_URL: z.string(),
     NEXT_PUBLIC_LOCAL_MODE_ENABLED: z.boolean().default(false),
-    NEXT_PUBLIC_PRO_MODE_ENABLED: z.boolean().default(true),
+    NEXT_PUBLIC_PRO_MODE_ENABLED: z.boolean().default(false),
   },
   runtimeEnv: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,

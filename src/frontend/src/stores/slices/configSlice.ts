@@ -24,7 +24,7 @@ export const createConfigSlice: StateCreator<
 > = (set) => ({
   model: ChatModel.GPT_3_5_TURBO,
   localMode: false,
-  proMode: true,
+  proMode: false,
   setModel: (model: ChatModel) => set({ model }),
   toggleLocalMode: () =>
     set((state) => {

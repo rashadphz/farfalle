@@ -26,6 +26,7 @@ import { isCloudModel, isLocalModel } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import _ from "lodash";
+import { env } from "@/env.mjs";
 
 type Model = {
   name: string;
@@ -158,7 +159,11 @@ export function ModelSelection() {
             <TabsTrigger value="cloud" className="flex-1">
               Cloud
             </TabsTrigger>
-            <TabsTrigger value="local" className="flex-1">
+            <TabsTrigger
+              value="local"
+              disabled={!env.NEXT_PUBLIC_LOCAL_MODE_ENABLED}
+              className="flex-1 disabled:opacity-50"
+            >
               Local
             </TabsTrigger>
           </TabsList>

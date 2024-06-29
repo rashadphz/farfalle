@@ -84,12 +84,17 @@ export const useChat = () => {
           content: "",
           related_queries: [],
           sources: [],
+          images: [],
         });
         break;
       case StreamEvent.SEARCH_RESULTS:
         const data = eventItem.data as SearchResultStream;
         state.sources = data.results ?? [];
+        state.images = data.images ?? [];
         break;
+      case StreamEvent.TEXT_CHUNK:
+        state.content += (eventItem.data as TextChunkStream).text;
+
         if (!state.agent_response) {
           break;
         }
@@ -169,6 +174,8 @@ export const useChat = () => {
           is_error_message: true,
         });
         setStreamingMessage(null);
+        setIsStreamingMessage(false);
+        setIsStreamingProSearch(false);
         return;
     }
     setStreamingMessage({
