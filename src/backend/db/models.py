@@ -1,6 +1,7 @@
 import datetime
 
 from sqlalchemy import ARRAY, DateTime, Enum, ForeignKey, String, func
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 
 from backend.schemas import MessageRole
@@ -55,6 +56,10 @@ class ChatMessage(Base):
     )
 
     # AI Only
+    agent_search_full_response: Mapped[str | None] = mapped_column(
+        postgresql.JSONB, nullable=True
+    )
+
     related_queries: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True
     )

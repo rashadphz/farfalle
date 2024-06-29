@@ -16,6 +16,7 @@ const useStore = create<StoreState>()(
       partialize: (state) => ({
         model: state.model,
         localMode: state.localMode,
+        proMode: state.proMode,
       }),
     },
   ),
@@ -36,4 +37,6 @@ export const useConfigStore = () =>
     toggleLocalMode: state.toggleLocalMode,
     model: state.model,
     setModel: state.setModel,
+    proMode: state.proMode,
+    toggleProMode: state.toggleProMode,
   }));

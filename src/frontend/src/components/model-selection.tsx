@@ -23,7 +23,10 @@ import {
 import { useConfigStore, useChatStore } from "@/stores";
 import { ChatModel } from "../../generated";
 import { isCloudModel, isLocalModel } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import _ from "lodash";
+import { env } from "@/env.mjs";
 
 type Model = {
   name: string;
@@ -119,7 +122,8 @@ const ModelItem: React.FC<{ model: Model }> = ({ model }) => (
 );
 
 export function ModelSelection() {
-  const { localMode, model, setModel } = useConfigStore();
+  const { localMode, model, setModel, toggleLocalMode } = useConfigStore();
+  const selectedModel = modelMap[model] ?? modelMap[ChatModel.GPT_3_5_TURBO];
 
   return (
     <Select
@@ -134,19 +138,50 @@ export function ModelSelection() {
       <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border-none select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm">
         <SelectValue>
           <div className="flex items-center space-x-2">
-            {modelMap[model].smallIcon}
-            <span className="font-semibold">{modelMap[model].name}</span>
+            {selectedModel.smallIcon}
+            <span className="font-semibold">{selectedModel.name}</span>
           </div>
         </SelectValue>
       </SelectTrigger>
       <SelectContent className="w-[250px]">
-        <SelectGroup>
-          {Object.values(localMode ? localModelMap : cloudModelMap).map(
-            (model) => (
-              <ModelItem key={model.value} model={model} />
-            ),
-          )}
-        </SelectGroup>
+        <Tabs
+          className="w-full"
+          defaultValue={localMode ? "local" : "cloud"}
+          onValueChange={(value) => {
+            if (value === "local" && !localMode) {
+              toggleLocalMode();
+            } else if (value === "cloud" && localMode) {
+              toggleLocalMode();
+            }
+          }}
+        >
+          <TabsList className="w-full">
+            <TabsTrigger value="cloud" className="flex-1">
+              Cloud
+            </TabsTrigger>
+            <TabsTrigger
+              value="local"
+              disabled={!env.NEXT_PUBLIC_LOCAL_MODE_ENABLED}
+              className="flex-1 disabled:opacity-50"
+            >
+              Local
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="cloud" className="w-full">
+            <SelectGroup className="w-full">
+              {Object.values(cloudModelMap).map((model) => (
+                <ModelItem key={model.value} model={model} />
+              ))}
+            </SelectGroup>
+          </TabsContent>
+          <TabsContent value="local" className="w-full">
+            <SelectGroup className="w-full">
+              {Object.values(localModelMap).map((model) => (
+                <ModelItem key={model.value} model={model} />
+              ))}
+            </SelectGroup>
+          </TabsContent>
+        </Tabs>
       </SelectContent>
     </Select>
   );

@@ -24,7 +24,7 @@ export const SearchResultsSkeleton = () => {
   );
 };
 
-const Logo = ({ url }: { url: string }) => {
+export const Logo = ({ url }: { url: string }) => {
   return (
     <div className="rounded-full overflow-hidden relative">
       <img
