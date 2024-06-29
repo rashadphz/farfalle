@@ -30,6 +30,8 @@ llama-index-llms-ollama = "^0.1.3"
 llama-index-llms-litellm = "^0.1.4"
 alembic = "^1.13.1"
 psycopg2-binary = "^2.9.9"
+click = "^8.1.7"
+inquirer = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.1"

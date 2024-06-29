@@ -64,11 +64,9 @@ You are an expert at creating search task lists to answer queries. Your job is t
 
 Rules:
 1. Use up to 4 steps maximum, but use fewer if possible.
-2. Most queries can be completed in 1-3 steps.
-3. If the query can be answered with a single search, use only one step.
+2. Keep steps simple, concise, and easy to understand.
+3. Ensure proper use of dependencies between steps.
 4. Always include a final step to summarize/combine/compare information from previous steps.
-5. Keep steps simple, concise, and easy to understand.
-6. Ensure proper use of dependencies between steps.
 
 Instructions for creating the Query Plan:
 1. Break down the query into logical search steps.
