@@ -39,5 +39,12 @@ export const createConfigSlice: StateCreator<
         : ChatModel.GPT_3_5_TURBO;
       return { localMode: newLocalMode, model: newModel };
     }),
-  toggleProMode: () => set((state) => ({ proMode: !state.proMode })),
+  toggleProMode: () =>
+    set((state) => {
+      const proModeEnabled = env.NEXT_PUBLIC_PRO_MODE_ENABLED;
+      if (!proModeEnabled) {
+        return { ...state, proMode: false };
+      }
+      return { ...state, proMode: !state.proMode };
+    }),
 });

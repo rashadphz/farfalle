@@ -89,6 +89,18 @@ export const useChat = () => {
         break;
       case StreamEvent.TEXT_CHUNK:
         state.content += (eventItem.data as TextChunkStream).text ?? "";
+        if (!state.agent_response) {
+          break;
+        }
+        // Hide the pro search once we start streaming
+        steps_details = steps_details.map((step) => ({
+          ...step,
+          status: AgentSearchStepStatus.DONE,
+        }));
+        state.agent_response = {
+          steps_details: steps_details,
+        };
+
         break;
       case StreamEvent.RELATED_QUERIES:
         state.related_queries =
@@ -141,13 +153,6 @@ export const useChat = () => {
 
         break;
       case StreamEvent.AGENT_FINISH:
-        steps_details = steps_details.map((step) => ({
-          ...step,
-          status: AgentSearchStepStatus.DONE,
-        }));
-        state.agent_response = {
-          steps_details: steps_details,
-        };
         break;
       case StreamEvent.ERROR:
         const errorData = eventItem.data as ErrorStream;
@@ -170,10 +175,13 @@ export const useChat = () => {
       related_queries: state.related_queries,
       sources: state.sources,
       images: state.images,
-      agent_response: {
-        steps: steps_details.map((step) => step.step),
-        steps_details: steps_details,
-      },
+      agent_response:
+        state.agent_response !== null
+          ? {
+              steps: steps_details.map((step) => step.step),
+              steps_details: steps_details,
+            }
+          : null,
     });
   };
 
@@ -194,7 +202,7 @@ export const useChat = () => {
         ...request,
         thread_id: threadId,
         model,
-        pro_search: true,
+        pro_search: proMode,
       };
       await streamChat({
         request: req,

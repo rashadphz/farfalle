@@ -113,8 +113,6 @@ export const ProSearchRender = ({
       .map((step) => step.index.toString());
 
     setAccordionValues(currentSteps);
-    console.log({ newDeets: stepDetails });
-    console.log({ currentSteps });
   }, [streamingProResponse]);
 
   if (!streamingProResponse?.steps_details) {

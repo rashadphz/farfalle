@@ -1,19 +1,16 @@
 "use client";
 
-import { useParams, useSearchParams } from "next/navigation";
 import { useChat } from "@/hooks/chat";
 import { useChatStore } from "@/stores";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { AskInput } from "./ask-input";
 
-import MessagesList from "./messages-list";
-import { ModelSelection } from "./model-selection";
-import { StarterQuestionsList } from "./starter-questions";
-import LocalToggle from "./local-toggle";
 import { useChatThread } from "@/hooks/threads";
-import { MessageRole } from "../../generated";
 import { LoaderIcon } from "lucide-react";
-import { ProSearchRender } from "./pro-search-render";
+import { MessageRole } from "../../generated";
+import MessagesList from "./messages-list";
+import { StarterQuestionsList } from "./starter-questions";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useChatStore();
@@ -123,10 +120,6 @@ export const ChatPanel = ({ threadId }: { threadId?: number }) => {
           <AskInput sendMessage={handleSend} />
           <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
             <StarterQuestionsList handleSend={handleSend} />
-            <div className="flex flex-col gap-2 items-end ">
-              <ModelSelection />
-              <LocalToggle />
-            </div>
           </div>
         </div>
       )}
