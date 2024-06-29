@@ -89,10 +89,7 @@ export const useChat = () => {
       case StreamEvent.SEARCH_RESULTS:
         const data = eventItem.data as SearchResultStream;
         state.sources = data.results ?? [];
-        state.images = data.images ?? [];
         break;
-      case StreamEvent.TEXT_CHUNK:
-        state.content += (eventItem.data as TextChunkStream).text ?? "";
         if (!state.agent_response) {
           break;
         }
