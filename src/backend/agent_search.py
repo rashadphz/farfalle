@@ -1,6 +1,5 @@
+# This code is messy, this was originally an experiment
 import asyncio
-from enum import Enum
-from time import sleep
 from typing import AsyncIterator
 
 from fastapi import HTTPException
@@ -9,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from backend.chat import rephrase_query_with_history
 from backend.constants import get_model_string
+from backend.db.chat import save_turn_to_db
 from backend.llm.base import BaseLLM, EveryLLM
 from backend.prompts import CHAT_PROMPT, QUERY_PLAN_PROMPT, SEARCH_QUERY_PROMPT
 from backend.related_queries import generate_related_queries
@@ -16,7 +16,10 @@ from backend.schemas import (
     AgentFinishStream,
     AgentQueryPlanStream,
     AgentReadResultsStream,
+    AgentSearchFullResponse,
     AgentSearchQueriesStream,
+    AgentSearchStep,
+    AgentSearchStepStatus,
     BeginStream,
     ChatRequest,
     ChatResponseEvent,
@@ -30,7 +33,7 @@ from backend.schemas import (
     TextChunkStream,
 )
 from backend.search.search_service import perform_search
-from backend.utils import is_local_model
+from backend.utils import PRO_MODE_ENABLED, is_local_model
 
 
 class QueryPlanStep(BaseModel):
@@ -49,33 +52,18 @@ class QueryPlan(BaseModel):
     )
 
 
-class StepType(str, Enum):
-    SEARCH = "search"
-    SUMMARIZE = "summarize"
-
-
 class QueryStepExecution(BaseModel):
-    type: StepType = Field(..., description="The type of step to complete")
     search_queries: list[str] | None = Field(
-        ..., description="The search queries to complete the step", max_length=3
+        ...,
+        description="The search queries to complete the step",
+        min_length=1,
+        max_length=3,
     )
 
 
 class StepContext(BaseModel):
     step: str
     context: str
-
-
-async def build_context_from_search_queries(search_queries: list[str]) -> str:
-    search_responses: list[SearchResponse] = await asyncio.gather(
-        *[perform_search(query) for query in search_queries]
-    )
-    results = [result for response in search_responses for result in response.results]
-    context = "\n".join(
-        [f"Title: {result.title}\nContext: {result.content}" for result in results]
-    )
-    context = context[:7000]
-    return context
 
 
 def format_step_context(step_contexts: list[StepContext]) -> str:
@@ -105,7 +93,7 @@ async def ranked_search_results_and_images_from_queries(
 
 def build_context_from_search_results(search_results: list[SearchResult]) -> str:
     context = "\n".join(str(result) for result in search_results)
-    return context[:10000]
+    return context[:7000]
 
 
 def format_context_with_steps(
@@ -116,12 +104,12 @@ def format_context_with_steps(
         f"Everything below is context for step: {step_contexts[step_id].step}\nContext: {build_context_from_search_results(search_results_map[step_id])}\n{'-'*20}\n"
         for step_id in sorted(step_contexts.keys())
     )
-    context = context[:15000]
+    context = context[:10000]
     return context
 
 
 async def stream_pro_search_objects(
-    request: ChatRequest, llm: BaseLLM, query: str
+    request: ChatRequest, llm: BaseLLM, query: str, session: Session
 ) -> AsyncIterator[ChatResponseEvent]:
     query_plan_prompt = QUERY_PLAN_PROMPT.format(query=query)
     query_plan = llm.structured_complete(
@@ -137,6 +125,7 @@ async def stream_pro_search_objects(
     step_context: dict[int, StepContext] = {}
     search_result_map: dict[int, list[SearchResult]] = {}
     image_map: dict[int, list[str]] = {}
+    agent_search_steps: list[AgentSearchStep] = []
 
     for idx, step in enumerate(query_plan.steps):
         step_id = step.id
@@ -145,10 +134,12 @@ async def stream_pro_search_objects(
 
         relevant_context = [step_context[id] for id in dependencies]
 
-        search_prompt = SEARCH_QUERY_PROMPT.format(
-            step=step.step, prev_steps_context=format_step_context(relevant_context)
-        )
         if not is_last_step:
+            search_prompt = SEARCH_QUERY_PROMPT.format(
+                user_query=query,
+                current_step=step.step,
+                prev_steps_context=format_step_context(relevant_context),
+            )
             query_step_execution = llm.structured_complete(
                 response_model=QueryStepExecution, prompt=search_prompt
             )
@@ -181,10 +172,17 @@ async def stream_pro_search_objects(
             )
             context = build_context_from_search_results(search_results)
             step_context[step_id] = StepContext(step=step.step, context=context)
-        else:
-            # This is weird but it's to make the UI feel more responsive (definitely a better way to do this lol)
-            sleep(0.7)
 
+            agent_search_steps.append(
+                AgentSearchStep(
+                    step_number=step_id,
+                    step=step.step,
+                    queries=search_queries,
+                    results=search_results,
+                    status=AgentSearchStepStatus.DONE,
+                )
+            )
+        else:
             yield ChatResponseEvent(
                 event=StreamEvent.AGENT_FINISH,
                 data=AgentFinishStream(),
@@ -242,6 +240,7 @@ async def stream_pro_search_objects(
             full_response = ""
             response_gen = await llm.astream(fmt_qa_prompt)
             async for completion in response_gen:
+                print(completion.delta)
                 full_response += completion.delta or ""
                 yield ChatResponseEvent(
                     event=StreamEvent.TEXT_CHUNK,
@@ -264,9 +263,34 @@ async def stream_pro_search_objects(
                 data=FinalResponseStream(message=full_response),
             )
 
+            agent_search_steps.append(
+                AgentSearchStep(
+                    step_number=step_id,
+                    step=step.step,
+                    queries=[],
+                    results=[],
+                    status=AgentSearchStepStatus.DONE,
+                )
+            )
+
+            thread_id = save_turn_to_db(
+                session=session,
+                thread_id=request.thread_id,
+                user_message=request.query,
+                assistant_message=full_response,
+                agent_search_full_response=AgentSearchFullResponse(
+                    steps=[step.step for step in agent_search_steps],
+                    steps_details=agent_search_steps,
+                ),
+                model=request.model,
+                search_results=search_results,
+                image_results=images,
+                related_queries=related_queries,
+            )
+
             yield ChatResponseEvent(
                 event=StreamEvent.STREAM_END,
-                data=StreamEndStream(thread_id=None),
+                data=StreamEndStream(thread_id=thread_id),
             )
             return
 
@@ -275,12 +299,19 @@ async def stream_pro_search_qa(
     request: ChatRequest, session: Session
 ) -> AsyncIterator[ChatResponseEvent]:
     try:
+        if not PRO_MODE_ENABLED:
+            raise HTTPException(
+                status_code=400,
+                detail="Pro mode is not enabled, self-host to enable it at https://github.com/rashadphz/farfalle",
+            )
+
         model_name = get_model_string(request.model)
         llm = EveryLLM(model=model_name)
 
         query = rephrase_query_with_history(request.query, request.history, llm)
-        async for event in stream_pro_search_objects(request, llm, query):
+        async for event in stream_pro_search_objects(request, llm, query, session):
             yield event
+            await asyncio.sleep(0)
 
     except Exception as e:
         detail = str(e)

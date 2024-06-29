@@ -1,3 +1,4 @@
+import json
 import re
 
 from sqlalchemy import select
@@ -7,6 +8,7 @@ from backend.db.models import ChatMessage as DBChatMessage
 from backend.db.models import ChatThread as DBChatThread
 from backend.db.models import SearchResult as DBSearchResult
 from backend.schemas import (
+    AgentSearchFullResponse,
     ChatMessage,
     ChatSnapshot,
     MessageRole,
@@ -76,6 +78,7 @@ def create_message(
     role: MessageRole,
     content: str,
     parent_message_id: int | None = None,
+    agent_search_full_response: AgentSearchFullResponse | None = None,
     search_results: list[SearchResult] | None = None,
     image_results: list[str] | None = None,
     related_queries: list[str] | None = None,
@@ -85,6 +88,11 @@ def create_message(
         role=role,
         content=content,
         parent_message_id=parent_message_id,
+        agent_search_full_response=(
+            agent_search_full_response.model_dump_json()
+            if agent_search_full_response
+            else None
+        ),
         image_results=image_results or [],
         related_queries=related_queries or [],
     )
@@ -111,6 +119,7 @@ def save_turn_to_db(
     user_message: str,
     assistant_message: str,
     model: str,
+    agent_search_full_response: AgentSearchFullResponse | None = None,
     search_results: list[SearchResult] | None = None,
     image_results: list[str] | None = None,
     related_queries: list[str] | None = None,
@@ -135,6 +144,7 @@ def save_turn_to_db(
             role=MessageRole.ASSISTANT,
             content=assistant_message,
             parent_message_id=user_message.id,
+            agent_search_full_response=agent_search_full_response,
             search_results=search_results,
             image_results=image_results,
             related_queries=related_queries,
@@ -201,6 +211,13 @@ def get_thread(*, session: Session, thread_id: int) -> ThreadResponse:
                 map_search_result(result) for result in message.search_results or []
             ],
             images=message.image_results or [],
+            agent_response=(
+                AgentSearchFullResponse(
+                    **json.loads(message.agent_search_full_response)
+                )
+                if message.agent_search_full_response
+                else None
+            ),
         )
         for message in db_messages
     ]

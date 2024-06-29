@@ -20,3 +20,4 @@ def strtobool(val: str | bool) -> bool:
 
 
 DB_ENABLED = strtobool(os.environ.get("DB_ENABLED", "true"))
+PRO_MODE_ENABLED = strtobool(os.environ.get("PRO_MODE_ENABLED", "false"))

@@ -105,7 +105,6 @@ async def chat(
     async def generator():
         try:
             validate_model(chat_request.model)
-            print(chat_request)
             stream_fn = (
                 stream_pro_search_qa if chat_request.pro_search else stream_qa_objects
             )

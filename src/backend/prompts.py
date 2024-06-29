@@ -104,19 +104,35 @@ Query Plan (with a final summarize/combine/compare step):
 """
 
 SEARCH_QUERY_PROMPT = """\
-Given a step, first decide what type of step it is.
+Generate a concise list of search queries to gather information for executing the given step.
 
-If it is a search step, generate a list of search queries to complete the step.
-If it is a summarize step, return None for search queries.
+You will be provided with:
+1. A specific step to execute
+2. The user's original query
+3. Context from previous steps (if available)
 
-You may also be given context from previous steps that should be used to inform your search queries.
+Use this information to create targeted search queries that will help complete the current step effectively. Aim for the minimum number of queries necessary while ensuring they cover all aspects of the step.
 
-If only one search query is needed, return a list with only one element.
+IMPORTANT: Always incorporate relevant information from previous steps into your queries. This ensures continuity and builds upon already gathered information.
 
-Use the following context to inform your search queries:
+Input:
+---
+User's original query: {user_query}
+---
+Context from previous steps:
 {prev_steps_context}
 
-Step: {step}
+Your task:
+1. Analyze the current step and its requirements
+2. Consider the user's original query and any relevant previous context
+3. Consider the user's original query
+4. Generate a list of specific, focused search queries that:
+   - Incorporate relevant information from previous steps
+   - Address the requirements of the current step
+   - Build upon the information already gathered
+---
+Current step to execute: {current_step}
+---
 
-Step Execution:
+Your search queries based:
 """
