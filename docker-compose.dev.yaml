@@ -37,6 +37,8 @@ services:
       - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-False}
       - REDIS_URL=${REDIS_URL}
 
+      - ENABLE_LOCAL_MODELS=${ENABLE_LOCAL_MODELS:-True}
+
     entrypoint: >
       /bin/sh -c "
         cd /workspace/src/backend &&
