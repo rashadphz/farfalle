@@ -15,6 +15,7 @@ from slowapi.util import get_ipaddr
 from sqlalchemy.orm import Session
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
+from backend.agent_search import stream_pro_search_qa
 from backend.chat import stream_qa_objects
 from backend.db.chat import get_chat_history, get_thread
 from backend.db.engine import get_session
@@ -104,7 +105,11 @@ async def chat(
     async def generator():
         try:
             validate_model(chat_request.model)
-            async for obj in stream_qa_objects(request=chat_request, session=session):
+            print(chat_request)
+            stream_fn = (
+                stream_pro_search_qa if chat_request.pro_search else stream_qa_objects
+            )
+            async for obj in stream_fn(request=chat_request, session=session):
                 if await request.is_disconnected():
                     break
                 yield json.dumps(jsonable_encoder(obj))
