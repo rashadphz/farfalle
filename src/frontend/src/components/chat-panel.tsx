@@ -13,6 +13,7 @@ import LocalToggle from "./local-toggle";
 import { useChatThread } from "@/hooks/threads";
 import { MessageRole } from "../../generated";
 import { LoaderIcon } from "lucide-react";
+import { ProSearchRender } from "./pro-search-render";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useChatStore();

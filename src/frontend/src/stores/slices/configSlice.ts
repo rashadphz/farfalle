@@ -5,11 +5,13 @@ import { ChatModel } from "../../../generated";
 type State = {
   model: ChatModel;
   localMode: boolean;
+  proMode: boolean;
 };
 
 type Actions = {
   setModel: (model: ChatModel) => void;
   toggleLocalMode: () => void;
+  toggleProMode: () => void;
 };
 
 export type ConfigStore = State & Actions;
@@ -22,6 +24,7 @@ export const createConfigSlice: StateCreator<
 > = (set) => ({
   model: ChatModel.GPT_3_5_TURBO,
   localMode: false,
+  proMode: true,
   setModel: (model: ChatModel) => set({ model }),
   toggleLocalMode: () =>
     set((state) => {
@@ -36,4 +39,5 @@ export const createConfigSlice: StateCreator<
         : ChatModel.GPT_3_5_TURBO;
       return { localMode: newLocalMode, model: newModel };
     }),
+  toggleProMode: () => set((state) => ({ proMode: !state.proMode })),
 });

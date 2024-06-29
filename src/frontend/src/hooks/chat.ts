@@ -1,5 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import {
+  AgentQueryPlanStream,
+  AgentReadResultsStream,
+  AgentSearchFullResponse,
+  AgentSearchQueriesStream,
+  AgentSearchStep,
+  AgentSearchStepStatus,
   ChatMessage,
   ChatRequest,
   ChatResponseEvent,
@@ -58,25 +64,18 @@ const convertToChatRequest = (query: string, history: ChatMessage[]) => {
 
 export const useChat = () => {
   const { addMessage, messages, threadId, setThreadId } = useChatStore();
-  const { model } = useConfigStore();
-  const router = useRouter();
+  const { model, proMode } = useConfigStore();
 
   const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(
     null,
   );
+  let steps_details: AgentSearchStep[] = [];
 
-  const handleEvent = (
-    eventItem: ChatResponseEvent,
-    state: {
-      response: string;
-      sources: SearchResult[];
-      related_queries: string[];
-      images: string[];
-    },
-  ) => {
+  const handleEvent = (eventItem: ChatResponseEvent, state: ChatMessage) => {
     switch (eventItem.event) {
       case StreamEvent.BEGIN_STREAM:
         setStreamingMessage({
+          ...state,
           role: MessageRole.ASSISTANT,
           content: "",
           related_queries: [],
@@ -89,7 +88,7 @@ export const useChat = () => {
         state.images = data.images ?? [];
         break;
       case StreamEvent.TEXT_CHUNK:
-        state.response += (eventItem.data as TextChunkStream).text ?? "";
+        state.content += (eventItem.data as TextChunkStream).text ?? "";
         break;
       case StreamEvent.RELATED_QUERIES:
         state.related_queries =
@@ -97,13 +96,7 @@ export const useChat = () => {
         break;
       case StreamEvent.STREAM_END:
         const endData = eventItem.data as StreamEndStream;
-        addMessage({
-          role: MessageRole.ASSISTANT,
-          content: state.response,
-          related_queries: state.related_queries,
-          sources: state.sources,
-          images: state.images,
-        });
+        addMessage({ ...state });
         setStreamingMessage(null);
 
         // Only if the backend is using the DB
@@ -112,8 +105,50 @@ export const useChat = () => {
           window.history.pushState({}, "", `/search/${endData.thread_id}`);
         }
         return;
-      case StreamEvent.FINAL_RESPONSE:
-        return;
+      case StreamEvent.AGENT_QUERY_PLAN:
+        const { steps } = eventItem.data as AgentQueryPlanStream;
+        steps_details =
+          steps?.map((step, index) => ({
+            step: step,
+            queries: [],
+            results: [],
+            status: AgentSearchStepStatus.DEFAULT,
+            step_number: index,
+          })) ?? [];
+
+        steps_details[0].status = AgentSearchStepStatus.CURRENT;
+        state.agent_response = {
+          steps_details: steps_details,
+        };
+        break;
+      case StreamEvent.AGENT_SEARCH_QUERIES:
+        const { queries, step_number: queryStepNumber } =
+          eventItem.data as AgentSearchQueriesStream;
+        steps_details[queryStepNumber].queries = queries;
+        steps_details[queryStepNumber].status = AgentSearchStepStatus.CURRENT;
+        if (queryStepNumber !== 0) {
+          steps_details[queryStepNumber - 1].status =
+            AgentSearchStepStatus.DONE;
+        }
+        state.agent_response = {
+          steps_details: steps_details,
+        };
+        break;
+      case StreamEvent.AGENT_READ_RESULTS:
+        const { results, step_number: resultsStepNumber } =
+          eventItem.data as AgentReadResultsStream;
+        steps_details[resultsStepNumber].results = results;
+
+        break;
+      case StreamEvent.AGENT_FINISH:
+        steps_details = steps_details.map((step) => ({
+          ...step,
+          status: AgentSearchStepStatus.DONE,
+        }));
+        state.agent_response = {
+          steps_details: steps_details,
+        };
+        break;
       case StreamEvent.ERROR:
         const errorData = eventItem.data as ErrorStream;
         addMessage({
@@ -122,28 +157,36 @@ export const useChat = () => {
           related_queries: [],
           sources: [],
           images: [],
+          agent_response: state.agent_response,
           is_error_message: true,
         });
         setStreamingMessage(null);
-        return;
+        break;
     }
     setStreamingMessage({
+      ...state,
       role: MessageRole.ASSISTANT,
-      content: state.response,
+      content: state.content,
       related_queries: state.related_queries,
       sources: state.sources,
       images: state.images,
+      agent_response: {
+        steps: steps_details.map((step) => step.step),
+        steps_details: steps_details,
+      },
     });
   };
 
   const { mutateAsync: chat } = useMutation<void, Error, ChatRequest>({
     retry: false,
     mutationFn: async (request) => {
-      const state = {
-        response: "",
+      const state: ChatMessage = {
+        role: MessageRole.ASSISTANT,
+        content: "",
         sources: [],
         related_queries: [],
         images: [],
+        agent_response: null,
       };
       addMessage({ role: MessageRole.USER, content: request.query });
 
@@ -151,6 +194,7 @@ export const useChat = () => {
         ...request,
         thread_id: threadId,
         model,
+        pro_search: true,
       };
       await streamChat({
         request: req,
