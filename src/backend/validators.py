@@ -21,7 +21,7 @@ def validate_model(model: ChatModel):
         if not GROQ_API_KEY:
             raise ValueError("GROQ_API_KEY environment variable not found")
     elif is_local_model(model):
-        LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
+        LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", True))
         if not LOCAL_MODELS_ENABLED:
             raise ValueError("Local models are not enabled")
     else:
