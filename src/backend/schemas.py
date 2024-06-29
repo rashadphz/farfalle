@@ -36,6 +36,7 @@ class ChatRequest(BaseModel, plugin_settings=record_all):
     query: str
     history: List[Message] = Field(default_factory=list)
     model: ChatModel = ChatModel.GPT_3_5_TURBO
+    pro_search: bool = False
 
 
 class RelatedQueries(BaseModel):
@@ -56,6 +57,25 @@ class SearchResponse(BaseModel):
     images: List[str] = Field(default_factory=list)
 
 
+class AgentSearchStepStatus(str, Enum):
+    DONE = "done"
+    CURRENT = "current"
+    DEFAULT = "default"
+
+
+class AgentSearchStep(BaseModel):
+    step_number: int
+    step: str
+    queries: List[str] = Field(default_factory=list)
+    results: List[SearchResult] = Field(default_factory=list)
+    status: AgentSearchStepStatus = AgentSearchStepStatus.DEFAULT
+
+
+class AgentSearchFullResponse(BaseModel):
+    steps: list[str] = Field(default_factory=list)
+    steps_details: List[AgentSearchStep] = Field(default_factory=list)
+
+
 class StreamEvent(str, Enum):
     BEGIN_STREAM = "begin-stream"
     SEARCH_RESULTS = "search-results"
@@ -64,6 +84,13 @@ class StreamEvent(str, Enum):
     STREAM_END = "stream-end"
     FINAL_RESPONSE = "final-response"
     ERROR = "error"
+
+    # Agent Events
+    AGENT_QUERY_PLAN = "agent-query-plan"
+    AGENT_SEARCH_QUERIES = "agent-search-queries"
+    AGENT_READ_RESULTS = "agent-read-results"
+    AGENT_FINISH = "agent-finish"
+    AGENT_FULL_RESPONSE = "agent-full-response"
 
 
 class ChatObject(BaseModel):
@@ -106,6 +133,32 @@ class ErrorStream(ChatObject, plugin_settings=record_all):
     detail: str
 
 
+class AgentQueryPlanStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.AGENT_QUERY_PLAN
+    steps: List[str] = Field(default_factory=list)
+
+
+class AgentSearchQueriesStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.AGENT_SEARCH_QUERIES
+    step_number: int
+    queries: List[str] = Field(default_factory=list)
+
+
+class AgentReadResultsStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.AGENT_READ_RESULTS
+    step_number: int
+    results: List[SearchResult] = Field(default_factory=list)
+
+
+class AgentSearchFullResponseStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.AGENT_FULL_RESPONSE
+    response: AgentSearchFullResponse
+
+
+class AgentFinishStream(ChatObject, plugin_settings=record_all):
+    event_type: StreamEvent = StreamEvent.AGENT_FINISH
+
+
 class ChatResponseEvent(BaseModel):
     event: StreamEvent
     data: Union[
@@ -116,6 +169,11 @@ class ChatResponseEvent(BaseModel):
         StreamEndStream,
         FinalResponseStream,
         ErrorStream,
+        AgentQueryPlanStream,
+        AgentSearchQueriesStream,
+        AgentReadResultsStream,
+        AgentFinishStream,
+        AgentSearchFullResponseStream,
     ]
 
 
@@ -138,6 +196,7 @@ class ChatMessage(BaseModel):
     sources: List[SearchResult] | None = None
     images: List[str] | None = None
     is_error_message: bool = False
+    agent_response: AgentSearchFullResponse | None = None
 
 
 class ThreadResponse(BaseModel):

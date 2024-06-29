@@ -48,19 +48,22 @@ services:
         - action: sync
           path: ./src/backend
           target: /workspace/src/backend
+    networks:
+      - farfalle-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   frontend:
     depends_on:
       - backend
     build:
       context: .
       dockerfile: ./src/frontend/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
+        - NEXT_PUBLIC_PRO_MODE_ENABLED=${NEXT_PUBLIC_PRO_MODE_ENABLED:-true}
     restart: always
-    environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-      - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
-      - NEXT_PUBLIC_PRO_MODE_ENABLED=${NEXT_PUBLIC_PRO_MODE_ENABLED:-true}
     ports:
       - "3000:3000"
     develop:
@@ -70,19 +73,18 @@ services:
           target: /app
           ignore:
             - node_modules/
+    networks:
+      - farfalle-network
 
   searxng:
-    container_name: searxng
     image: docker.io/searxng/searxng:latest
     restart: unless-stopped
-    networks:
-      - searxng
     ports:
       - "8080:8080"
     volumes:
       - ./searxng:/etc/searxng:rw
-    environment:
-      - SEARXNG_BASE_URL=https://${SEARXNG_BASE_URL:-localhost}/
+    networks:
+      - farfalle-network
 
   db:
     image: postgres:15.2-alpine
@@ -95,9 +97,12 @@ services:
       - "5432:5432"
     volumes:
       - db_volume:/var/lib/postgresql/data
+    networks:
+      - farfalle-network
 
 networks:
-  searxng:
+  farfalle-network:
+    name: farfalle-network
 
 volumes:
   db_volume:
