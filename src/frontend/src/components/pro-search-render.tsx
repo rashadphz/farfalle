@@ -108,10 +108,10 @@ const ProSearchSkeleton = () => {
 
 export const ProSearchRender = ({
   streamingProResponse,
-  isStreamingProSearch,
+  isStreamingProSearch = false,
 }: {
   streamingProResponse: AgentSearchFullResponse | null;
-  isStreamingProSearch: boolean;
+  isStreamingProSearch?: boolean;
 }) => {
   const [accordionValues, setAccordionValues] = useState<string[]>([]);
 
@@ -131,7 +131,7 @@ export const ProSearchRender = ({
     setAccordionValues(currentSteps);
   }, [streamingProResponse]);
 
-  if (!streamingProResponse?.steps_details || isStreamingProSearch) {
+  if (!streamingProResponse?.steps_details) {
     return isStreamingProSearch ? <ProSearchSkeleton /> : null;
   }
   const { steps_details: stepDetails } = streamingProResponse;

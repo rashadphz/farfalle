@@ -69,7 +69,7 @@ export const useChat = () => {
   const [streamingMessage, setStreamingMessage] = useState<ChatMessage | null>(
     null,
   );
-  const [isStreamingProSearch, setIsStreamingProSearch] = useState(proMode);
+  const [isStreamingProSearch, setIsStreamingProSearch] = useState(false);
   const [isStreamingMessage, setIsStreamingMessage] = useState(false);
 
   let steps_details: AgentSearchStep[] = [];
@@ -104,7 +104,6 @@ export const useChat = () => {
         state.agent_response = {
           steps_details: steps_details,
         };
-        setIsStreamingProSearch(false);
 
         break;
       case StreamEvent.RELATED_QUERIES:
@@ -116,6 +115,7 @@ export const useChat = () => {
         addMessage({ ...state });
         setStreamingMessage(null);
         setIsStreamingMessage(false);
+        setIsStreamingProSearch(false);
 
         // Only if the backend is using the DB
         if (endData.thread_id) {
@@ -202,6 +202,7 @@ export const useChat = () => {
         agent_response: null,
       };
       addMessage({ role: MessageRole.USER, content: request.query });
+      setIsStreamingProSearch(proMode);
 
       const req = {
         ...request,

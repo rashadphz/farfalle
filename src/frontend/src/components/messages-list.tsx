@@ -46,6 +46,7 @@ const MessagesList = ({
         <div className="mb-4">
           <ProSearchRender
             streamingProResponse={streamingProResponse ?? null}
+            isStreamingProSearch={isStreamingProSearch}
           />
         </div>
       )}
