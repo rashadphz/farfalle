@@ -1,12 +1,11 @@
 import asyncio
-import os
 from typing import AsyncIterator, List
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from backend.constants import get_model_string
-from backend.db.chat import append_message, create_chat_thread, create_message
+from backend.db.chat import save_turn_to_db
 from backend.llm.base import BaseLLM, EveryLLM
 from backend.prompts import CHAT_PROMPT, HISTORY_QUERY_REPHRASE
 from backend.related_queries import generate_related_queries
@@ -16,7 +15,6 @@ from backend.schemas import (
     ChatResponseEvent,
     FinalResponseStream,
     Message,
-    MessageRole,
     RelatedQueriesStream,
     SearchResult,
     SearchResultStream,
@@ -25,7 +23,7 @@ from backend.schemas import (
     TextChunkStream,
 )
 from backend.search.search_service import perform_search
-from backend.utils import is_local_model, strtobool
+from backend.utils import is_local_model
 
 
 def rephrase_query_with_history(
@@ -112,32 +110,16 @@ async def stream_qa_objects(
             data=RelatedQueriesStream(related_queries=related_queries),
         )
 
-        thread_id = None
-        DB_ENABLED = strtobool(os.environ.get("DB_ENABLED", "true"))
-        if DB_ENABLED:
-            if request.thread_id is None:
-                thread = create_chat_thread(session=session, model_name=request.model)
-                thread_id = thread.id
-            else:
-                thread_id = request.thread_id
-
-            user_message = append_message(
-                session=session,
-                thread_id=thread_id,
-                role=MessageRole.USER,
-                content=request.query,
-            )
-
-            _assistant_message = create_message(
-                session=session,
-                thread_id=thread_id,
-                role=MessageRole.ASSISTANT,
-                content=full_response,
-                parent_message_id=user_message.id,
-                search_results=search_results,
-                image_results=images,
-                related_queries=related_queries,
-            )
+        thread_id = save_turn_to_db(
+            session=session,
+            thread_id=request.thread_id,
+            user_message=request.query,
+            assistant_message=full_response,
+            model=request.model,
+            search_results=search_results,
+            image_results=images,
+            related_queries=related_queries,
+        )
 
         yield ChatResponseEvent(
             event=StreamEvent.FINAL_RESPONSE,

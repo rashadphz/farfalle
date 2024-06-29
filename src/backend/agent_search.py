@@ -116,6 +116,7 @@ def format_context_with_steps(
         f"Everything below is context for step: {step_contexts[step_id].step}\nContext: {build_context_from_search_results(search_results_map[step_id])}\n{'-'*20}\n"
         for step_id in sorted(step_contexts.keys())
     )
+    context = context[:15000]
     return context
 
 

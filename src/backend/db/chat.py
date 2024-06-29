@@ -13,6 +13,7 @@ from backend.schemas import (
     SearchResult,
     ThreadResponse,
 )
+from backend.utils import DB_ENABLED
 
 
 def create_chat_thread(*, session: Session, model_name: str):
@@ -101,6 +102,45 @@ def create_message(
     session.add(message)
     session.commit()
     return message
+
+
+def save_turn_to_db(
+    *,
+    session: Session,
+    thread_id: int | None,
+    user_message: str,
+    assistant_message: str,
+    model: str,
+    search_results: list[SearchResult] | None = None,
+    image_results: list[str] | None = None,
+    related_queries: list[str] | None = None,
+) -> int | None:
+    if DB_ENABLED:
+        if thread_id is None:
+            thread = create_chat_thread(session=session, model_name=model)
+            thread_id = thread.id
+        else:
+            thread_id = thread_id
+
+        user_message = append_message(
+            session=session,
+            thread_id=thread_id,
+            role=MessageRole.USER,
+            content=user_message,
+        )
+
+        _assistant_message = create_message(
+            session=session,
+            thread_id=thread_id,
+            role=MessageRole.ASSISTANT,
+            content=assistant_message,
+            parent_message_id=user_message.id,
+            search_results=search_results,
+            image_results=image_results,
+            related_queries=related_queries,
+        )
+        return thread_id
+    return None
 
 
 def get_chat_history(*, session: Session) -> list[ChatSnapshot]:
