@@ -4,9 +4,8 @@ Open-source AI-powered search engine. (Perplexity Clone)
 
 Run local LLMs (**llama3**, **gemma**, **mistral**, **phi3**), custom LLMs through **LiteLLM**, or use cloud models (**Groq/Llama3**, **OpenAI/gpt4-o**)
 
-Demo answering questions with phi3 on my M1 Macbook Pro:
+https://github.com/rashadphz/farfalle/assets/20783686/7b17088a-446b-4c5d-8fe2-20f9e15c3b6d
 
-https://github.com/rashadphz/farfalle/assets/20783686/9cda83b8-0d3c-4a81-83ee-ff8cce323fee
 
 Please feel free to contact me on [Twitter](https://twitter.com/rashadphz) or [create an issue](https://github.com/rashadphz/farfalle/issues/new) if you have any questions.
 
