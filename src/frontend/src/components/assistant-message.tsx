@@ -6,6 +6,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ImageSection, ImageSectionSkeleton } from "./image-section";
 import { ChatMessage } from "../../generated";
+import { CopyToClipboardBtn } from "./copy-to-clipboard-btn";
 
 export function ErrorMessage({ content }: { content: string }) {
   return (
@@ -59,7 +60,12 @@ export const AssistantMessageContent = ({
     <div className="flex flex-col">
       <Section title="Answer" animate={isStreaming} streaming={isStreaming}>
         {content ? (
-          <MessageComponent message={message} isStreaming={isStreaming} />
+          <>
+            <MessageComponent message={message} isStreaming={isStreaming} />
+            <div className="flex flex-row-reverse">
+              <CopyToClipboardBtn content={content} />
+            </div>
+          </>
         ) : (
           <MessageComponentSkeleton />
         )}
