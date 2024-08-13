@@ -41,7 +41,10 @@ class EveryLLM(BaseLLM):
             raise ValueError(f"Missing keys: {validation['missing_keys']}")
 
         self.llm = LiteLLM(model=model)
-        self.client = instructor.from_litellm(completion)
+        if 'groq' in model or 'ollama_chat' in model:
+            self.client = instructor.from_litellm(completion, mode=instructor.Mode.MD_JSON)
+        else:
+            self.client = instructor.from_litellm(completion)
 
     async def astream(self, prompt: str) -> CompletionResponseAsyncGen:
         return await self.llm.astream_complete(prompt)

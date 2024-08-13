@@ -5,7 +5,7 @@ from backend.utils import is_local_model, strtobool
 
 
 def validate_model(model: ChatModel):
-    if model in {ChatModel.GPT_3_5_TURBO, ChatModel.GPT_4o}:
+    if model in {ChatModel.GPT_4o_mini, ChatModel.GPT_4o}:
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         if not OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY environment variable not found")
