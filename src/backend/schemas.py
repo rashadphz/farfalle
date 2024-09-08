@@ -7,7 +7,7 @@ from typing import List, Union
 
 from dotenv import load_dotenv
 from logfire.integrations.pydantic import PluginSettings
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, BaseConfig, validator
 
 from backend.constants import ChatModel
 from backend.utils import strtobool
@@ -39,9 +39,15 @@ class ChatRequest(BaseModel, plugin_settings=record_all):
     pro_search: bool = False
 
 
+# Hotfix Part I (https://github.com/rashadphz/farfalle/issues/82)
 class RelatedQueries(BaseModel):
-    related_questions: List[str] = Field(..., min_length=3, max_length=3)
+    related_questions: List[str] 
 
+    @validator('related_questions', pre=True)
+    def ensure_list(cls, v):
+        if isinstance(v, str):
+            return [v]
+        return v
 
 class SearchResult(BaseModel):
     title: str
@@ -183,6 +189,9 @@ class ChatSnapshot(BaseModel):
     date: datetime
     preview: str
     model_name: str
+
+    class Config(BaseConfig):
+        protected_namespaces = ()
 
 
 class ChatHistoryResponse(BaseModel):
