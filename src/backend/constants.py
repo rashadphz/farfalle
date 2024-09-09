@@ -23,8 +23,8 @@ class ChatModel(str, Enum):
 
 
 model_mappings: dict[ChatModel, str] = {
-    ChatModel.GPT_4o: "gpt-4o",
-    ChatModel.GPT_4o_mini: "gpt-4o-mini",
+    ChatModel.GPT_4o: "openai/gpt-4o",
+    ChatModel.GPT_4o_mini: "openai/gpt-4o-mini",
     ChatModel.LLAMA_3_70B: "groq/llama-3.1-70b-versatile",
     ChatModel.LOCAL_LLAMA_3: "ollama_chat/llama3.1",
     ChatModel.LOCAL_GEMMA: "ollama_chat/gemma",
