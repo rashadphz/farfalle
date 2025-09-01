@@ -37,6 +37,9 @@ WORKDIR /workspace
 # Copy dependency files to avoid cache invalidations
 COPY pyproject.toml poetry.lock ./
 
+# Copy README.md for Poetry packaging
+COPY README.md ./
+
 # Install dependencies
 RUN poetry install
 
