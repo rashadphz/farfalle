@@ -79,6 +79,30 @@ docker-compose -f docker-compose.dev.yaml up -d
 
 Wait for the app to start then visit [http://localhost:3000](http://localhost:3000).
 
+### Dynamic Port Allocation (Recommended)
+
+If you encounter port conflicts (e.g., port 8000 is already in use), use the dynamic port allocation system:
+
+```bash
+# This will automatically find an available port and start the services
+./docker-scripts/start-dev.sh
+```
+
+Or manually set up dynamic ports:
+```bash
+# Find available port and update configuration
+./docker-scripts/dynamic-port-setup.sh
+
+# Start services with the new configuration
+docker-compose -f docker-compose.dev.yaml -f docker-compose.override.yaml up
+```
+
+The system will automatically:
+- Find an available port starting from 8000
+- Update environment variables
+- Create a Docker Compose override file
+- Ensure frontend connects to the correct backend port
+
 For custom setup instructions, see [custom-setup-instructions.md](/custom-setup-instructions.md)
 
 ## 🚀 Deploy

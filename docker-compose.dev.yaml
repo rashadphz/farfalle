@@ -8,7 +8,7 @@ services:
       dockerfile: ./src/backend/Dockerfile
     restart: always
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     environment:
       - SEARCH_PROVIDER=${SEARCH_PROVIDER:-searxng}
       - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://searxng:8080}
@@ -63,12 +63,12 @@ services:
       context: .
       dockerfile: ./src/frontend/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:${BACKEND_PORT:-8000}}
         - NEXT_PUBLIC_LOCAL_MODE_ENABLED=${NEXT_PUBLIC_LOCAL_MODE_ENABLED:-true}
         - NEXT_PUBLIC_PRO_MODE_ENABLED=${NEXT_PUBLIC_PRO_MODE_ENABLED:-true}
     restart: always
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     develop:
       watch:
         - action: sync

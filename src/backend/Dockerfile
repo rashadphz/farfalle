@@ -16,6 +16,9 @@ WORKDIR /workspace
 # Copy dependency files to avoid cache invalidations
 COPY pyproject.toml poetry.lock ./
 
+# Copy README.md for Poetry packaging
+COPY README.md ./
+
 COPY src/backend/ src/backend/
 
 RUN pip install --no-cache-dir poetry && poetry install
