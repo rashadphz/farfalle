@@ -1,6 +1,7 @@
 import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { MemoizedReactMarkdown } from "./markdown";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 import _ from "lodash";
 import { cn } from "@/lib/utils";
@@ -110,10 +111,53 @@ const StreamingListItem = memo(
   },
 );
 
+// Table components for GFM markdown support
+const Table = memo(({ children }: React.HTMLProps<HTMLTableElement>) => (
+  <div className="overflow-x-auto my-4">
+    <table className="min-w-full border-collapse border border-border">
+      {children}
+    </table>
+  </div>
+));
+
+const TableHead = memo(
+  ({ children }: React.HTMLProps<HTMLTableSectionElement>) => (
+    <thead className="bg-muted">{children}</thead>
+  ),
+);
+
+const TableBody = memo(
+  ({ children }: React.HTMLProps<HTMLTableSectionElement>) => (
+    <tbody>{children}</tbody>
+  ),
+);
+
+const TableRow = memo(({ children }: React.HTMLProps<HTMLTableRowElement>) => (
+  <tr className="border-b border-border">{children}</tr>
+));
+
+const TableHeader = memo(
+  ({ children }: React.HTMLProps<HTMLTableCellElement>) => (
+    <th className="px-4 py-2 text-left font-semibold border border-border">
+      {children}
+    </th>
+  ),
+);
+
+const TableCell = memo(({ children }: React.HTMLProps<HTMLTableCellElement>) => (
+  <td className="px-4 py-2 border border-border">{children}</td>
+));
+
 StreamingParagraph.displayName = "StreamingParagraph";
 Paragraph.displayName = "Paragraph";
 ListItem.displayName = "ListItem";
 StreamingListItem.displayName = "StreamingListItem";
+Table.displayName = "Table";
+TableHead.displayName = "TableHead";
+TableBody.displayName = "TableBody";
+TableRow.displayName = "TableRow";
+TableHeader.displayName = "TableHeader";
+TableCell.displayName = "TableCell";
 
 export const MessageComponent: FC<MessageProps> = ({
   message,
@@ -145,8 +189,21 @@ export const MessageComponent: FC<MessageProps> = ({
         p: isStreaming ? StreamingParagraph : Paragraph,
         // @ts-ignore
         li: isStreaming ? StreamingListItem : ListItem,
+        // @ts-ignore
+        table: Table,
+        // @ts-ignore
+        thead: TableHead,
+        // @ts-ignore
+        tbody: TableBody,
+        // @ts-ignore
+        tr: TableRow,
+        // @ts-ignore
+        th: TableHeader,
+        // @ts-ignore
+        td: TableCell,
       }}
       className="prose dark:prose-invert inline leading-relaxed break-words "
+      remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
     >
       {parsedMessage}
